@@ -1,11 +1,11 @@
 import {resolve} from 'path';
 import {copyFile} from 'mz/fs';
 import chalk from 'chalk';
+import {scaffold as scaffoldJavaScriptProject} from '@travi/javascript-scaffolder';
 import scaffoldReadme from './readme';
 import scaffoldGit from './vcs/git';
 import scaffoldLicense from './license';
 import scaffoldVcsHost from './vcs/host';
-import scaffoldJavaScriptProject from '../../javascript/src/scaffolder';
 import scaffoldTravis from './ci/travis';
 import exec from '../../../third-party-wrappers/exec-as-promised';
 import {prompt, questionNames} from './prompts';

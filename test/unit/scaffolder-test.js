@@ -1,5 +1,6 @@
 import path from 'path';
 import fs from 'mz/fs';
+import * as javascriptScaffolder from '@travi/javascript-scaffolder';
 import sinon from 'sinon';
 import {assert} from 'chai';
 import any from '@travi/any';
@@ -7,7 +8,6 @@ import * as readmeScaffolder from '../../src/readme';
 import * as gitScaffolder from '../../src/vcs/git';
 import * as vcsHostScaffolder from '../../src/vcs/host';
 import * as licenseScaffolder from '../../src/license';
-import * as javascriptScaffolder from '../../../javascript/src/scaffolder';
 import * as travisScaffolder from '../../src/ci/travis';
 import * as exec from '../../../../third-party-wrappers/exec-as-promised';
 import * as prompts from '../../src/prompts';
@@ -33,7 +33,7 @@ suite('project scaffolder', () => {
     sandbox.stub(gitScaffolder, 'default');
     sandbox.stub(vcsHostScaffolder, 'default');
     sandbox.stub(licenseScaffolder, 'default');
-    sandbox.stub(javascriptScaffolder, 'default');
+    sandbox.stub(javascriptScaffolder, 'scaffold');
     sandbox.stub(travisScaffolder, 'default');
     sandbox.stub(fs, 'copyFile');
     sandbox.stub(exec, 'default');
@@ -93,7 +93,7 @@ suite('project scaffolder', () => {
         path.resolve(__dirname, '../../', 'templates', 'editorconfig.txt'),
         `${projectPath}/.editorconfig`
       );
-      assert.notCalled(javascriptScaffolder.default);
+      assert.notCalled(javascriptScaffolder.scaffold);
     });
   });
 
@@ -171,7 +171,7 @@ suite('project scaffolder', () => {
     const jsConsumerBadges = any.simpleObject();
     const jsContibutionBadges = any.simpleObject();
     const verificationCommand = any.string();
-    javascriptScaffolder.default
+    javascriptScaffolder.scaffold
       .withArgs({projectName, projectRoot: projectPath, visibility, license, vcs, ci})
       .resolves({
         vcsIgnore: ignore,
@@ -200,7 +200,7 @@ suite('project scaffolder', () => {
 
   test('that running a verification command is not attempted when not provided', () => {
     prompts.prompt.resolves({[prompts.questionNames.PROJECT_TYPE]: 'JavaScript'});
-    javascriptScaffolder.default.resolves({badges: {}});
+    javascriptScaffolder.scaffold.resolves({badges: {}});
 
     return scaffolder().then(() => assert.notCalled(exec.default));
   });
