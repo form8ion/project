@@ -22,6 +22,8 @@ export default async function () {
   const projectName = answers[questionNames.PROJECT_NAME];
   const chosenLicense = answers[questionNames.LICENSE];
   const visibility = answers[questionNames.VISIBILITY];
+  const description = answers[questionNames.DESCRIPTION];
+  const ciService = answers[questionNames.CI];
   const vcs = await scaffoldVcsHost({host: answers[questionNames.REPO_HOST], projectName, projectRoot, projectType});
   const [license, ci, language] = await Promise.all([
     scaffoldLicense({
@@ -30,7 +32,7 @@ export default async function () {
       copyright: {year: answers[questionNames.COPYRIGHT_YEAR], holder: answers[questionNames.COPYRIGHT_HOLDER]},
       vcs
     }),
-    ('Travis' === answers[questionNames.CI])
+    ('Travis' === ciService)
       ? scaffoldTravis({projectRoot, projectType, vcs, visibility})
       : Promise.resolve({}),
     isJavaScriptProject() ? scaffoldJavaScriptProject({
@@ -39,7 +41,8 @@ export default async function () {
       vcs,
       visibility,
       license: chosenLicense,
-      ci: answers[questionNames.CI]
+      ci: ciService,
+      description
     }) : undefined
   ]);
 
@@ -47,7 +50,7 @@ export default async function () {
     scaffoldReadme({
       projectName,
       projectRoot,
-      description: answers[questionNames.DESCRIPTION],
+      description,
       license: chosenLicense,
       badges: {
         consumer: {...language && language.badges.consumer, ...license.badge && {license: license.badge}},

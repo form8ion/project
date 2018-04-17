@@ -166,13 +166,14 @@ suite('project scaffolder', () => {
       [prompts.questionNames.REPO_HOST]: repoHost,
       [prompts.questionNames.GIT_REPO]: true,
       [prompts.questionNames.LICENSE]: license,
-      [prompts.questionNames.CI]: ci
+      [prompts.questionNames.CI]: ci,
+      [prompts.questionNames.DESCRIPTION]: description
     });
     const jsConsumerBadges = any.simpleObject();
     const jsContibutionBadges = any.simpleObject();
     const verificationCommand = any.string();
     javascriptScaffolder.scaffold
-      .withArgs({projectName, projectRoot: projectPath, visibility, license, vcs, ci})
+      .withArgs({projectName, projectRoot: projectPath, visibility, license, vcs, ci, description})
       .resolves({
         vcsIgnore: ignore,
         badges: {consumer: jsConsumerBadges, contribution: jsContibutionBadges},
