@@ -45,7 +45,7 @@ suite('travis', () => {
           install: ['npm install', 'gem install travis'],
           before_script: 'npm run greenkeeper:update-lockfile',
           after_script: 'npm run greenkeeper:upload-lockfile',
-          env: {global: ['FORCE_COLOR=1', 'NPM_CONFIG_COLOR=always']}
+          env: {global: ['FORCE_COLOR=1', 'NPM_CONFIG_COLOR=always', 'GK_LOCK_COMMIT_AMEND=true']}
         }
       ));
     });
