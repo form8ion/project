@@ -1,5 +1,5 @@
 repository:
-  description: !<tag:yaml.org,2002:js/undefined> ''
+  description: opinionated scaffolder for new projects
   has_wiki: false
   has_projects: false
   has_downloads: false
