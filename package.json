@@ -2,6 +2,8 @@
   "name": "@travi/project-scaffolder",
   "description": "opinionated scaffolder for new projects",
   "version": "0.0.0-semantically-released",
+  "main": "lib/index.cjs.js",
+  "module": "lib/index.es.js",
   "license": "MIT",
   "repository": "travi/project-scaffolder",
   "bugs": "https://github.com/travi/project-scaffolder/issues",

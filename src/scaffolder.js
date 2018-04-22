@@ -10,7 +10,7 @@ import scaffoldTravis from './ci/travis';
 import exec from '../third-party-wrappers/exec-as-promised';
 import {prompt, questionNames} from './prompts';
 
-export default async function () {
+export async function scaffold() {
   const projectRoot = process.cwd();
   const answers = await prompt(projectRoot);
 

@@ -11,7 +11,7 @@ import * as licenseScaffolder from '../../src/license';
 import * as travisScaffolder from '../../src/ci/travis';
 import * as exec from '../../third-party-wrappers/exec-as-promised';
 import * as prompts from '../../src/prompts';
-import scaffolder from '../../src/scaffolder';
+import {scaffold} from '../../src/scaffolder';
 
 suite('project scaffolder', () => {
   let sandbox;
@@ -76,7 +76,7 @@ suite('project scaffolder', () => {
       .withArgs({projectRoot: projectPath, projectType, vcs, visibility})
       .resolves({badge: travisBadge});
 
-    return scaffolder().then(() => {
+    return scaffold().then(() => {
       assert.calledWith(gitScaffolder.default, {projectRoot: projectPath});
       assert.calledWith(
         readmeScaffolder.default,
@@ -108,7 +108,7 @@ suite('project scaffolder', () => {
     });
     licenseScaffolder.default.resolves({badge: licenseBadge});
 
-    return scaffolder().then(() => {
+    return scaffold().then(() => {
       assert.notCalled(travisScaffolder.default);
       assert.calledWith(
         readmeScaffolder.default,
@@ -133,7 +133,7 @@ suite('project scaffolder', () => {
     });
     readmeScaffolder.default.resolves();
 
-    return scaffolder().then(() => assert.calledWith(
+    return scaffold().then(() => assert.calledWith(
       readmeScaffolder.default,
       {
         projectName,
@@ -151,7 +151,7 @@ suite('project scaffolder', () => {
     });
     readmeScaffolder.default.resolves();
 
-    return scaffolder().then(() => assert.notCalled(gitScaffolder.default));
+    return scaffold().then(() => assert.notCalled(gitScaffolder.default));
   });
 
   test('that the javascript project scaffolder is run for a js project', () => {
@@ -183,7 +183,7 @@ suite('project scaffolder', () => {
       .withArgs({host: repoHost, projectName, projectRoot: projectPath, projectType: javascriptProjectType})
       .resolves(vcs);
 
-    return scaffolder().then(() => {
+    return scaffold().then(() => {
       assert.calledWith(gitScaffolder.default, {projectRoot: projectPath, ignore});
       assert.calledWith(
         readmeScaffolder.default,
@@ -203,6 +203,6 @@ suite('project scaffolder', () => {
     prompts.prompt.resolves({[prompts.questionNames.PROJECT_TYPE]: 'JavaScript'});
     javascriptScaffolder.scaffold.resolves({badges: {}});
 
-    return scaffolder().then(() => assert.notCalled(exec.default));
+    return scaffold().then(() => assert.notCalled(exec.default));
   });
 });
