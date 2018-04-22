@@ -8,6 +8,7 @@
   "homepage": "https://npm.im/@travi/project-scaffolder",
   "author": "Matt Travi <npm@travi.org> (https://matt.travi.org/)",
   "scripts": {
+    "clean": "rimraf lib/",
     "lint:js": "eslint . --cache",
     "lint:travis": "travis lint --no-interactive",
     "test": "run-s lint:* test:*",
@@ -15,7 +16,11 @@
     "test:unit": "nyc run-s test:unit:base",
     "coverage:report": "nyc report --reporter=text-lcov > coverage.lcov && codecov",
     "greenkeeper:update-lockfile": "greenkeeper-lockfile-update",
-    "greenkeeper:upload-lockfile": "greenkeeper-lockfile-upload"
+    "greenkeeper:upload-lockfile": "greenkeeper-lockfile-upload",
+    "build:js": "rollup -c",
+    "build": "run-s clean build:*",
+    "watch": "run-s 'build:js -- --watch'",
+    "prepublishOnly": "run-s build"
   },
   "publishConfig": {
     "access": "public"
@@ -41,6 +46,7 @@
     "mocha": "5.1.1",
     "npm-run-all": "4.1.2",
     "nyc": "11.7.1",
+    "rollup": "0.58.1",
     "sinon": "4.5.0"
   },
   "dependencies": {
