@@ -7,14 +7,22 @@ addons:
     - libstdc++-4.9-dev
 notifications:
   email: false
+branches:
+  except:
+  - "/^v\\d+\\.\\d+\\.\\d+$/"
 install:
-  - npm install
-  - gem install travis
-before_script: 'npm run greenkeeper:update-lockfile'
-after_script: 'npm run greenkeeper:upload-lockfile'
+- npm install
+- gem install travis
+before_script: npm run greenkeeper:update-lockfile
+after_script: npm run greenkeeper:upload-lockfile
 after_success: npm run coverage:report
+deploy:
+  provider: script
+  skip_cleanup: true
+  script: npx semantic-release
 env:
   global:
-    - FORCE_COLOR=1
-    - NPM_CONFIG_COLOR=always
-    - GK_LOCK_COMMIT_AMEND=true
+  - FORCE_COLOR=1
+  - NPM_CONFIG_COLOR=always
+  - GK_LOCK_COMMIT_AMEND=true
+  - secure: UlckUS0Sme9M8HhvCG02jx5j8XcA2aQZv6jr2y83g/aJhfQtXRDKjSp8XL94YvUohUg9eOT0dNN1Gs7L+tteXm3uU6pFhcGTKaNNvK6mPhbgSnCH3eWl6u5HPNL2hOVwMytCFX1UIDz9gNcl9nT2D1eHuUR/Z4mbHUYnT5Iqoed3uvvS+NYoDfPNbX3gAWwKPEYJBaPH23tGiNax4LiqkuV7DH0wB9gKdwDV+MrofrsCVvWhdSqu5Qf4rw0FHP33o4cklNs8kxsYl2BsMuDBBjmUzfdx8rOkr8Ot/vfS7LDJ85XJED8aY9jA2uMBE5LpO3SbQy9BSYGOlCwUUEVTxr71hp36k0ucz3m0mgfBAEbXf6r0fvkv0m6XvDhSPG7sJasYyGzwzYd6seMv70o/9OrTpcmG+hlU18JuC9EgyMZU3cj2CnwAAjta4A1tAUs6Y6KkGYgdEX/WwnxqAQRy+1yAgX066FMfcETGH1OQYbzlX+7dBqnd8WkwXnOflEMatOUyiJa4zMQmQFkSogGd6AESxwWVA6ZMU2NmWa8oqWdV1T+rj4IBNjIn7PUv1yckiSkIgUyF1fOZB7MGcBD68d+fOdOTS5SPWCfFKdQMwY/Uv9UWLwXEgpTmU2Zs++771wOvLYC3S82ThOgqoru4CHvLZnMSgE1kp1SMiG+eu7Q=
