@@ -12,6 +12,7 @@ install:
   - gem install travis
 before_script: 'npm run greenkeeper:update-lockfile'
 after_script: 'npm run greenkeeper:upload-lockfile'
+after_success: npm run coverage:report
 env:
   global:
     - FORCE_COLOR=1
