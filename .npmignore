@@ -1,0 +1,13 @@
+/src/
+/test/
+/coverage/
+/.nyc_output/
+
+.editorconfig
+.eslintcache
+.eslintignore
+.eslintrc.yml
+.markdownlintrc
+.nvmrc
+.travis.yml
+rollup.config.js

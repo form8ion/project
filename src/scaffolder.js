@@ -7,7 +7,7 @@ import scaffoldGit from './vcs/git';
 import scaffoldLicense from './license';
 import scaffoldVcsHost from './vcs/host';
 import scaffoldTravis from './ci/travis';
-import exec from '../../../third-party-wrappers/exec-as-promised';
+import exec from '../third-party-wrappers/exec-as-promised';
 import {prompt, questionNames} from './prompts';
 
 export default async function () {

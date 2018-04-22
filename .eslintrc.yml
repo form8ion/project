@@ -1,0 +1,2 @@
+extends: '@travi/travi/rules/es6'
+

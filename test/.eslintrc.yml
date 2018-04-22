@@ -1,6 +1,1 @@
 extends: '@travi/travi/rules/tests/base'
-
-rules:
-  import/no-extraneous-dependencies:
-    - error
-    - devDependencies: true

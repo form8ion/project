@@ -1,0 +1,57 @@
+{
+  "name": "@travi/project-scaffolder",
+  "description": "opinionated scaffolder for new projects",
+  "version": "0.0.0-semantically-released",
+  "license": "MIT",
+  "repository": "travi/project-scaffolder",
+  "bugs": "https://github.com/travi/project-scaffolder/issues",
+  "homepage": "https://npm.im/@travi/project-scaffolder",
+  "author": "Matt Travi <npm@travi.org> (https://matt.travi.org/)",
+  "scripts": {
+    "lint:js": "eslint . --cache",
+    "lint:travis": "travis lint --no-interactive",
+    "test": "run-s lint:* test:*",
+    "test:unit:base": "mocha --recursive test/unit",
+    "test:unit": "nyc run-s test:unit:base",
+    "coverage:report": "nyc report --reporter=text-lcov > coverage.lcov && codecov",
+    "greenkeeper:update-lockfile": "greenkeeper-lockfile-update",
+    "greenkeeper:upload-lockfile": "greenkeeper-lockfile-upload"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  },
+  "devDependencies": {
+    "@travi/any": "1.7.2",
+    "@travi/eslint-config-travi": "1.6.13",
+    "babel-plugin-transform-object-rest-spread": "6.26.0",
+    "babel-preset-env": "1.6.1",
+    "babel-register": "6.26.0",
+    "chai": "4.1.2",
+    "chai-as-promised": "7.1.1",
+    "codecov": "3.0.0",
+    "commitlint-config-travi": "1.2.29",
+    "cz-conventional-changelog": "2.1.0",
+    "greenkeeper-lockfile": "1.14.0",
+    "husky": "1.0.0-rc.2",
+    "mocha": "5.1.1",
+    "npm-run-all": "4.1.2",
+    "nyc": "11.7.1",
+    "sinon": "4.5.0"
+  },
+  "dependencies": {
+    "@travi/javascript-scaffolder": "1.5.0",
+    "chalk": "2.4.0",
+    "inquirer": "5.2.0",
+    "mustache": "2.3.0",
+    "mz": "2.7.0",
+    "nodegit": "0.22.0",
+    "shelljs": "0.8.1",
+    "spdx-license-list": "4.0.0",
+    "write-yaml": "1.0.0"
+  }
+}

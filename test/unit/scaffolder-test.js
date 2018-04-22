@@ -9,7 +9,7 @@ import * as gitScaffolder from '../../src/vcs/git';
 import * as vcsHostScaffolder from '../../src/vcs/host';
 import * as licenseScaffolder from '../../src/license';
 import * as travisScaffolder from '../../src/ci/travis';
-import * as exec from '../../../../third-party-wrappers/exec-as-promised';
+import * as exec from '../../third-party-wrappers/exec-as-promised';
 import * as prompts from '../../src/prompts';
 import scaffolder from '../../src/scaffolder';
 

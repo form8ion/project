@@ -1,4 +1,4 @@
-import writeYaml from '../../../../third-party-wrappers/write-yaml';
+import writeYaml from '../../third-party-wrappers/write-yaml';
 
 export default async function ({projectRoot, projectType, vcs, visibility}) {
   if ('JavaScript' !== projectType) return Promise.resolve({});

@@ -2,7 +2,7 @@ import shell from 'shelljs';
 import sinon from 'sinon';
 import {assert} from 'chai';
 import any from '@travi/any';
-import exec from '../../../../../third-party-wrappers/exec-as-promised';
+import exec from '../../../third-party-wrappers/exec-as-promised';
 
 suite('promisified shell.exec()', () => {
   let sandbox;
