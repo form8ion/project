@@ -23,3 +23,7 @@ labels:
     color: ffffff
   - name: greenkeeper
     color: 00c775
+collaborators:
+  - username: travi-bot
+    permission: push
+
