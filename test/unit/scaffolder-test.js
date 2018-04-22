@@ -70,7 +70,7 @@ suite('project scaffolder', () => {
       .withArgs({projectRoot: projectPath, license, copyright, vcs})
       .resolves({badge: licenseBadge});
     vcsHostScaffolder.default
-      .withArgs({host: repoHost, projectName, projectRoot: projectPath, projectType})
+      .withArgs({host: repoHost, projectName, projectRoot: projectPath, projectType, description})
       .resolves(vcs);
     travisScaffolder.default
       .withArgs({projectRoot: projectPath, projectType, vcs, visibility})
@@ -180,7 +180,13 @@ suite('project scaffolder', () => {
         verificationCommand
       });
     vcsHostScaffolder.default
-      .withArgs({host: repoHost, projectName, projectRoot: projectPath, projectType: javascriptProjectType})
+      .withArgs({
+        host: repoHost,
+        projectName,
+        projectRoot: projectPath,
+        projectType: javascriptProjectType,
+        description
+      })
       .resolves(vcs);
 
     return scaffold().then(() => {

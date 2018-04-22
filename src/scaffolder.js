@@ -24,7 +24,13 @@ export async function scaffold() {
   const visibility = answers[questionNames.VISIBILITY];
   const description = answers[questionNames.DESCRIPTION];
   const ciService = answers[questionNames.CI];
-  const vcs = await scaffoldVcsHost({host: answers[questionNames.REPO_HOST], projectName, projectRoot, projectType});
+  const vcs = await scaffoldVcsHost({
+    host: answers[questionNames.REPO_HOST],
+    projectName,
+    projectRoot,
+    projectType,
+    description
+  });
   const [license, ci, language] = await Promise.all([
     scaffoldLicense({
       projectRoot,
