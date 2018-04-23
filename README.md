@@ -1,5 +1,7 @@
 # project-scaffolder
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/travi/project-scaffolder.svg)](https://greenkeeper.io/)
+
 opinionated scaffolder for new projects
 
 <!-- consumer badges -->
