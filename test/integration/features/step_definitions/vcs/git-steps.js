@@ -2,9 +2,10 @@ import {exists, readFile} from 'mz/fs';
 import {Given, Then} from 'cucumber';
 import bddStdIn from 'bdd-stdin';
 import {assert} from 'chai';
+import {questionNames} from '../../../../../src/prompts';
 
 Given('the project should be versioned in git', async function () {
-  const defaultAnswerAboutInitializingGitRepo = '\n';
+  this.setAnswerFor(questionNames.GIT_REPO, '\n');
 
   bddStdIn(
     'project-name',
@@ -12,13 +13,13 @@ Given('the project should be versioned in git', async function () {
     bddStdIn.keys.down, '\n', '\n',
     'y', '\n',
     'y', '\n',
-    defaultAnswerAboutInitializingGitRepo, '\n',
+    this.getAnswerFor(questionNames.GIT_REPO), '\n',
     bddStdIn.keys.down, '\n', '\n'
   );
 });
 
 Given('the project should not be versioned in git', async function () {
-  const doNotInitGitRepo = 'n';
+  this.setAnswerFor(questionNames.GIT_REPO, 'n');
 
   bddStdIn(
     'project-name',
@@ -26,7 +27,7 @@ Given('the project should not be versioned in git', async function () {
     bddStdIn.keys.down, '\n', '\n',
     'y', '\n',
     'y', '\n',
-    doNotInitGitRepo, '\n',
+    this.getAnswerFor(questionNames.GIT_REPO), '\n',
     bddStdIn.keys.down, '\n', '\n'
   );
 });

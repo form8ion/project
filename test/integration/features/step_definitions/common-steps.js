@@ -1,8 +1,11 @@
 import {readFile} from 'mz/fs';
 import {resolve} from 'path';
-import {Before, After, When} from 'cucumber';
+import {Before, After, When, setWorldConstructor} from 'cucumber';
 import stubbedFs from 'mock-fs';
+import {World} from '../support/world';
 import {scaffold} from '../../../../src/index';
+
+setWorldConstructor(World);
 
 Before(async () => {
   const projectTemplatePath = '../../../../templates';
