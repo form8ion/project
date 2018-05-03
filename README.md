@@ -15,6 +15,7 @@ opinionated scaffolder for new projects
 * [Contributing](#contributing)
   * [Dependencies](#dependencies)
   * [Verification](#verification)
+* [Related Projects](#related-projects)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
