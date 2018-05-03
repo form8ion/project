@@ -51,6 +51,11 @@ $ npm install
 $ npm test
 ```
 
+## Related Projects
+
+* [javascript-scaffolder](https://npm.im/@travi/javascript-scaffolder)
+* [cli](https://npm.im/@travi/cli)
+
 [npm-link]: https://www.npmjs.com/package/@travi/project-scaffolder
 [npm-badge]: https://img.shields.io/npm/v/@travi/project-scaffolder.svg
 [license-link]: LICENSE
