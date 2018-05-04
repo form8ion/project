@@ -35,7 +35,7 @@ suite('scaffold readme', () => {
   const description = any.word();
 
   setup(() => {
-    sandbox = sinon.sandbox.create();
+    sandbox = sinon.createSandbox();
 
     sandbox.stub(fs, 'writeFile');
 

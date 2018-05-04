@@ -17,7 +17,7 @@ suite('project scaffolder prompts', () => {
   const projectPath = any.string();
 
   setup(() => {
-    sandbox = sinon.sandbox.create();
+    sandbox = sinon.createSandbox();
 
     sandbox.stub(path, 'basename');
     sandbox.stub(inquirer, 'prompt');

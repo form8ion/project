@@ -9,7 +9,7 @@ suite('vcs host scaffolder', () => {
   const projectName = any.string();
 
   setup(() => {
-    sandbox = sinon.sandbox.create();
+    sandbox = sinon.createSandbox();
 
     sandbox.stub(githubScaffolder, 'default');
   });

@@ -9,7 +9,7 @@ suite('scaffold git', () => {
   let sandbox;
 
   setup(() => {
-    sandbox = sinon.sandbox.create();
+    sandbox = sinon.createSandbox();
 
     sandbox.stub(fs, 'writeFile');
     sandbox.stub(gitRepository, 'init');

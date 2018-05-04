@@ -15,7 +15,7 @@ suite('license', () => {
   const projectRoot = any.string();
 
   setup(() => {
-    sandbox = sinon.sandbox.create();
+    sandbox = sinon.createSandbox();
 
     sandbox.stub(fs, 'writeFile');
 

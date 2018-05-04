@@ -11,7 +11,7 @@ suite('promisified shell.exec()', () => {
   const stderr = any.string();
 
   setup(() => {
-    sandbox = sinon.sandbox.create();
+    sandbox = sinon.createSandbox();
 
     sandbox.stub(shell, 'exec');
   });

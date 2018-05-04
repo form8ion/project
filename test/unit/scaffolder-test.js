@@ -25,7 +25,7 @@ suite('project scaffolder', () => {
   const licenseBadge = any.url();
 
   setup(() => {
-    sandbox = sinon.sandbox.create();
+    sandbox = sinon.createSandbox();
 
     sandbox.stub(process, 'cwd');
     sandbox.stub(prompts, 'prompt');
