@@ -173,7 +173,16 @@ suite('project scaffolder', () => {
     const jsContibutionBadges = any.simpleObject();
     const verificationCommand = any.string();
     javascriptScaffolder.scaffold
-      .withArgs({projectName, projectRoot: projectPath, visibility, license, vcs, ci, description})
+      .withArgs({
+        projectName,
+        projectRoot: projectPath,
+        visibility,
+        license,
+        vcs,
+        ci,
+        description,
+        eslintConfigPrefix: '@travi/travi'
+      })
       .resolves({
         vcsIgnore: ignore,
         badges: {consumer: jsConsumerBadges, contribution: jsContibutionBadges},
