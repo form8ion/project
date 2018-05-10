@@ -64,7 +64,7 @@ const vcsQuestions = [
 ];
 
 
-export function prompt(projectRoot) {
+export function prompt(projectRoot, languages) {
   return promptWithInquirer([
     {name: questionNames.PROJECT_NAME, message: 'What is the name of this project?', default: basename(projectRoot)},
     {name: questionNames.DESCRIPTION, message: 'How should this project be described?'},
@@ -81,7 +81,7 @@ export function prompt(projectRoot) {
       name: questionNames.PROJECT_TYPE,
       type: 'list',
       message: 'What type of project is this?',
-      choices: ['JavaScript', 'Other']
+      choices: [...Object.keys(languages), 'Other']
     },
     {
       name: questionNames.CI,

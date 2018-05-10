@@ -1,7 +1,7 @@
 import {resolve} from 'path';
 import {copyFile} from 'mz/fs';
 import chalk from 'chalk';
-import {scaffold as scaffoldJavaScriptProject} from '@travi/javascript-scaffolder';
+import {scaffold as scaffoldLanguage} from './language-scaffolder';
 import scaffoldReadme from './readme';
 import scaffoldGit from './vcs/git';
 import scaffoldLicense from './license';
@@ -10,15 +10,11 @@ import scaffoldTravis from './ci/travis';
 import exec from '../third-party-wrappers/exec-as-promised';
 import {prompt, questionNames} from './prompts';
 
-export async function scaffold() {
+export async function scaffold({languages}) {
   const projectRoot = process.cwd();
-  const answers = await prompt(projectRoot);
+  const answers = await prompt(projectRoot, languages);
 
   const projectType = answers[questionNames.PROJECT_TYPE];
-  function isJavaScriptProject() {
-    return 'JavaScript' === projectType;
-  }
-
   const projectName = answers[questionNames.PROJECT_NAME];
   const chosenLicense = answers[questionNames.LICENSE];
   const visibility = answers[questionNames.VISIBILITY];
@@ -41,7 +37,7 @@ export async function scaffold() {
     ('Travis' === ciService)
       ? scaffoldTravis({projectRoot, projectType, vcs, visibility})
       : Promise.resolve({}),
-    isJavaScriptProject() ? scaffoldJavaScriptProject({
+    scaffoldLanguage(languages, projectType, {
       projectRoot,
       projectName,
       vcs,
@@ -50,7 +46,7 @@ export async function scaffold() {
       ci: ciService,
       description,
       eslintConfigPrefix: '@travi/travi'
-    }) : undefined
+    })
   ]);
 
   await Promise.all([
