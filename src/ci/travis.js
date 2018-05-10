@@ -16,7 +16,7 @@ export default async function ({projectRoot, projectType, vcs, visibility}) {
     ...'Public' === visibility && {
       badge: {
         img: `https://img.shields.io/travis/${vcs.owner}/${vcs.name}.svg?branch=master`,
-        link: `https://travis-ci.org/${vcs.owner}/${vcs.name}`,
+        link: `https://travis-ci.com/${vcs.owner}/${vcs.name}`,
         text: 'Build Status'
       }
     }
