@@ -123,6 +123,38 @@ suite('project scaffolder', () => {
     });
   });
 
+  test('that the PRs-welcome badge is included for public projects', () => {
+    prompts.prompt.resolves({
+      [prompts.questionNames.PROJECT_NAME]: projectName,
+      [prompts.questionNames.LICENSE]: license,
+      [prompts.questionNames.DESCRIPTION]: description,
+      [prompts.questionNames.VISIBILITY]: 'Public'
+    });
+
+    return scaffold({}).then(() => {
+      assert.calledWith(
+        readmeScaffolder.default,
+        {
+          projectName,
+          projectRoot: projectPath,
+          description,
+          license,
+          badges: {
+            consumer: {},
+            status: {},
+            contribution: {
+              PRs: {
+                text: 'PRs Welcome',
+                link: 'http://makeapullrequest.com',
+                img: 'https://img.shields.io/badge/PRs-welcome-brightgreen.svg'
+              }
+            }
+          }
+        }
+      );
+    });
+  });
+
   test('that the badge lists passed to the readme are empty if none are defined', () => {
     licenseScaffolder.default.resolves({});
     prompts.prompt.resolves({

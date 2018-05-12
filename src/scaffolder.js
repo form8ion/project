@@ -58,7 +58,16 @@ export async function scaffold({languages}) {
       badges: {
         consumer: {...language && language.badges.consumer, ...license.badge && {license: license.badge}},
         status: {...ci.badge && {ci: ci.badge}},
-        contribution: {...language && language.badges.contribution}
+        contribution: {
+          ...language && language.badges.contribution,
+          ...'Public' === visibility && {
+            PRs: {
+              text: 'PRs Welcome',
+              link: 'http://makeapullrequest.com',
+              img: 'https://img.shields.io/badge/PRs-welcome-brightgreen.svg'
+            }
+          }
+        }
       }
     }),
     answers[questionNames.GIT_REPO]
