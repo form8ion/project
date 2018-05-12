@@ -44,8 +44,7 @@ export async function scaffold({languages}) {
       visibility,
       license: chosenLicense,
       ci: ciService,
-      description,
-      eslintConfigPrefix: '@travi/travi'
+      description
     })
   ]);
 

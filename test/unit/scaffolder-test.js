@@ -215,8 +215,7 @@ suite('project scaffolder', () => {
           license,
           vcs,
           ci,
-          description,
-          eslintConfigPrefix: '@travi/travi'
+          description
         }
       )
       .resolves({
