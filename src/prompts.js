@@ -1,3 +1,4 @@
+import gitConfig from 'git-config';
 import {basename} from 'path';
 import {prompt as promptWithInquirer} from 'inquirer';
 import spdxLicenseList from 'spdx-license-list/simple';
@@ -14,6 +15,7 @@ export const questionNames = {
   VISIBILITY: 'visibility',
   GIT_REPO: 'gitRepo',
   REPO_HOST: 'repoHost',
+  REPO_OWNER: 'repoOwner',
   UNLICENSED: 'unlicensed',
   LICENSE: 'license',
   COPYRIGHT_HOLDER: 'copyrightHolder',
@@ -52,16 +54,23 @@ const licenseQuestions = [
   }
 ];
 
-const vcsQuestions = [
-  {name: questionNames.GIT_REPO, type: 'confirm', default: true, message: 'Should a git repository be initialized?'},
-  {
-    name: questionNames.REPO_HOST,
-    type: 'list',
-    when: vcsHostPromptShouldBePresented,
-    message: 'Where will the repository be hosted?',
-    choices: ['GitHub', 'BitBucket', 'GitLab', 'KeyBase']
-  }
-];
+function includeVcsQuestions() {
+  return [
+    {name: questionNames.GIT_REPO, type: 'confirm', default: true, message: 'Should a git repository be initialized?'},
+    {
+      name: questionNames.REPO_HOST,
+      type: 'list',
+      when: vcsHostPromptShouldBePresented,
+      message: 'Where will the repository be hosted?',
+      choices: ['GitHub', 'BitBucket', 'GitLab', 'KeyBase']
+    },
+    {
+      name: questionNames.REPO_OWNER,
+      message: 'What is the id of the repository owner?',
+      default: gitConfig.sync().github ? gitConfig.sync().github.user : ''
+    }
+  ];
+}
 
 
 export function prompt(projectRoot, languages) {
@@ -76,7 +85,7 @@ export function prompt(projectRoot, languages) {
       default: 'Private'
     },
     ...licenseQuestions,
-    ...vcsQuestions,
+    ...includeVcsQuestions(),
     {
       name: questionNames.PROJECT_TYPE,
       type: 'list',

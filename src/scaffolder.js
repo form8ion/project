@@ -22,6 +22,7 @@ export async function scaffold({languages}) {
   const ciService = answers[questionNames.CI];
   const vcs = await scaffoldVcsHost({
     host: answers[questionNames.REPO_HOST],
+    owner: answers[questionNames.REPO_OWNER],
     projectName,
     projectRoot,
     projectType,

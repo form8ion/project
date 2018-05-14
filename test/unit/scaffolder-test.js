@@ -19,6 +19,7 @@ suite('project scaffolder', () => {
   const projectName = any.string();
   const vcs = any.simpleObject();
   const repoHost = any.word();
+  const repoOwner = any.word();
   const description = any.string();
   const license = any.string();
   const projectType = any.word();
@@ -58,6 +59,7 @@ suite('project scaffolder', () => {
       [prompts.questionNames.PROJECT_TYPE]: projectType,
       [prompts.questionNames.GIT_REPO]: true,
       [prompts.questionNames.REPO_HOST]: repoHost,
+      [prompts.questionNames.REPO_OWNER]: repoOwner,
       [prompts.questionNames.LICENSE]: license,
       [prompts.questionNames.DESCRIPTION]: description,
       [prompts.questionNames.COPYRIGHT_HOLDER]: holder,
@@ -71,7 +73,7 @@ suite('project scaffolder', () => {
       .withArgs({projectRoot: projectPath, license, copyright, vcs})
       .resolves({badge: licenseBadge});
     vcsHostScaffolder.default
-      .withArgs({host: repoHost, projectName, projectRoot: projectPath, projectType, description})
+      .withArgs({host: repoHost, owner: repoOwner, projectName, projectRoot: projectPath, projectType, description})
       .resolves(vcs);
     travisScaffolder.default
       .withArgs({projectRoot: projectPath, projectType, vcs, visibility})
@@ -195,8 +197,9 @@ suite('project scaffolder', () => {
       [prompts.questionNames.PROJECT_NAME]: projectName,
       [prompts.questionNames.PROJECT_TYPE]: javascriptProjectType,
       [prompts.questionNames.VISIBILITY]: visibility,
-      [prompts.questionNames.REPO_HOST]: repoHost,
       [prompts.questionNames.GIT_REPO]: true,
+      [prompts.questionNames.REPO_HOST]: repoHost,
+      [prompts.questionNames.REPO_OWNER]: repoOwner,
       [prompts.questionNames.LICENSE]: license,
       [prompts.questionNames.CI]: ci,
       [prompts.questionNames.DESCRIPTION]: description
@@ -226,6 +229,7 @@ suite('project scaffolder', () => {
     vcsHostScaffolder.default
       .withArgs({
         host: repoHost,
+        owner: repoOwner,
         projectName,
         projectRoot: projectPath,
         projectType: javascriptProjectType,
