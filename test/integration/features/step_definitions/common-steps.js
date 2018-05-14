@@ -26,5 +26,5 @@ Before(async () => {
 After(() => stubbedFs.restore());
 
 When('the project is scaffolded', async function () {
-  await scaffold({languages: {}});
+  await scaffold({languages: {}, overrides: {}});
 });

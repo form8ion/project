@@ -54,7 +54,7 @@ const licenseQuestions = [
   }
 ];
 
-function includeVcsQuestions() {
+function includeVcsQuestions(githubAccount) {
   return [
     {name: questionNames.GIT_REPO, type: 'confirm', default: true, message: 'Should a git repository be initialized?'},
     {
@@ -67,13 +67,13 @@ function includeVcsQuestions() {
     {
       name: questionNames.REPO_OWNER,
       message: 'What is the id of the repository owner?',
-      default: gitConfig.sync().github ? gitConfig.sync().github.user : ''
+      default: githubAccount || (gitConfig.sync().github ? gitConfig.sync().github.user : '')
     }
   ];
 }
 
 
-export function prompt(projectRoot, languages) {
+export function prompt(projectRoot, languages, overrides) {
   return promptWithInquirer([
     {name: questionNames.PROJECT_NAME, message: 'What is the name of this project?', default: basename(projectRoot)},
     {name: questionNames.DESCRIPTION, message: 'How should this project be described?'},
@@ -85,7 +85,7 @@ export function prompt(projectRoot, languages) {
       default: 'Private'
     },
     ...licenseQuestions,
-    ...includeVcsQuestions(),
+    ...includeVcsQuestions(overrides.githubAccount),
     {
       name: questionNames.PROJECT_TYPE,
       type: 'list',

@@ -35,7 +35,7 @@ suite('project scaffolder prompts', () => {
     inquirer.prompt.resolves({});
     gitConfig.sync.returns({});
 
-    return prompt(projectPath, languages).then(() => assert.calledWith(
+    return prompt(projectPath, languages, {}).then(() => assert.calledWith(
       inquirer.prompt,
       [
         {name: questionNames.PROJECT_NAME, message: 'What is the name of this project?', default: directoryName},
@@ -115,9 +115,20 @@ suite('project scaffolder prompts', () => {
     gitConfig.sync.returns({github: {user: githubUser}});
     inquirer.prompt.resolves({});
 
-    return prompt(projectPath, {}).then(() => assert.calledWith(
+    return prompt(projectPath, {}, {}).then(() => assert.calledWith(
       inquirer.prompt,
-      sinon.match(value => value.filter(question => githubUser === question.default))
+      sinon.match(value => 1 === value.filter(question => githubUser === question.default).length)
+    ));
+  });
+
+  test('that the github user is not used as the default owner value an override is provided', () => {
+    const githubAccount = any.word();
+    gitConfig.sync.returns({github: {user: githubUser}});
+    inquirer.prompt.resolves({});
+
+    return prompt(projectPath, {}, {githubAccount}).then(() => assert.calledWith(
+      inquirer.prompt,
+      sinon.match(value => 1 === value.filter(question => githubAccount === question.default).length)
     ));
   });
 });

@@ -10,9 +10,9 @@ import scaffoldTravis from './ci/travis';
 import exec from '../third-party-wrappers/exec-as-promised';
 import {prompt, questionNames} from './prompts';
 
-export async function scaffold({languages}) {
+export async function scaffold({languages, overrides}) {
   const projectRoot = process.cwd();
-  const answers = await prompt(projectRoot, languages);
+  const answers = await prompt(projectRoot, languages, overrides);
 
   const projectType = answers[questionNames.PROJECT_TYPE];
   const projectName = answers[questionNames.PROJECT_NAME];

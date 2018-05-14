@@ -54,7 +54,8 @@ suite('project scaffolder', () => {
     const holder = any.sentence();
     const copyright = {year, holder};
     const visibility = any.word();
-    prompts.prompt.withArgs(projectPath, scaffolders).resolves({
+    const overrides = any.simpleObject();
+    prompts.prompt.withArgs(projectPath, scaffolders, overrides).resolves({
       [prompts.questionNames.PROJECT_NAME]: projectName,
       [prompts.questionNames.PROJECT_TYPE]: projectType,
       [prompts.questionNames.GIT_REPO]: true,
@@ -79,7 +80,7 @@ suite('project scaffolder', () => {
       .withArgs({projectRoot: projectPath, projectType, vcs, visibility})
       .resolves({badge: travisBadge});
 
-    return scaffold({languages: scaffolders}).then(() => {
+    return scaffold({languages: scaffolders, overrides}).then(() => {
       assert.calledWith(gitScaffolder.default, {projectRoot: projectPath});
       assert.calledWith(
         readmeScaffolder.default,
