@@ -31,11 +31,12 @@ suite('project scaffolder prompts', () => {
   test('that the user is prompted for the necessary details', () => {
     const directoryName = any.string();
     const languages = any.simpleObject();
+    const copyrightHolder = any.string();
     path.basename.withArgs(projectPath).returns(directoryName);
     inquirer.prompt.resolves({});
     gitConfig.sync.returns({});
 
-    return prompt(projectPath, languages, {}).then(() => assert.calledWith(
+    return prompt(projectPath, languages, {copyrightHolder}).then(() => assert.calledWith(
       inquirer.prompt,
       [
         {name: questionNames.PROJECT_NAME, message: 'What is the name of this project?', default: directoryName},
@@ -69,7 +70,7 @@ suite('project scaffolder prompts', () => {
           name: questionNames.COPYRIGHT_HOLDER,
           message: 'Who is the copyright holder of this project?',
           when: copyrightInformationShouldBeRequested,
-          default: 'Matt Travi'
+          default: copyrightHolder
         },
         {
           name: questionNames.COPYRIGHT_YEAR,
