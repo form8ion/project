@@ -34,7 +34,7 @@ const licenseQuestions = [
   },
   {
     name: questionNames.LICENSE,
-    message: 'How should this this project be licensed?',
+    message: 'How should this this project be licensed (https://choosealicense.com/)?',
     type: 'list',
     when: licenseChoicesShouldBePresented,
     choices: Array.from(spdxLicenseList),
