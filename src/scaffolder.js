@@ -10,7 +10,7 @@ import scaffoldTravis from './ci/travis';
 import exec from '../third-party-wrappers/exec-as-promised';
 import {prompt, questionNames} from './prompts';
 
-export async function scaffold({languages, overrides}) {
+export async function scaffold({languages = {}, overrides = {}} = {}) {
   const projectRoot = process.cwd();
   const answers = await prompt(projectRoot, languages, overrides);
 
@@ -43,7 +43,7 @@ export async function scaffold({languages, overrides}) {
       projectName,
       vcs,
       visibility,
-      license: chosenLicense,
+      license: chosenLicense || 'UNLICENSED',
       ci: ciService,
       description
     })
@@ -54,7 +54,6 @@ export async function scaffold({languages, overrides}) {
       projectName,
       projectRoot,
       description,
-      license: chosenLicense,
       badges: {
         consumer: {...language && language.badges.consumer, ...license.badge && {license: license.badge}},
         status: {...ci.badge && {ci: ci.badge}},

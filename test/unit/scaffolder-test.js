@@ -88,7 +88,6 @@ suite('project scaffolder', () => {
           projectName,
           projectRoot: projectPath,
           description,
-          license,
           badges: {consumer: {license: licenseBadge}, status: {ci: travisBadge}, contribution: {}}
         }
       );
@@ -98,6 +97,18 @@ suite('project scaffolder', () => {
         `${projectPath}/.editorconfig`
       );
     });
+  });
+
+  test('that the options are optional', () => {
+    prompts.prompt.withArgs(projectPath, {}, {}).resolves({});
+
+    return scaffold();
+  });
+
+  test('that each option is optional', () => {
+    prompts.prompt.withArgs(projectPath, {}, {}).resolves({});
+
+    return scaffold({});
   });
 
   test('that the travis scaffolder is not run if travis was not chosen as the ci service', () => {
@@ -119,7 +130,6 @@ suite('project scaffolder', () => {
           projectName,
           projectRoot: projectPath,
           description,
-          license,
           badges: {consumer: {license: licenseBadge}, status: {}, contribution: {}}
         }
       );
@@ -141,7 +151,6 @@ suite('project scaffolder', () => {
           projectName,
           projectRoot: projectPath,
           description,
-          license,
           badges: {
             consumer: {},
             status: {},
@@ -174,7 +183,6 @@ suite('project scaffolder', () => {
         projectName,
         projectRoot: projectPath,
         description,
-        license,
         badges: {consumer: {}, status: {}, contribution: {}}
       }
     ));
@@ -252,6 +260,17 @@ suite('project scaffolder', () => {
       );
       assert.calledWith(exec.default, verificationCommand, {silent: false});
     });
+  });
+
+  test('that the license is passed to the language scaffolder as `UNLICENSED` when no license was chosen', () => {
+    prompts.prompt.resolves({[prompts.questionNames.PROJECT_TYPE]: projectType});
+
+    return scaffold().then(() => assert.calledWithMatch(
+      languageScaffolder.scaffold,
+      {},
+      projectType,
+      {license: 'UNLICENSED'}
+    ));
   });
 
   test('that running a verification command is not attempted when not provided', () => {
