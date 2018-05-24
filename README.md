@@ -12,6 +12,12 @@ opinionated scaffolder for new projects
 
 * [Usage](#usage)
   * [Installation](#installation)
+  * [Consumption in a CLI tool](#consumption-in-a-cli-tool)
+    * [Options](#options)
+      * [`languages` (_optional_)](#languages-_optional_)
+      * [`overrides` (_optional_)](#overrides-_optional_)
+        * [`copyrightHolder`](#copyrightholder)
+        * [`githubAccount`](#githubaccount)
 * [Contributing](#contributing)
   * [Dependencies](#dependencies)
   * [Verification](#verification)
@@ -78,7 +84,7 @@ __object__:
       * `host`: __string__ host name. defaults to `GitHub`
       * `name`: __string__ repository name. equal to `projectName`
       * `owner`: __string__ account name on the host service for the repository
-        owner. defaults to `$ git config github.user` or the [overridden value](#githubAccount)
+        owner. defaults to `$ git config github.user` or the [overridden value](#githubaccount)
     * `visibility`: __string__ `Public` or `Private`. defaults to `Private`
     * `license`: __string__ identifier of the chosen [SPDX License](https://spdx.org/licenses/)
       or `UNLICENSED` 
