@@ -7,6 +7,7 @@ import scaffoldVcsHost from '../../../src/vcs/host';
 suite('vcs host scaffolder', () => {
   let sandbox;
   const projectName = any.string();
+  const githubOwner = any.word();
 
   setup(() => {
     sandbox = sinon.createSandbox();
@@ -19,9 +20,10 @@ suite('vcs host scaffolder', () => {
   test('that hosting details are returned', () => {
     const host = any.string();
 
-    return assert.becomes(scaffoldVcsHost({host, projectName}), {host, owner: 'travi', name: projectName}).then(() => {
-      assert.notCalled(githubScaffolder.default);
-    });
+    return assert.becomes(
+      scaffoldVcsHost({host, owner: githubOwner, projectName}),
+      {host, owner: githubOwner, name: projectName}
+    ).then(() => assert.notCalled(githubScaffolder.default));
   });
 
   test('that github is scaffolded if github was chosen as the host', () => {
@@ -32,8 +34,8 @@ suite('vcs host scaffolder', () => {
     githubScaffolder.default.resolves();
 
     return assert.becomes(
-      scaffoldVcsHost({host, projectName, projectRoot, projectType, description}),
-      {host, owner: 'travi', name: projectName}
+      scaffoldVcsHost({host, owner: githubOwner, projectName, projectRoot, projectType, description}),
+      {host, owner: githubOwner, name: projectName}
     ).then(() => assert.calledWith(githubScaffolder.default, {projectRoot, projectType, description}));
   });
 });

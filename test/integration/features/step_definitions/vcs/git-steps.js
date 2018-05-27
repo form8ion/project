@@ -14,7 +14,8 @@ Given('the project should be versioned in git', async function () {
     'y', '\n',
     'y', '\n',
     this.getAnswerFor(questionNames.GIT_REPO), '\n',
-    bddStdIn.keys.down, '\n', '\n'
+    bddStdIn.keys.down, '\n', '\n',
+    '\n'
   );
 });
 
@@ -28,7 +29,8 @@ Given('the project should not be versioned in git', async function () {
     'y', '\n',
     'y', '\n',
     this.getAnswerFor(questionNames.GIT_REPO), '\n',
-    bddStdIn.keys.down, '\n', '\n'
+    bddStdIn.keys.down, '\n', '\n',
+    '\n'
   );
 });
 

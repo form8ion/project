@@ -1,3 +1,4 @@
+import gitConfig from 'git-config';
 import path from 'path';
 import inquirer from 'inquirer';
 import spdxLicenseList from 'spdx-license-list/simple';
@@ -15,12 +16,14 @@ import {prompt, questionNames} from '../../src/prompts';
 suite('project scaffolder prompts', () => {
   let sandbox;
   const projectPath = any.string();
+  const githubUser = any.word();
 
   setup(() => {
     sandbox = sinon.createSandbox();
 
     sandbox.stub(path, 'basename');
     sandbox.stub(inquirer, 'prompt');
+    sandbox.stub(gitConfig, 'sync');
   });
 
   teardown(() => sandbox.restore());
@@ -28,10 +31,12 @@ suite('project scaffolder prompts', () => {
   test('that the user is prompted for the necessary details', () => {
     const directoryName = any.string();
     const languages = any.simpleObject();
+    const copyrightHolder = any.string();
     path.basename.withArgs(projectPath).returns(directoryName);
     inquirer.prompt.resolves({});
+    gitConfig.sync.returns({});
 
-    return prompt(projectPath, languages).then(() => assert.calledWith(
+    return prompt(projectPath, languages, {copyrightHolder}).then(() => assert.calledWith(
       inquirer.prompt,
       [
         {name: questionNames.PROJECT_NAME, message: 'What is the name of this project?', default: directoryName},
@@ -55,7 +60,7 @@ suite('project scaffolder prompts', () => {
         },
         {
           name: questionNames.LICENSE,
-          message: 'How should this this project be licensed?',
+          message: 'How should this this project be licensed (https://choosealicense.com/)?',
           type: 'list',
           when: licenseChoicesShouldBePresented,
           choices: Array.from(spdxLicenseList),
@@ -65,7 +70,7 @@ suite('project scaffolder prompts', () => {
           name: questionNames.COPYRIGHT_HOLDER,
           message: 'Who is the copyright holder of this project?',
           when: copyrightInformationShouldBeRequested,
-          default: 'Matt Travi'
+          default: copyrightHolder
         },
         {
           name: questionNames.COPYRIGHT_YEAR,
@@ -87,6 +92,11 @@ suite('project scaffolder prompts', () => {
           choices: ['GitHub', 'BitBucket', 'GitLab', 'KeyBase']
         },
         {
+          name: questionNames.REPO_OWNER,
+          message: 'What is the id of the repository owner?',
+          default: ''
+        },
+        {
           name: questionNames.PROJECT_TYPE,
           type: 'list',
           message: 'What type of project is this?',
@@ -99,6 +109,27 @@ suite('project scaffolder prompts', () => {
           choices: ['Travis', 'GitLab CI']
         }
       ]
+    ));
+  });
+
+  test('that the github user is provided as the default owner value if available in the global config', () => {
+    gitConfig.sync.returns({github: {user: githubUser}});
+    inquirer.prompt.resolves({});
+
+    return prompt(projectPath, {}, {}).then(() => assert.calledWith(
+      inquirer.prompt,
+      sinon.match(value => 1 === value.filter(question => githubUser === question.default).length)
+    ));
+  });
+
+  test('that the github user is not used as the default owner value an override is provided', () => {
+    const githubAccount = any.word();
+    gitConfig.sync.returns({github: {user: githubUser}});
+    inquirer.prompt.resolves({});
+
+    return prompt(projectPath, {}, {githubAccount}).then(() => assert.calledWith(
+      inquirer.prompt,
+      sinon.match(value => 1 === value.filter(question => githubAccount === question.default).length)
     ));
   });
 });

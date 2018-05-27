@@ -1,5 +1,6 @@
 repository:
   description: opinionated scaffolder for new projects
+  homepage: https://npm.im/@travi/project-scaffolder
   has_wiki: false
   has_projects: false
   has_downloads: false

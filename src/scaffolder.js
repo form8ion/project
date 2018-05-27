@@ -9,10 +9,12 @@ import scaffoldVcsHost from './vcs/host';
 import scaffoldTravis from './ci/travis';
 import exec from '../third-party-wrappers/exec-as-promised';
 import {prompt, questionNames} from './prompts';
+import {validate} from './options-validator';
 
-export async function scaffold({languages}) {
+export async function scaffold(options) {
   const projectRoot = process.cwd();
-  const answers = await prompt(projectRoot, languages);
+  const {languages = {}, overrides = {}} = validate(options);
+  const answers = await prompt(projectRoot, languages, overrides);
 
   const projectType = answers[questionNames.PROJECT_TYPE];
   const projectName = answers[questionNames.PROJECT_NAME];
@@ -22,6 +24,7 @@ export async function scaffold({languages}) {
   const ciService = answers[questionNames.CI];
   const vcs = await scaffoldVcsHost({
     host: answers[questionNames.REPO_HOST],
+    owner: answers[questionNames.REPO_OWNER],
     projectName,
     projectRoot,
     projectType,
@@ -42,10 +45,9 @@ export async function scaffold({languages}) {
       projectName,
       vcs,
       visibility,
-      license: chosenLicense,
+      license: chosenLicense || 'UNLICENSED',
       ci: ciService,
-      description,
-      eslintConfigPrefix: '@travi/travi'
+      description
     })
   ]);
 
@@ -54,7 +56,6 @@ export async function scaffold({languages}) {
       projectName,
       projectRoot,
       description,
-      license: chosenLicense,
       badges: {
         consumer: {...language && language.badges.consumer, ...license.badge && {license: license.badge}},
         status: {...ci.badge && {ci: ci.badge}},

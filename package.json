@@ -61,7 +61,10 @@
   },
   "dependencies": {
     "chalk": "2.4.0",
+    "git-config": "0.0.7",
+    "hoek": "^5.0.3",
     "inquirer": "5.2.0",
+    "joi": "^13.3.0",
     "mustache": "2.3.0",
     "mz": "2.7.0",
     "nodegit": "0.22.0",
