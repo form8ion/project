@@ -10,9 +10,11 @@ opinionated scaffolder for new projects
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
 
+* [Features](#features)
 * [Usage](#usage)
   * [Installation](#installation)
   * [Consumption in a CLI tool](#consumption-in-a-cli-tool)
+    * [Example](#example)
     * [Options](#options)
       * [`languages` (_optional_)](#languages-_optional_)
       * [`overrides` (_optional_)](#overrides-_optional_)
