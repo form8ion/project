@@ -9,9 +9,11 @@ import scaffoldVcsHost from './vcs/host';
 import scaffoldTravis from './ci/travis';
 import exec from '../third-party-wrappers/exec-as-promised';
 import {prompt, questionNames} from './prompts';
+import {validate} from './options-validator';
 
-export async function scaffold({languages = {}, overrides = {}} = {}) {
+export async function scaffold(options) {
   const projectRoot = process.cwd();
+  const {languages = {}, overrides = {}} = validate(options);
   const answers = await prompt(projectRoot, languages, overrides);
 
   const projectType = answers[questionNames.PROJECT_TYPE];

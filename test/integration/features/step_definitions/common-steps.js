@@ -13,6 +13,7 @@ Before(async () => {
   // work around for overly aggressive mock-fs, see:
   // https://github.com/tschaub/mock-fs/issues/213#issuecomment-347002795
   require('mock-stdin'); // eslint-disable-line import/no-extraneous-dependencies
+  require('joi/lib/schemas');
 
   stubbedFs({
     templates: {

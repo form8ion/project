@@ -44,6 +44,8 @@ consumer to provide the actual CLI wrapper. My [sub-command](https://github.com/
 for [commander](https://www.npmjs.com/package/commander) is an example of such
 a wrapper.
 
+#### Example
+
 ```js
 import program from 'commander';
 import {scaffold} from '@travi/project-scaffolder';
@@ -55,7 +57,6 @@ program
     console.error(err);
     process.exitCode = 1;
   }));
-
 ```
 
 #### Options
