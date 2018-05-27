@@ -25,6 +25,22 @@ opinionated scaffolder for new projects
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
+## Features
+
+* configures generic editor settings through [EditorConfig](http://editorconfig.org/)
+* scaffolds [license](https://spdx.org/licenses/) details
+* scaffolds [VCS](https://en.wikipedia.org/wiki/VCS) details if [git](https://git-scm.com/)
+  is chosen
+* scaffolds the [VCS](https://en.wikipedia.org/wiki/VCS) Host details if
+  [GitHub](https://github.com) is chosen
+* scaffolds [CI](https://en.wikipedia.org/wiki/Continuous_integration) server
+  config if [Travis](https://travis-ci.com) is chosen
+* scaffolds the project `README.md`
+* scaffolds language specific details be delegating to
+  [provided scaffolder functions](#languages-optional)
+  * Examples:
+    * [JavaScript](https://github.com/travi/javascript-scaffolder)
+
 ## Usage
 
 <!-- consumer badges -->
