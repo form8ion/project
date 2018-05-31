@@ -13,7 +13,7 @@ suite('options validator', () => {
 
   test('that validated options are returned', () => {
     const options = {
-      languages: any.objectWithKeys(any.listOf(any.string), {factory: () => () => undefined}),
+      languages: any.objectWithKeys(any.listOf(any.string), {factory: () => foo => foo}),
       overrides: {
         githubAccount: any.string(),
         copyrightHolder: any.string()
@@ -29,6 +29,15 @@ suite('options validator', () => {
     assert.throws(
       () => validate({languages: {[key]: any.word()}}),
       `child "languages" fails because [child "${key}" fails because ["${key}" must be a Function]]`
+    );
+  });
+
+  test('that a provided language scaffolder must accept a single argument', () => {
+    const key = any.word();
+
+    assert.throws(
+      () => validate({languages: {[key]: () => undefined}}),
+      `child "languages" fails because [child "${key}" fails because ["${key}" must have an arity of 1]]`
     );
   });
 

@@ -3,7 +3,7 @@ import hoek from 'hoek';
 
 export function validate(options) {
   const validated = joi.validate(options, joi.object({
-    languages: joi.object().pattern(/^/, joi.func()),
+    languages: joi.object().pattern(/^/, joi.func().arity(1)),
     overrides: joi.object({
       copyrightHolder: joi.string(),
       githubAccount: joi.string()
