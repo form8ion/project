@@ -22,14 +22,7 @@ export async function scaffold(options) {
   const visibility = answers[questionNames.VISIBILITY];
   const description = answers[questionNames.DESCRIPTION];
   const ciService = answers[questionNames.CI];
-  const vcs = await scaffoldVcsHost({
-    host: answers[questionNames.REPO_HOST],
-    owner: answers[questionNames.REPO_OWNER],
-    projectName,
-    projectRoot,
-    projectType,
-    description
-  });
+  const vcs = {host: answers[questionNames.REPO_HOST], owner: answers[questionNames.REPO_OWNER], name: projectName};
   const [license, ci, language] = await Promise.all([
     scaffoldLicense({
       projectRoot,
@@ -71,9 +64,13 @@ export async function scaffold(options) {
         }
       }
     }),
-    answers[questionNames.GIT_REPO]
-      ? scaffoldGit({projectRoot, ...language && {ignore: language.vcsIgnore}})
-      : undefined,
+    scaffoldVcsHost({
+      host: answers[questionNames.REPO_HOST],
+      projectRoot,
+      projectType,
+      description
+    }),
+    answers[questionNames.GIT_REPO] && scaffoldGit({projectRoot, ...language && {ignore: language.vcsIgnore}}),
     copyFile(resolve(__dirname, '..', 'templates', 'editorconfig.txt'), `${projectRoot}/.editorconfig`)
   ]);
 

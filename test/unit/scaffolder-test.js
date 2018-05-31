@@ -19,7 +19,6 @@ suite('project scaffolder', () => {
   const options = any.simpleObject();
   const projectPath = any.string();
   const projectName = any.string();
-  const vcs = any.simpleObject();
   const repoHost = any.word();
   const repoOwner = any.word();
   const description = any.string();
@@ -27,6 +26,7 @@ suite('project scaffolder', () => {
   const projectType = any.word();
   const licenseBadge = any.url();
   const scaffolders = any.simpleObject();
+  const vcs = {host: repoHost, owner: repoOwner, name: projectName};
 
   setup(() => {
     sandbox = sinon.createSandbox();
@@ -77,9 +77,7 @@ suite('project scaffolder', () => {
     licenseScaffolder.default
       .withArgs({projectRoot: projectPath, license, copyright, vcs})
       .resolves({badge: licenseBadge});
-    vcsHostScaffolder.default
-      .withArgs({host: repoHost, owner: repoOwner, projectName, projectRoot: projectPath, projectType, description})
-      .resolves(vcs);
+    vcsHostScaffolder.default.withArgs({host: repoHost, projectRoot: projectPath, projectType, description}).resolves();
     travisScaffolder.default
       .withArgs({projectRoot: projectPath, projectType, vcs, visibility})
       .resolves({badge: travisBadge});
