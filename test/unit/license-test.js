@@ -31,7 +31,7 @@ suite('license', () => {
   });
 
   test('that the contents for the chosen license are written to LICENSE', () => assert.becomes(
-    scaffoldLicense({projectRoot, license, copyright}),
+    scaffoldLicense({projectRoot, license, copyright, vcs: {}}),
     {}
   ).then(() => assert.calledWith(
     fs.writeFile,
