@@ -25,9 +25,10 @@ suite('vcs host scaffolder', () => {
     const projectRoot = any.string();
     const projectType = any.string();
     const description = any.sentence();
+    const homepage = any.url();
     githubScaffolder.default.resolves();
 
-    return scaffoldVcsHost({host: 'GitHub', projectRoot, projectType, description})
-      .then(() => assert.calledWith(githubScaffolder.default, {projectRoot, projectType, description}));
+    return scaffoldVcsHost({host: 'GitHub', projectRoot, projectType, description, homepage})
+      .then(() => assert.calledWith(githubScaffolder.default, {projectRoot, projectType, description, homepage}));
   });
 });

@@ -22,6 +22,7 @@ suite('project scaffolder', () => {
   const repoHost = any.word();
   const repoOwner = any.word();
   const description = any.string();
+  const homepage = any.url();
   const license = any.string();
   const projectType = any.word();
   const licenseBadge = any.url();
@@ -225,34 +226,22 @@ suite('project scaffolder', () => {
     const jsContibutionBadges = any.simpleObject();
     const verificationCommand = any.string();
     languageScaffolder.scaffold
-      .withArgs(
-        scaffolders,
-        javascriptProjectType,
-        {
-          projectName,
-          projectRoot: projectPath,
-          visibility,
-          license,
-          vcs,
-          ci,
-          description
-        }
-      )
+      .withArgs(scaffolders, javascriptProjectType, {
+        projectName,
+        projectRoot: projectPath,
+        visibility,
+        license,
+        vcs,
+        ci,
+        description
+      })
       .resolves({
         vcsIgnore: ignore,
         badges: {consumer: jsConsumerBadges, contribution: jsContibutionBadges},
-        verificationCommand
+        verificationCommand,
+        homepage
       });
-    vcsHostScaffolder.default
-      .withArgs({
-        host: repoHost,
-        owner: repoOwner,
-        projectName,
-        projectRoot: projectPath,
-        projectType: javascriptProjectType,
-        description
-      })
-      .resolves(vcs);
+    vcsHostScaffolder.default.resolves();
 
     return scaffold(options).then(() => {
       assert.calledWith(gitScaffolder.default, {projectRoot: projectPath, ignore});
@@ -267,6 +256,13 @@ suite('project scaffolder', () => {
         })
       );
       assert.calledWith(exec.default, verificationCommand, {silent: false});
+      assert.calledWith(vcsHostScaffolder.default, {
+        host: repoHost,
+        projectRoot: projectPath,
+        projectType: javascriptProjectType,
+        description,
+        homepage
+      });
     });
   });
 

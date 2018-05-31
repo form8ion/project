@@ -18,14 +18,16 @@ suite('github', () => {
 
   test('that the settings file is produced', () => {
     const description = any.sentence();
+    const homepage = any.url();
     yamlWriter.default.resolves();
 
-    return scaffoldGithub({projectRoot, description}).then(() => assert.calledWith(
+    return scaffoldGithub({projectRoot, description, homepage}).then(() => assert.calledWith(
       yamlWriter.default,
       `${projectRoot}/.github/settings.yml`,
       {
         repository: {
           description,
+          homepage,
           has_wiki: false,
           has_projects: false,
           has_downloads: false,

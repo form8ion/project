@@ -68,7 +68,8 @@ export async function scaffold(options) {
       host: answers[questionNames.REPO_HOST],
       projectRoot,
       projectType,
-      description
+      description,
+      homepage: language && language.homepage
     }),
     answers[questionNames.GIT_REPO] && scaffoldGit({projectRoot, ...language && {ignore: language.vcsIgnore}}),
     copyFile(resolve(__dirname, '..', 'templates', 'editorconfig.txt'), `${projectRoot}/.editorconfig`)
