@@ -151,6 +151,11 @@ $ npm test
 * [scaffolder-sub-command](https://github.com/travi/scaffolder-sub-command)
 * [cli](https://npm.im/@travi/cli)
 
+## Inspiration
+
+* [Yeoman](http://yeoman.io/)
+* [Lass](https://lass.js.org/)
+
 [npm-link]: https://www.npmjs.com/package/@travi/project-scaffolder
 [npm-badge]: https://img.shields.io/npm/v/@travi/project-scaffolder.svg
 [license-link]: LICENSE
