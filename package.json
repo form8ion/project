@@ -67,7 +67,7 @@
     "joi": "^13.3.0",
     "mustache": "2.3.0",
     "mz": "2.7.0",
-    "nodegit": "0.22.0",
+    "nodegit": "0.22.1",
     "shelljs": "0.8.2",
     "spdx-license-list": "4.0.0",
     "write-yaml": "1.0.0"
