@@ -7,7 +7,6 @@ import * as readmeScaffolder from '../../src/readme';
 import * as gitScaffolder from '../../src/vcs/git';
 import * as vcsHostScaffolder from '../../src/vcs/host';
 import * as licenseScaffolder from '../../src/license';
-import * as travisScaffolder from '../../src/ci/travis';
 import * as languageScaffolder from '../../src/language-scaffolder';
 import * as exec from '../../third-party-wrappers/exec-as-promised';
 import * as prompts from '../../src/prompts';
@@ -39,7 +38,6 @@ suite('project scaffolder', () => {
     sandbox.stub(gitScaffolder, 'default');
     sandbox.stub(vcsHostScaffolder, 'default');
     sandbox.stub(licenseScaffolder, 'default');
-    sandbox.stub(travisScaffolder, 'default');
     sandbox.stub(languageScaffolder, 'scaffold');
     sandbox.stub(fs, 'copyFile');
     sandbox.stub(exec, 'default');
@@ -47,18 +45,18 @@ suite('project scaffolder', () => {
     process.cwd.returns(projectPath);
     fs.copyFile.resolves();
     licenseScaffolder.default.resolves({});
-    travisScaffolder.default.resolves({});
   });
 
   teardown(() => sandbox.restore());
 
   test('that project files are generated', () => {
-    const travisBadge = any.url();
+    const ciBadge = any.url();
     const year = any.word();
     const holder = any.sentence();
     const copyright = {year, holder};
     const visibility = any.word();
     const overrides = any.simpleObject();
+    const vcsIgnore = any.simpleObject();
     optionsValidator.validate.withArgs(options).returns({languages: scaffolders, overrides});
     prompts.prompt.withArgs(projectPath, scaffolders, overrides).resolves({
       [prompts.questionNames.PROJECT_NAME]: projectName,
@@ -79,19 +77,17 @@ suite('project scaffolder', () => {
       .withArgs({projectRoot: projectPath, license, copyright, vcs})
       .resolves({badge: licenseBadge});
     vcsHostScaffolder.default.withArgs({host: repoHost, projectRoot: projectPath, projectType, description}).resolves();
-    travisScaffolder.default
-      .withArgs({projectRoot: projectPath, projectType, vcs, visibility})
-      .resolves({badge: travisBadge});
+    languageScaffolder.scaffold.resolves({badges: {status: {ci: ciBadge}}, vcsIgnore});
 
     return scaffold(options).then(() => {
-      assert.calledWith(gitScaffolder.default, {projectRoot: projectPath});
+      assert.calledWith(gitScaffolder.default, {projectRoot: projectPath, ignore: vcsIgnore});
       assert.calledWith(
         readmeScaffolder.default,
         {
           projectName,
           projectRoot: projectPath,
           description,
-          badges: {consumer: {license: licenseBadge}, status: {ci: travisBadge}, contribution: {}}
+          badges: {consumer: {license: licenseBadge}, status: {ci: ciBadge}, contribution: {}}
         }
       );
       assert.calledWith(
@@ -117,42 +113,18 @@ suite('project scaffolder', () => {
     return scaffold(emptyOptions);
   });
 
-  test('that the travis scaffolder is not run if travis was not chosen as the ci service', () => {
-    optionsValidator.validate.withArgs(options).returns({});
-    prompts.prompt.resolves({
-      [prompts.questionNames.PROJECT_NAME]: projectName,
-      [prompts.questionNames.PROJECT_TYPE]: projectType,
-      [prompts.questionNames.GIT_REPO]: true,
-      [prompts.questionNames.LICENSE]: license,
-      [prompts.questionNames.DESCRIPTION]: description,
-      [prompts.questionNames.CI]: any.word()
-    });
-    licenseScaffolder.default.resolves({badge: licenseBadge});
-
-    return scaffold(options).then(() => {
-      assert.notCalled(travisScaffolder.default);
-      assert.calledWith(
-        readmeScaffolder.default,
-        {
-          projectName,
-          projectRoot: projectPath,
-          description,
-          badges: {consumer: {license: licenseBadge}, status: {}, contribution: {}}
-        }
-      );
-    });
-  });
-
   test('that the PRs-welcome badge is included for public projects', () => {
     optionsValidator.validate.withArgs(options).returns({});
     prompts.prompt.resolves({
       [prompts.questionNames.PROJECT_NAME]: projectName,
       [prompts.questionNames.LICENSE]: license,
+      [prompts.questionNames.GIT_REPO]: true,
       [prompts.questionNames.DESCRIPTION]: description,
       [prompts.questionNames.VISIBILITY]: 'Public'
     });
 
     return scaffold(options).then(() => {
+      assert.calledWith(gitScaffolder.default, {projectRoot: projectPath});
       assert.calledWith(
         readmeScaffolder.default,
         {
@@ -205,7 +177,7 @@ suite('project scaffolder', () => {
     return scaffold(options).then(() => assert.notCalled(gitScaffolder.default));
   });
 
-  test('that the javascript project scaffolder is run for a js project', () => {
+  test('that the language details get scaffolded', () => {
     const visibility = any.boolean();
     const ignore = any.simpleObject();
     const javascriptProjectType = 'JavaScript';
@@ -222,8 +194,9 @@ suite('project scaffolder', () => {
       [prompts.questionNames.CI]: ci,
       [prompts.questionNames.DESCRIPTION]: description
     });
-    const jsConsumerBadges = any.simpleObject();
-    const jsContibutionBadges = any.simpleObject();
+    const languageConsumerBadges = any.simpleObject();
+    const languageContributionBadges = any.simpleObject();
+    const languageStatusBadges = any.simpleObject();
     const verificationCommand = any.string();
     languageScaffolder.scaffold
       .withArgs(scaffolders, javascriptProjectType, {
@@ -232,12 +205,15 @@ suite('project scaffolder', () => {
         visibility,
         license,
         vcs,
-        ci,
         description
       })
       .resolves({
         vcsIgnore: ignore,
-        badges: {consumer: jsConsumerBadges, contribution: jsContibutionBadges},
+        badges: {
+          consumer: languageConsumerBadges,
+          contribution: languageContributionBadges,
+          status: languageStatusBadges
+        },
         verificationCommand,
         homepage
       });
@@ -249,9 +225,9 @@ suite('project scaffolder', () => {
         readmeScaffolder.default,
         sinon.match({
           badges: {
-            consumer: {...jsConsumerBadges, license: undefined},
-            status: {ci: undefined},
-            contribution: jsContibutionBadges
+            consumer: {...languageConsumerBadges, license: undefined},
+            status: languageStatusBadges,
+            contribution: languageContributionBadges
           }
         })
       );

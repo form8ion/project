@@ -6,7 +6,6 @@ import scaffoldReadme from './readme';
 import scaffoldGit from './vcs/git';
 import scaffoldLicense from './license';
 import scaffoldVcsHost from './vcs/host';
-import scaffoldTravis from './ci/travis';
 import exec from '../third-party-wrappers/exec-as-promised';
 import {prompt, questionNames} from './prompts';
 import {validate} from './options-validator';
@@ -21,25 +20,20 @@ export async function scaffold(options) {
   const chosenLicense = answers[questionNames.LICENSE];
   const visibility = answers[questionNames.VISIBILITY];
   const description = answers[questionNames.DESCRIPTION];
-  const ciService = answers[questionNames.CI];
   const vcs = {host: answers[questionNames.REPO_HOST], owner: answers[questionNames.REPO_OWNER], name: projectName};
-  const [license, ci, language] = await Promise.all([
+  const [license, language] = await Promise.all([
     scaffoldLicense({
       projectRoot,
       license: chosenLicense,
       copyright: {year: answers[questionNames.COPYRIGHT_YEAR], holder: answers[questionNames.COPYRIGHT_HOLDER]},
       vcs
     }),
-    ('Travis' === ciService)
-      ? scaffoldTravis({projectRoot, projectType, vcs, visibility})
-      : Promise.resolve({}),
     scaffoldLanguage(languages, projectType, {
       projectRoot,
       projectName,
       vcs,
       visibility,
       license: chosenLicense || 'UNLICENSED',
-      ci: ciService,
       description
     })
   ]);
@@ -51,7 +45,7 @@ export async function scaffold(options) {
       description,
       badges: {
         consumer: {...language && language.badges.consumer, ...license.badge && {license: license.badge}},
-        status: {...ci.badge && {ci: ci.badge}},
+        status: {...language && language.badges.status},
         contribution: {
           ...language && language.badges.contribution,
           ...'Public' === visibility && {

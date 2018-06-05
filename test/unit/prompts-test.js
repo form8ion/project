@@ -101,12 +101,6 @@ suite('project scaffolder prompts', () => {
           type: 'list',
           message: 'What type of project is this?',
           choices: [...Object.keys(languages), 'Other']
-        },
-        {
-          name: questionNames.CI,
-          type: 'list',
-          message: 'Which continuous integration service will be used?',
-          choices: ['Travis', 'GitLab CI']
         }
       ]
     ));

@@ -15,7 +15,7 @@ suite('language scaffolder', () => {
     return assert.becomes(scaffold(scaffolders, chosenLanguage, options), scaffolderResult);
   });
 
-  test('that that chosing a language without a defined scaffolder does not result in an error', () => scaffold(
+  test('that that choosing a language without a defined scaffolder does not result in an error', () => scaffold(
     any.simpleObject(),
     any.word(),
     any.simpleObject()
