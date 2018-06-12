@@ -63,7 +63,7 @@ export async function scaffold(options) {
       projectRoot,
       projectType,
       description,
-      homepage: language && language.homepage
+      homepage: language && language.projectDetails.homepage
     }),
     answers[questionNames.GIT_REPO] && scaffoldGit({projectRoot, ...language && {ignore: language.vcsIgnore}}),
     copyFile(resolve(__dirname, '..', 'templates', 'editorconfig.txt'), `${projectRoot}/.editorconfig`)

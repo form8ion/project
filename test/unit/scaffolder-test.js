@@ -77,7 +77,7 @@ suite('project scaffolder', () => {
       .withArgs({projectRoot: projectPath, license, copyright, vcs})
       .resolves({badge: licenseBadge});
     vcsHostScaffolder.default.withArgs({host: repoHost, projectRoot: projectPath, projectType, description}).resolves();
-    languageScaffolder.scaffold.resolves({badges: {status: {ci: ciBadge}}, vcsIgnore});
+    languageScaffolder.scaffold.resolves({badges: {status: {ci: ciBadge}}, vcsIgnore, projectDetails: {}});
 
     return scaffold(options).then(() => {
       assert.calledWith(gitScaffolder.default, {projectRoot: projectPath, ignore: vcsIgnore});
@@ -215,7 +215,7 @@ suite('project scaffolder', () => {
           status: languageStatusBadges
         },
         verificationCommand,
-        homepage
+        projectDetails: {homepage}
       });
     vcsHostScaffolder.default.resolves();
 
@@ -257,7 +257,7 @@ suite('project scaffolder', () => {
   test('that running a verification command is not attempted when not provided', () => {
     optionsValidator.validate.withArgs(options).returns({});
     prompts.prompt.resolves({});
-    languageScaffolder.scaffold.resolves({badges: {}});
+    languageScaffolder.scaffold.resolves({badges: {}, projectDetails: {}});
 
     return scaffold(options).then(() => assert.notCalled(exec.default));
   });
