@@ -84,11 +84,11 @@ ${description}`)
         fs.writeFile,
         `${projectRoot}/README.md`,
         sinon.match(`
-<!-- consumer badges -->
-${buildBadgeGroup(consumerBadges).join('\n')}
-
 <!-- status badges -->
 ${buildBadgeGroup(statusBadges).join('\n')}
+
+<!-- consumer badges -->
+${buildBadgeGroup(consumerBadges).join('\n')}
 
 <!-- contribution badges -->
 ${buildBadgeGroup(contributionBadges).join('\n')}
