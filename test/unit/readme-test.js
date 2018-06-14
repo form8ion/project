@@ -100,6 +100,35 @@ ${buildBadgeGroup(contributionBadges).join('\n')}
   });
 
   suite('documentation', () => {
+    test('that usage docs are shown after the contributing badges', async () => {
+      const usageDocs = any.sentence();
+
+      await scaffoldReadme({
+        projectRoot,
+        badges: {consumer: consumerBadges, status: statusBadges, contribution: contributionBadges},
+        documentation: {usage: usageDocs}
+      });
+
+      assert.calledWith(
+        fs.writeFile,
+        `${projectRoot}/README.md`,
+        sinon.match(`
+<!-- status badges -->
+${buildBadgeGroup(statusBadges).join('\n')}
+
+## Usage
+
+<!-- consumer badges -->
+${buildBadgeGroup(consumerBadges).join('\n')}
+
+${usageDocs}
+
+<!-- contribution badges -->
+${buildBadgeGroup(contributionBadges).join('\n')}
+`)
+      );
+    });
+
     test('that contribution docs are shown after the contributing badges', async () => {
       const contributingDocs = any.sentence();
 
