@@ -16,7 +16,7 @@ function buildBadgeReferences(acc, [name, badge]) {
 }
 
 
-export default async function ({projectName, projectRoot, description, badges}) {
+export default async function ({projectName, projectRoot, description, badges, documentation}) {
   console.log(chalk.blue('Generating README'));     // eslint-disable-line no-console
 
   const markdownBadges = {
@@ -35,7 +35,7 @@ export default async function ({projectName, projectRoot, description, badges}) 
     `${projectRoot}/README.md`,
     mustache.render(
       await readFile(resolve(__dirname, '..', 'templates/README.mustache'), 'utf8'),
-      {projectName, description, references, badges: markdownBadges}
+      {projectName, description, references, badges: markdownBadges, documentation}
     )
   );
 }

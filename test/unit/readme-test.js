@@ -4,6 +4,13 @@ import sinon from 'sinon';
 import {assert} from 'chai';
 import scaffoldReadme from '../../src/readme';
 
+const badgeFactory = () => ({img: any.url(), link: any.url(), text: any.sentence()});
+const consumerBadges = any.objectWithKeys(any.listOf(any.word), {factory: badgeFactory});
+const statusBadges = any.objectWithKeys(any.listOf(any.word), {factory: badgeFactory});
+const contributionBadges = any.objectWithKeys(any.listOf(any.word), {factory: badgeFactory});
+const buildBadgeGroup = badgeData => Object.entries(badgeData)
+  .map(([name, badge]) => `[![${badge.text}][${name}-badge]][${name}-link]`);
+
 const assertBadgeIncludedInMarkdown = (badgeData, projectRoot) => Object.entries(badgeData).forEach(([name, badge]) => {
   assert.calledWith(
     fs.writeFile,
@@ -56,13 +63,6 @@ ${description}`)
   });
 
   suite('badges', () => {
-    const badgeFactory = () => ({img: any.url(), link: any.url(), text: any.sentence()});
-    const consumerBadges = any.objectWithKeys(any.listOf(any.word), {factory: badgeFactory});
-    const statusBadges = any.objectWithKeys(any.listOf(any.word), {factory: badgeFactory});
-    const contributionBadges = any.objectWithKeys(any.listOf(any.word), {factory: badgeFactory});
-    const buildBadgeGroup = badgeData => Object.entries(badgeData)
-      .map(([name, badge]) => `[![${badge.text}][${name}-badge]][${name}-link]`);
-
     test('that the badges and references are generated from the provided data', async () => {
       await scaffoldReadme({
         projectRoot,
@@ -80,7 +80,9 @@ ${description}`)
         projectRoot,
         description,
         badges: {consumer: consumerBadges, status: statusBadges, contribution: contributionBadges}
-      }).then(() => assert.calledWith(
+      });
+
+      assert.calledWith(
         fs.writeFile,
         `${projectRoot}/README.md`,
         sinon.match(`
@@ -93,7 +95,38 @@ ${buildBadgeGroup(consumerBadges).join('\n')}
 <!-- contribution badges -->
 ${buildBadgeGroup(contributionBadges).join('\n')}
 `)
-      ));
+      );
+    });
+  });
+
+  suite('documentation', () => {
+    test('that contribution docs are shown after the contributing badges', async () => {
+      const contributingDocs = any.sentence();
+
+      await scaffoldReadme({
+        projectRoot,
+        badges: {consumer: consumerBadges, status: statusBadges, contribution: contributionBadges},
+        documentation: {contributing: contributingDocs}
+      });
+
+      assert.calledWith(
+        fs.writeFile,
+        `${projectRoot}/README.md`,
+        sinon.match(`
+<!-- status badges -->
+${buildBadgeGroup(statusBadges).join('\n')}
+
+<!-- consumer badges -->
+${buildBadgeGroup(consumerBadges).join('\n')}
+
+## Contributing
+
+<!-- contribution badges -->
+${buildBadgeGroup(contributionBadges).join('\n')}
+
+${contributingDocs}
+`)
+      );
     });
   });
 });
