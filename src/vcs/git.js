@@ -1,5 +1,4 @@
 import fs from 'mz/fs';
-import {Repository as gitRepository} from 'nodegit';
 import chalk from 'chalk';
 
 function createIgnoreFile(projectRoot, ignore) {
@@ -9,10 +8,9 @@ function createIgnoreFile(projectRoot, ignore) {
 }
 
 export default function ({projectRoot, ignore}) {
-  console.log(chalk.blue('Initializing Git Repository'));     // eslint-disable-line no-console
+  console.log(chalk.blue('Generating Git Configuration'));     // eslint-disable-line no-console
 
   return Promise.all([
-    gitRepository.init(projectRoot, 0),
     fs.writeFile(`${projectRoot}/.gitattributes`, '* text=auto'),
     ignore ? createIgnoreFile(projectRoot, ignore) : undefined
   ].filter(Boolean));

@@ -1,6 +1,7 @@
 import {resolve} from 'path';
 import {copyFile} from 'mz/fs';
 import chalk from 'chalk';
+import {Repository as gitRepository} from 'nodegit';
 import {scaffold as scaffoldLanguage} from './language-scaffolder';
 import scaffoldReadme from './readme';
 import scaffoldGit from './vcs/git';
@@ -20,7 +21,11 @@ export async function scaffold(options) {
   const chosenLicense = answers[questionNames.LICENSE];
   const visibility = answers[questionNames.VISIBILITY];
   const description = answers[questionNames.DESCRIPTION];
+  const gitRepo = answers[questionNames.GIT_REPO];
   const vcs = {host: answers[questionNames.REPO_HOST], owner: answers[questionNames.REPO_OWNER], name: projectName};
+
+  if (gitRepo) gitRepository.init(projectRoot, 0);
+
   const [license, language] = await Promise.all([
     scaffoldLicense({
       projectRoot,
@@ -66,7 +71,7 @@ export async function scaffold(options) {
       description,
       homepage: language && language.projectDetails.homepage
     }),
-    answers[questionNames.GIT_REPO] && scaffoldGit({projectRoot, ...language && {ignore: language.vcsIgnore}}),
+    gitRepo && scaffoldGit({projectRoot, ...language && {ignore: language.vcsIgnore}}),
     copyFile(resolve(__dirname, '..', 'templates', 'editorconfig.txt'), `${projectRoot}/.editorconfig`)
   ]);
 

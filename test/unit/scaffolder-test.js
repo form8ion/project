@@ -1,5 +1,6 @@
 import path from 'path';
 import fs from 'mz/fs';
+import {Repository as gitRepository} from 'nodegit';
 import sinon from 'sinon';
 import {assert} from 'chai';
 import any from '@travi/any';
@@ -42,10 +43,12 @@ suite('project scaffolder', () => {
     sandbox.stub(languageScaffolder, 'scaffold');
     sandbox.stub(fs, 'copyFile');
     sandbox.stub(exec, 'default');
+    sandbox.stub(gitRepository, 'init');
 
     process.cwd.returns(projectPath);
     fs.copyFile.resolves();
     licenseScaffolder.default.resolves({});
+    gitRepository.init.resolves();
   });
 
   teardown(() => sandbox.restore());
@@ -82,6 +85,7 @@ suite('project scaffolder', () => {
       .resolves({badges: {status: {ci: ciBadge}}, vcsIgnore, projectDetails: {}, documentation});
 
     return scaffold(options).then(() => {
+      assert.calledWith(gitRepository.init, projectPath, 0);
       assert.calledWith(gitScaffolder.default, {projectRoot: projectPath, ignore: vcsIgnore});
       assert.calledWith(
         readmeScaffolder.default,
@@ -161,15 +165,18 @@ suite('project scaffolder', () => {
     });
     readmeScaffolder.default.resolves();
 
-    return scaffold(options).then(() => assert.calledWith(
-      readmeScaffolder.default,
-      {
-        projectName,
-        projectRoot: projectPath,
-        description,
-        badges: {consumer: {}, status: {}, contribution: {}}
-      }
-    ));
+    return scaffold(options).then(() => {
+      assert.notCalled(gitRepository.init);
+      assert.calledWith(
+        readmeScaffolder.default,
+        {
+          projectName,
+          projectRoot: projectPath,
+          description,
+          badges: {consumer: {}, status: {}, contribution: {}}
+        }
+      );
+    });
   });
 
   test('that the git repo is not initialized if not requested', () => {

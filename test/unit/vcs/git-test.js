@@ -1,5 +1,4 @@
 import fs from 'mz/fs';
-import {Repository as gitRepository} from 'nodegit';
 import any from '@travi/any';
 import sinon from 'sinon';
 import {assert} from 'chai';
@@ -12,7 +11,6 @@ suite('scaffold git', () => {
     sandbox = sinon.createSandbox();
 
     sandbox.stub(fs, 'writeFile');
-    sandbox.stub(gitRepository, 'init');
   });
 
   teardown(() => sandbox.restore());
@@ -20,10 +18,8 @@ suite('scaffold git', () => {
   test('that the git repo is initialized', () => {
     const projectRoot = any.string();
     fs.writeFile.resolves();
-    gitRepository.init.resolves();
 
     return scaffoldGit({projectRoot}).then(() => {
-      assert.calledWith(gitRepository.init, projectRoot, 0);
       assert.calledWith(fs.writeFile, `${projectRoot}/.gitattributes`, '* text=auto');
       assert.neverCalledWith(fs.writeFile, `${projectRoot}/.gitignore`);
     });
@@ -34,7 +30,6 @@ suite('scaffold git', () => {
     const directories = any.listOf(any.string);
     const files = any.listOf(any.string);
     fs.writeFile.resolves();
-    gitRepository.init.resolves();
 
     return scaffoldGit({projectRoot, ignore: {directories, files}}).then(() => assert.calledWith(
       fs.writeFile,
