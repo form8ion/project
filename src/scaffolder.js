@@ -43,6 +43,7 @@ export async function scaffold(options) {
       projectName,
       projectRoot,
       description,
+      ...language && {documentation: language.documentation},
       badges: {
         consumer: {...language && language.badges.consumer, ...license.badge && {license: license.badge}},
         status: {...language && language.badges.status},

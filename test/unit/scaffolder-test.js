@@ -26,6 +26,7 @@ suite('project scaffolder', () => {
   const projectType = any.word();
   const licenseBadge = any.url();
   const scaffolders = any.simpleObject();
+  const documentation = any.simpleObject();
   const vcs = {host: repoHost, owner: repoOwner, name: projectName};
 
   setup(() => {
@@ -77,7 +78,8 @@ suite('project scaffolder', () => {
       .withArgs({projectRoot: projectPath, license, copyright, vcs})
       .resolves({badge: licenseBadge});
     vcsHostScaffolder.default.withArgs({host: repoHost, projectRoot: projectPath, projectType, description}).resolves();
-    languageScaffolder.scaffold.resolves({badges: {status: {ci: ciBadge}}, vcsIgnore, projectDetails: {}});
+    languageScaffolder.scaffold
+      .resolves({badges: {status: {ci: ciBadge}}, vcsIgnore, projectDetails: {}, documentation});
 
     return scaffold(options).then(() => {
       assert.calledWith(gitScaffolder.default, {projectRoot: projectPath, ignore: vcsIgnore});
@@ -87,6 +89,7 @@ suite('project scaffolder', () => {
           projectName,
           projectRoot: projectPath,
           description,
+          documentation,
           badges: {consumer: {license: licenseBadge}, status: {ci: ciBadge}, contribution: {}}
         }
       );
@@ -180,12 +183,12 @@ suite('project scaffolder', () => {
   test('that the language details get scaffolded', () => {
     const visibility = any.boolean();
     const ignore = any.simpleObject();
-    const javascriptProjectType = 'JavaScript';
+    const language = any.word();
     const ci = any.word();
     optionsValidator.validate.withArgs(options).returns({languages: scaffolders});
     prompts.prompt.resolves({
       [prompts.questionNames.PROJECT_NAME]: projectName,
-      [prompts.questionNames.PROJECT_TYPE]: javascriptProjectType,
+      [prompts.questionNames.PROJECT_TYPE]: language,
       [prompts.questionNames.VISIBILITY]: visibility,
       [prompts.questionNames.GIT_REPO]: true,
       [prompts.questionNames.REPO_HOST]: repoHost,
@@ -199,7 +202,7 @@ suite('project scaffolder', () => {
     const languageStatusBadges = any.simpleObject();
     const verificationCommand = any.string();
     languageScaffolder.scaffold
-      .withArgs(scaffolders, javascriptProjectType, {
+      .withArgs(scaffolders, language, {
         projectName,
         projectRoot: projectPath,
         visibility,
@@ -214,6 +217,7 @@ suite('project scaffolder', () => {
           contribution: languageContributionBadges,
           status: languageStatusBadges
         },
+        documentation,
         verificationCommand,
         projectDetails: {homepage}
       });
@@ -223,19 +227,23 @@ suite('project scaffolder', () => {
       assert.calledWith(gitScaffolder.default, {projectRoot: projectPath, ignore});
       assert.calledWith(
         readmeScaffolder.default,
-        sinon.match({
+        {
+          projectName,
+          projectRoot: projectPath,
+          description,
+          documentation,
           badges: {
-            consumer: {...languageConsumerBadges, license: undefined},
+            consumer: languageConsumerBadges,
             status: languageStatusBadges,
             contribution: languageContributionBadges
           }
-        })
+        }
       );
       assert.calledWith(exec.default, verificationCommand, {silent: false});
       assert.calledWith(vcsHostScaffolder.default, {
         host: repoHost,
         projectRoot: projectPath,
-        projectType: javascriptProjectType,
+        projectType: language,
         description,
         homepage
       });
