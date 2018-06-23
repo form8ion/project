@@ -24,7 +24,10 @@ export async function scaffold(options) {
   const gitRepo = answers[questionNames.GIT_REPO];
   const vcs = {host: answers[questionNames.REPO_HOST], owner: answers[questionNames.REPO_OWNER], name: projectName};
 
-  if (gitRepo) gitRepository.init(projectRoot, 0);
+  if (gitRepo) {
+    console.log(chalk.blue('Initializing Git Repository'));     // eslint-disable-line no-console
+    await gitRepository.init(projectRoot, 0);
+  }
 
   const [license, language] = await Promise.all([
     scaffoldLicense({
