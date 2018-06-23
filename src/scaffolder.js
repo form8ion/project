@@ -1,10 +1,9 @@
 import {resolve} from 'path';
 import {copyFile} from 'mz/fs';
 import chalk from 'chalk';
-import {Repository as gitRepository} from 'nodegit';
 import {scaffold as scaffoldLanguage} from './language-scaffolder';
 import scaffoldReadme from './readme';
-import scaffoldGit from './vcs/git';
+import {initialize as initializeGit, scaffold as scaffoldGit} from './vcs/git';
 import scaffoldLicense from './license';
 import scaffoldVcsHost from './vcs/host';
 import exec from '../third-party-wrappers/exec-as-promised';
@@ -24,10 +23,7 @@ export async function scaffold(options) {
   const gitRepo = answers[questionNames.GIT_REPO];
   const vcs = {host: answers[questionNames.REPO_HOST], owner: answers[questionNames.REPO_OWNER], name: projectName};
 
-  if (gitRepo) {
-    console.log(chalk.blue('Initializing Git Repository'));     // eslint-disable-line no-console
-    await gitRepository.init(projectRoot, 0);
-  }
+  if (gitRepo) await initializeGit(projectRoot);
 
   const [license, language] = await Promise.all([
     scaffoldLicense({

@@ -1,6 +1,5 @@
 import path from 'path';
 import fs from 'mz/fs';
-import {Repository as gitRepository} from 'nodegit';
 import sinon from 'sinon';
 import {assert} from 'chai';
 import any from '@travi/any';
@@ -37,18 +36,17 @@ suite('project scaffolder', () => {
     sandbox.stub(prompts, 'prompt');
     sandbox.stub(optionsValidator, 'validate');
     sandbox.stub(readmeScaffolder, 'default');
-    sandbox.stub(gitScaffolder, 'default');
+    sandbox.stub(gitScaffolder, 'initialize');
+    sandbox.stub(gitScaffolder, 'scaffold');
     sandbox.stub(vcsHostScaffolder, 'default');
     sandbox.stub(licenseScaffolder, 'default');
     sandbox.stub(languageScaffolder, 'scaffold');
     sandbox.stub(fs, 'copyFile');
     sandbox.stub(exec, 'default');
-    sandbox.stub(gitRepository, 'init');
 
     process.cwd.returns(projectPath);
     fs.copyFile.resolves();
     licenseScaffolder.default.resolves({});
-    gitRepository.init.resolves();
   });
 
   teardown(() => sandbox.restore());
@@ -76,7 +74,7 @@ suite('project scaffolder', () => {
       [prompts.questionNames.CI]: 'Travis'
     });
     readmeScaffolder.default.resolves();
-    gitScaffolder.default.resolves();
+    gitScaffolder.scaffold.resolves();
     licenseScaffolder.default
       .withArgs({projectRoot: projectPath, license, copyright, vcs})
       .resolves({badge: licenseBadge});
@@ -85,8 +83,8 @@ suite('project scaffolder', () => {
       .resolves({badges: {status: {ci: ciBadge}}, vcsIgnore, projectDetails: {}, documentation});
 
     return scaffold(options).then(() => {
-      assert.calledWith(gitRepository.init, projectPath, 0);
-      assert.calledWith(gitScaffolder.default, {projectRoot: projectPath, ignore: vcsIgnore});
+      assert.calledWith(gitScaffolder.initialize, projectPath);
+      assert.calledWith(gitScaffolder.scaffold, {projectRoot: projectPath, ignore: vcsIgnore});
       assert.calledWith(
         readmeScaffolder.default,
         {
@@ -131,7 +129,7 @@ suite('project scaffolder', () => {
     });
 
     return scaffold(options).then(() => {
-      assert.calledWith(gitScaffolder.default, {projectRoot: projectPath});
+      assert.calledWith(gitScaffolder.scaffold, {projectRoot: projectPath});
       assert.calledWith(
         readmeScaffolder.default,
         {
@@ -166,7 +164,7 @@ suite('project scaffolder', () => {
     readmeScaffolder.default.resolves();
 
     return scaffold(options).then(() => {
-      assert.notCalled(gitRepository.init);
+      assert.notCalled(gitScaffolder.initialize);
       assert.calledWith(
         readmeScaffolder.default,
         {
@@ -184,7 +182,7 @@ suite('project scaffolder', () => {
     prompts.prompt.resolves({[prompts.questionNames.GIT_REPO]: false});
     readmeScaffolder.default.resolves();
 
-    return scaffold(options).then(() => assert.notCalled(gitScaffolder.default));
+    return scaffold(options).then(() => assert.notCalled(gitScaffolder.scaffold));
   });
 
   test('that the language details get scaffolded', () => {
@@ -231,7 +229,7 @@ suite('project scaffolder', () => {
     vcsHostScaffolder.default.resolves();
 
     return scaffold(options).then(() => {
-      assert.calledWith(gitScaffolder.default, {projectRoot: projectPath, ignore});
+      assert.calledWith(gitScaffolder.scaffold, {projectRoot: projectPath, ignore});
       assert.calledWith(
         readmeScaffolder.default,
         {
