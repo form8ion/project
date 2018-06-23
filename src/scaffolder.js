@@ -7,8 +7,9 @@ import {initialize as initializeGit, scaffold as scaffoldGit} from './vcs/git';
 import scaffoldLicense from './license';
 import scaffoldVcsHost from './vcs/host';
 import exec from '../third-party-wrappers/exec-as-promised';
-import {prompt, questionNames} from './prompts';
+import {prompt} from './prompts/questions';
 import {validate} from './options-validator';
+import {questionNames} from './prompts/question-names';
 
 export async function scaffold(options) {
   const projectRoot = process.cwd();

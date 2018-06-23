@@ -15,7 +15,9 @@ export default {
     'spdx-license-list/simple',
     'util',
     'write-yaml',
-    'git-config'
+    'git-config',
+    'joi',
+    'hoek'
   ],
   output: [
     {file: 'lib/index.cjs.js', format: 'cjs', sourcemap: true},

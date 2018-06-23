@@ -1,12 +1,12 @@
 import {assert} from 'chai';
 import any from '@travi/any';
-import {questionNames} from '../../src/prompts';
+import {questionNames} from '../../src/prompts/question-names';
 import {
   vcsHostPromptShouldBePresented,
   unlicensedConfirmationShouldBePresented,
   licenseChoicesShouldBePresented,
   copyrightInformationShouldBeRequested
-} from '../../src/prompt-conditionals';
+} from '../../src/prompts/conditionals';
 
 suite('prompt conditionals', () => {
   suite('vcs host', () => {

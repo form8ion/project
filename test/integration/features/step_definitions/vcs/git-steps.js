@@ -2,7 +2,7 @@ import {exists, readFile} from 'mz/fs';
 import {Given, Then} from 'cucumber';
 import bddStdIn from 'bdd-stdin';
 import {assert} from 'chai';
-import {questionNames} from '../../../../../src/prompts';
+import {questionNames} from '../../../../../src/prompts/question-names';
 
 Given('the project should be versioned in git', async function () {
   this.setAnswerFor(questionNames.GIT_REPO, '\n');
