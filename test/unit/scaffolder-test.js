@@ -10,9 +10,10 @@ import * as vcsHostScaffolder from '../../src/vcs/host';
 import * as licenseScaffolder from '../../src/license';
 import * as languageScaffolder from '../../src/language-scaffolder';
 import * as exec from '../../third-party-wrappers/exec-as-promised';
-import * as prompts from '../../src/prompts';
+import * as prompts from '../../src/prompts/questions';
 import * as optionsValidator from '../../src/options-validator';
 import {scaffold} from '../../src/scaffolder';
+import {questionNames} from '../../src/prompts/question-names';
 
 suite('project scaffolder', () => {
   let sandbox;
@@ -63,17 +64,17 @@ suite('project scaffolder', () => {
     const vcsIgnore = any.simpleObject();
     optionsValidator.validate.withArgs(options).returns({languages: scaffolders, overrides});
     prompts.prompt.withArgs(projectPath, scaffolders, overrides).resolves({
-      [prompts.questionNames.PROJECT_NAME]: projectName,
-      [prompts.questionNames.PROJECT_TYPE]: projectType,
-      [prompts.questionNames.GIT_REPO]: true,
-      [prompts.questionNames.REPO_HOST]: repoHost,
-      [prompts.questionNames.REPO_OWNER]: repoOwner,
-      [prompts.questionNames.LICENSE]: license,
-      [prompts.questionNames.DESCRIPTION]: description,
-      [prompts.questionNames.COPYRIGHT_HOLDER]: holder,
-      [prompts.questionNames.COPYRIGHT_YEAR]: year,
-      [prompts.questionNames.VISIBILITY]: visibility,
-      [prompts.questionNames.CI]: 'Travis'
+      [questionNames.PROJECT_NAME]: projectName,
+      [questionNames.PROJECT_TYPE]: projectType,
+      [questionNames.GIT_REPO]: true,
+      [questionNames.REPO_HOST]: repoHost,
+      [questionNames.REPO_OWNER]: repoOwner,
+      [questionNames.LICENSE]: license,
+      [questionNames.DESCRIPTION]: description,
+      [questionNames.COPYRIGHT_HOLDER]: holder,
+      [questionNames.COPYRIGHT_YEAR]: year,
+      [questionNames.VISIBILITY]: visibility,
+      [questionNames.CI]: 'Travis'
     });
     readmeScaffolder.default.resolves();
     gitScaffolder.default.resolves();
@@ -123,11 +124,11 @@ suite('project scaffolder', () => {
   test('that the PRs-welcome badge is included for public projects', () => {
     optionsValidator.validate.withArgs(options).returns({});
     prompts.prompt.resolves({
-      [prompts.questionNames.PROJECT_NAME]: projectName,
-      [prompts.questionNames.LICENSE]: license,
-      [prompts.questionNames.GIT_REPO]: true,
-      [prompts.questionNames.DESCRIPTION]: description,
-      [prompts.questionNames.VISIBILITY]: 'Public'
+      [questionNames.PROJECT_NAME]: projectName,
+      [questionNames.LICENSE]: license,
+      [questionNames.GIT_REPO]: true,
+      [questionNames.DESCRIPTION]: description,
+      [questionNames.VISIBILITY]: 'Public'
     });
 
     return scaffold(options).then(() => {
@@ -158,10 +159,10 @@ suite('project scaffolder', () => {
     optionsValidator.validate.withArgs(options).returns({});
     licenseScaffolder.default.resolves({});
     prompts.prompt.resolves({
-      [prompts.questionNames.PROJECT_NAME]: projectName,
-      [prompts.questionNames.LICENSE]: license,
-      [prompts.questionNames.DESCRIPTION]: description,
-      [prompts.questionNames.GIT_REPO]: false
+      [questionNames.PROJECT_NAME]: projectName,
+      [questionNames.LICENSE]: license,
+      [questionNames.DESCRIPTION]: description,
+      [questionNames.GIT_REPO]: false
     });
     readmeScaffolder.default.resolves();
 
@@ -181,7 +182,7 @@ suite('project scaffolder', () => {
 
   test('that the git repo is not initialized if not requested', () => {
     optionsValidator.validate.withArgs(options).returns({});
-    prompts.prompt.resolves({[prompts.questionNames.GIT_REPO]: false});
+    prompts.prompt.resolves({[questionNames.GIT_REPO]: false});
     readmeScaffolder.default.resolves();
 
     return scaffold(options).then(() => assert.notCalled(gitScaffolder.default));
@@ -194,15 +195,15 @@ suite('project scaffolder', () => {
     const ci = any.word();
     optionsValidator.validate.withArgs(options).returns({languages: scaffolders});
     prompts.prompt.resolves({
-      [prompts.questionNames.PROJECT_NAME]: projectName,
-      [prompts.questionNames.PROJECT_TYPE]: language,
-      [prompts.questionNames.VISIBILITY]: visibility,
-      [prompts.questionNames.GIT_REPO]: true,
-      [prompts.questionNames.REPO_HOST]: repoHost,
-      [prompts.questionNames.REPO_OWNER]: repoOwner,
-      [prompts.questionNames.LICENSE]: license,
-      [prompts.questionNames.CI]: ci,
-      [prompts.questionNames.DESCRIPTION]: description
+      [questionNames.PROJECT_NAME]: projectName,
+      [questionNames.PROJECT_TYPE]: language,
+      [questionNames.VISIBILITY]: visibility,
+      [questionNames.GIT_REPO]: true,
+      [questionNames.REPO_HOST]: repoHost,
+      [questionNames.REPO_OWNER]: repoOwner,
+      [questionNames.LICENSE]: license,
+      [questionNames.CI]: ci,
+      [questionNames.DESCRIPTION]: description
     });
     const languageConsumerBadges = any.simpleObject();
     const languageContributionBadges = any.simpleObject();
@@ -259,7 +260,7 @@ suite('project scaffolder', () => {
 
   test('that the license is passed to the language scaffolder as `UNLICENSED` when no license was chosen', () => {
     optionsValidator.validate.withArgs(options).returns({});
-    prompts.prompt.resolves({[prompts.questionNames.PROJECT_TYPE]: projectType});
+    prompts.prompt.resolves({[questionNames.PROJECT_TYPE]: projectType});
 
     return scaffold(options).then(() => assert.calledWithMatch(
       languageScaffolder.scaffold,

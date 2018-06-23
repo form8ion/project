@@ -2,7 +2,7 @@ import {Given, Then} from 'cucumber';
 import {assert} from 'chai';
 import {readFile} from 'mz/fs';
 import bddStdIn from 'bdd-stdin';
-import {questionNames} from '../../../../../src/prompts';
+import {questionNames} from '../../../../../src/prompts/question-names';
 
 Given('the project language should be JavaScript', async function () {
   this.setAnswerFor(questionNames.PROJECT_TYPE, '\n');
