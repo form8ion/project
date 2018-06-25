@@ -100,8 +100,10 @@ ${buildBadgeGroup(contributionBadges).join('\n')}
   });
 
   suite('documentation', () => {
+    const markdownWithBackticksAndForwardSlashes = `\`\`\`sh${any.sentence()}\`\`\`https://any.url`;
+
     test('that usage docs are shown after the contributing badges', async () => {
-      const usageDocs = any.sentence();
+      const usageDocs = markdownWithBackticksAndForwardSlashes;
 
       await scaffoldReadme({
         projectRoot,
@@ -130,7 +132,7 @@ ${buildBadgeGroup(contributionBadges).join('\n')}
     });
 
     test('that contribution docs are shown after the contributing badges', async () => {
-      const contributingDocs = any.sentence();
+      const contributingDocs = markdownWithBackticksAndForwardSlashes;
 
       await scaffoldReadme({
         projectRoot,
