@@ -21,6 +21,17 @@ export default function scaffoldGithub({projectRoot, projectType, description, h
       {name: 'question', color: 'cc317c'},
       {name: 'wontfix', color: 'ffffff'},
       ('JavaScript' === projectType) ? {name: 'greenkeeper', color: '00c775'} : undefined
-    ].filter(Boolean)
+    ].filter(Boolean),
+    branches: [
+      {
+        name: 'master',
+        protection: {
+          required_pull_request_reviews: null,
+          required_status_checks: null,
+          restrictions: null,
+          enforce_admins: true
+        }
+      }
+    ]
   });
 }

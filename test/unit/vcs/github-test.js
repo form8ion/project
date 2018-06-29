@@ -43,6 +43,17 @@ suite('github', () => {
           {name: 'invalid', color: 'e6e6e6'},
           {name: 'question', color: 'cc317c'},
           {name: 'wontfix', color: 'ffffff'}
+        ],
+        branches: [
+          {
+            name: 'master',
+            protection: {
+              required_pull_request_reviews: null,
+              required_status_checks: null,
+              restrictions: null,
+              enforce_admins: true
+            }
+          }
         ]
       }
     ));
