@@ -10,9 +10,9 @@ import {
   licenseChoicesShouldBePresented,
   unlicensedConfirmationShouldBePresented,
   vcsHostPromptShouldBePresented
-} from '../../src/prompts/conditionals';
-import {prompt} from '../../src/prompts/questions';
-import {questionNames} from '../../src/prompts/question-names';
+} from '../../../src/prompts/conditionals';
+import {prompt} from '../../../src/prompts/questions';
+import {questionNames} from '../../../src/prompts/question-names';
 
 suite('project scaffolder prompts', () => {
   let sandbox;
