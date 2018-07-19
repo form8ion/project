@@ -69,7 +69,7 @@
     "mz": "2.7.0",
     "nodegit": "0.22.2",
     "shelljs": "0.8.2",
-    "spdx-license-list": "4.0.0",
+    "spdx-license-list": "4.1.0",
     "write-yaml": "1.0.0"
   }
 }
