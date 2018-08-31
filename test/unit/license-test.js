@@ -38,7 +38,7 @@ suite('license', () => {
     `${projectRoot}/LICENSE`,
     `${spdxLicenseListWithContent[license].licenseText}\n`
       .replace(/\n/gm, '\n\n')
-      .replace(/<year>/gm, year)
+      .replace(/<\s*year\s*>/gm, year)
       .replace(/<copyright holders>/gm, copyrightHolders)
       .replace(/<(.+?)>/gm, '')
   )));
