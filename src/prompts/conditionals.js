@@ -1,9 +1,5 @@
 import {questionNames} from './question-names';
 
-export function vcsHostPromptShouldBePresented(answers) {
-  return answers[questionNames.GIT_REPO];
-}
-
 export function unlicensedConfirmationShouldBePresented(answers) {
   return 'Private' === answers[questionNames.VISIBILITY];
 }

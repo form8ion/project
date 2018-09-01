@@ -5,8 +5,7 @@ import spdxLicenseList from 'spdx-license-list/simple';
 import {
   copyrightInformationShouldBeRequested,
   licenseChoicesShouldBePresented,
-  unlicensedConfirmationShouldBePresented,
-  vcsHostPromptShouldBePresented
+  unlicensedConfirmationShouldBePresented
 } from './conditionals';
 import {questionNames} from './question-names';
 
@@ -42,25 +41,7 @@ function includeLicenseQuestions(copyrightHolder) {
   ];
 }
 
-function includeVcsQuestions(githubAccount) {
-  return [
-    {name: questionNames.GIT_REPO, type: 'confirm', default: true, message: 'Should a git repository be initialized?'},
-    {
-      name: questionNames.REPO_HOST,
-      type: 'list',
-      when: vcsHostPromptShouldBePresented,
-      message: 'Where will the repository be hosted?',
-      choices: ['GitHub', 'BitBucket', 'GitLab', 'KeyBase']
-    },
-    {
-      name: questionNames.REPO_OWNER,
-      message: 'What is the id of the repository owner?',
-      default: githubAccount || (gitConfig.sync().github ? gitConfig.sync().github.user : '')
-    }
-  ];
-}
-
-export function promptForBaseDetails(projectRoot, languages, overrides) {
+export function promptForBaseDetails(projectRoot, copyrightHolder) {
   return promptWithInquirer([
     {name: questionNames.PROJECT_NAME, message: 'What is the name of this project?', default: basename(projectRoot)},
     {name: questionNames.DESCRIPTION, message: 'How should this project be described?'},
@@ -71,8 +52,8 @@ export function promptForBaseDetails(projectRoot, languages, overrides) {
       choices: ['Public', 'Private'],
       default: 'Private'
     },
-    ...includeLicenseQuestions(overrides.copyrightHolder),
-    ...includeVcsQuestions(overrides.githubAccount)
+    ...includeLicenseQuestions(copyrightHolder),
+    {name: questionNames.GIT_REPO, type: 'confirm', default: true, message: 'Should a git repository be initialized?'}
   ]);
 }
 
@@ -83,6 +64,22 @@ export function promptForLanguageDetails(languages) {
       type: 'list',
       message: 'What type of project is this?',
       choices: [...Object.keys(languages), new Separator(), 'Other']
+    }
+  ]);
+}
+
+export function promptForVcsHostDetails(githubAccount) {
+  return promptWithInquirer([
+    {
+      name: questionNames.REPO_HOST,
+      type: 'list',
+      message: 'Where will the repository be hosted?',
+      choices: ['GitHub', 'BitBucket', 'GitLab', 'KeyBase']
+    },
+    {
+      name: questionNames.REPO_OWNER,
+      message: 'What is the id of the repository owner?',
+      default: githubAccount || (gitConfig.sync().github ? gitConfig.sync().github.user : '')
     }
   ]);
 }

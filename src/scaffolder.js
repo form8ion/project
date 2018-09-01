@@ -7,23 +7,28 @@ import {initialize as initializeGit, scaffold as scaffoldGit} from './vcs/git';
 import scaffoldLicense from './license';
 import scaffoldVcsHost from './vcs/host';
 import exec from '../third-party-wrappers/exec-as-promised';
-import {promptForBaseDetails, promptForLanguageDetails} from './prompts/questions';
+import {promptForBaseDetails, promptForLanguageDetails, promptForVcsHostDetails} from './prompts/questions';
 import {validate} from './options-validator';
 import {questionNames} from './prompts/question-names';
 
 export async function scaffold(options) {
   const projectRoot = process.cwd();
   const {languages = {}, overrides = {}} = validate(options);
-  const baseAnswers = await promptForBaseDetails(projectRoot, languages, overrides);
-  const promptAnswers = await promptForLanguageDetails(languages);
-  const answers = {...baseAnswers, ...promptAnswers};
+  const {copyrightHolder, githubAccount} = overrides;
+
+  const baseAnswers = await promptForBaseDetails(projectRoot, copyrightHolder);
+  const gitRepo = baseAnswers[questionNames.GIT_REPO];
+  const answers = {
+    ...baseAnswers,
+    ...await promptForLanguageDetails(languages),
+    ...gitRepo && await promptForVcsHostDetails(githubAccount)
+  };
 
   const projectType = answers[questionNames.PROJECT_TYPE];
   const projectName = answers[questionNames.PROJECT_NAME];
   const chosenLicense = answers[questionNames.LICENSE];
   const visibility = answers[questionNames.VISIBILITY];
   const description = answers[questionNames.DESCRIPTION];
-  const gitRepo = answers[questionNames.GIT_REPO];
   const vcs = {host: answers[questionNames.REPO_HOST], owner: answers[questionNames.REPO_OWNER], name: projectName};
 
   if (gitRepo) await initializeGit(projectRoot);

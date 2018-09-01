@@ -36,6 +36,7 @@ suite('project scaffolder', () => {
     sandbox.stub(process, 'cwd');
     sandbox.stub(prompts, 'promptForBaseDetails');
     sandbox.stub(prompts, 'promptForLanguageDetails');
+    sandbox.stub(prompts, 'promptForVcsHostDetails');
     sandbox.stub(optionsValidator, 'validate');
     sandbox.stub(readmeScaffolder, 'default');
     sandbox.stub(gitScaffolder, 'initialize');
@@ -59,16 +60,14 @@ suite('project scaffolder', () => {
     const holder = any.sentence();
     const copyright = {year, holder};
     const visibility = any.word();
-    const overrides = any.simpleObject();
+    const overrides = {...any.simpleObject(), githubAccount: any.word(), copyrightHolder: any.string()};
     const vcsIgnore = any.simpleObject();
     optionsValidator.validate.withArgs(options).returns({languages: scaffolders, overrides});
     prompts.promptForBaseDetails
-      .withArgs(projectPath, scaffolders, overrides)
+      .withArgs(projectPath, overrides.copyrightHolder)
       .resolves({
         [questionNames.PROJECT_NAME]: projectName,
         [questionNames.GIT_REPO]: true,
-        [questionNames.REPO_HOST]: repoHost,
-        [questionNames.REPO_OWNER]: repoOwner,
         [questionNames.LICENSE]: license,
         [questionNames.DESCRIPTION]: description,
         [questionNames.COPYRIGHT_HOLDER]: holder,
@@ -77,6 +76,10 @@ suite('project scaffolder', () => {
         [questionNames.CI]: 'Travis'
       });
     prompts.promptForLanguageDetails.withArgs(scaffolders).resolves({[questionNames.PROJECT_TYPE]: projectType});
+    prompts.promptForVcsHostDetails.withArgs(overrides.githubAccount).resolves({
+      [questionNames.REPO_HOST]: repoHost,
+      [questionNames.REPO_OWNER]: repoOwner
+    });
     readmeScaffolder.default.resolves();
     gitScaffolder.scaffold.resolves();
     licenseScaffolder.default
@@ -109,7 +112,7 @@ suite('project scaffolder', () => {
 
   test('that the options are optional', () => {
     optionsValidator.validate.returns({});
-    prompts.promptForBaseDetails.withArgs(projectPath, {}, {}).resolves({});
+    prompts.promptForBaseDetails.withArgs(projectPath, undefined).resolves({});
     prompts.promptForLanguageDetails.resolves({});
 
     return scaffold();
@@ -118,7 +121,7 @@ suite('project scaffolder', () => {
   test('that each option is optional', () => {
     const emptyOptions = {};
     optionsValidator.validate.withArgs(emptyOptions).returns({});
-    prompts.promptForBaseDetails.withArgs(projectPath, {}, {}).resolves({});
+    prompts.promptForBaseDetails.withArgs(projectPath, undefined).resolves({});
     prompts.promptForLanguageDetails.resolves({});
 
     return scaffold(emptyOptions);
@@ -173,6 +176,7 @@ suite('project scaffolder', () => {
 
     return scaffold(options).then(() => {
       assert.notCalled(gitScaffolder.initialize);
+      assert.notCalled(prompts.promptForVcsHostDetails);
       assert.calledWith(
         readmeScaffolder.default,
         {

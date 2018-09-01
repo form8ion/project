@@ -8,16 +8,16 @@ import sinon from 'sinon';
 import {
   copyrightInformationShouldBeRequested,
   licenseChoicesShouldBePresented,
-  unlicensedConfirmationShouldBePresented,
-  vcsHostPromptShouldBePresented
+  unlicensedConfirmationShouldBePresented
 } from '../../../src/prompts/conditionals';
-import {promptForBaseDetails, promptForLanguageDetails} from '../../../src/prompts/questions';
+import {promptForBaseDetails, promptForLanguageDetails, promptForVcsHostDetails} from '../../../src/prompts/questions';
 import {questionNames} from '../../../src/prompts/question-names';
 
 suite('project scaffolder prompts', () => {
   let sandbox;
   const projectPath = any.string();
   const githubUser = any.word();
+  const answers = any.listOf(any.string);
 
   setup(() => {
     sandbox = sinon.createSandbox();
@@ -32,15 +32,10 @@ suite('project scaffolder prompts', () => {
   suite('base details', () => {
     test('that the user is prompted for the necessary details', async () => {
       const directoryName = any.string();
-      const languages = any.simpleObject();
       const copyrightHolder = any.string();
       path.basename.withArgs(projectPath).returns(directoryName);
-      inquirer.prompt.resolves({});
-      gitConfig.sync.returns({});
-
-      return promptForBaseDetails(projectPath, languages, {copyrightHolder}).then(() => assert.calledWith(
-        inquirer.prompt,
-        [
+      inquirer.prompt
+        .withArgs([
           {name: questionNames.PROJECT_NAME, message: 'What is the name of this project?', default: directoryName},
           {
             name: questionNames.DESCRIPTION,
@@ -85,11 +80,23 @@ suite('project scaffolder prompts', () => {
             type: 'confirm',
             default: true,
             message: 'Should a git repository be initialized?'
-          },
+          }
+        ])
+        .resolves(answers);
+      gitConfig.sync.returns({});
+
+      assert.equal(await promptForBaseDetails(projectPath, copyrightHolder), answers);
+    });
+  });
+
+  suite('vcs host details', () => {
+    test('that the user is prompted for the vcs hosting details', async () => {
+      gitConfig.sync.returns({});
+      inquirer.prompt
+        .withArgs([
           {
             name: questionNames.REPO_HOST,
             type: 'list',
-            when: vcsHostPromptShouldBePresented,
             message: 'Where will the repository be hosted?',
             choices: ['GitHub', 'BitBucket', 'GitLab', 'KeyBase']
           },
@@ -98,38 +105,35 @@ suite('project scaffolder prompts', () => {
             message: 'What is the id of the repository owner?',
             default: ''
           }
-        ]
-      ));
-    });
-  });
+        ])
+        .resolves(answers);
 
-  suite('vcs details', () => {
-    test('that the github user is provided as the default owner value if available in the global config', () => {
+      assert.equal(await promptForVcsHostDetails(), answers);
+    });
+
+    test('that the github user is provided as the default owner value if available in the global config', async () => {
       gitConfig.sync.returns({github: {user: githubUser}});
-      inquirer.prompt.resolves({});
+      inquirer.prompt
+        .withArgs(sinon.match(value => 1 === value.filter(question => githubUser === question.default).length))
+        .resolves(answers);
 
-      return promptForBaseDetails(projectPath, {}, {}).then(() => assert.calledWith(
-        inquirer.prompt,
-        sinon.match(value => 1 === value.filter(question => githubUser === question.default).length)
-      ));
+      assert.equal(await promptForVcsHostDetails(), answers);
     });
 
-    test('that the github user is not used as the default owner value an override is provided', () => {
+    test('that the github user is not used as the default owner value an override is provided', async () => {
       const githubAccount = any.word();
       gitConfig.sync.returns({github: {user: githubUser}});
-      inquirer.prompt.resolves({});
+      inquirer.prompt
+        .withArgs(sinon.match(value => 1 === value.filter(question => githubAccount === question.default).length))
+        .resolves(answers);
 
-      return promptForBaseDetails(projectPath, {}, {githubAccount}).then(() => assert.calledWith(
-        inquirer.prompt,
-        sinon.match(value => 1 === value.filter(question => githubAccount === question.default).length)
-      ));
+      assert.equal(await promptForVcsHostDetails(githubAccount), answers);
     });
   });
 
   suite('language details', () => {
     test('that the user is prompted for the language details', async () => {
       const languages = any.simpleObject();
-      const answers = any.listOf(any.string);
       inquirer.prompt
         .withArgs([
           {
