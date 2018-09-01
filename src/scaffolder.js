@@ -7,14 +7,14 @@ import {initialize as initializeGit, scaffold as scaffoldGit} from './vcs/git';
 import scaffoldLicense from './license';
 import scaffoldVcsHost from './vcs/host';
 import exec from '../third-party-wrappers/exec-as-promised';
-import {prompt} from './prompts/questions';
+import {promptForBaseDetails} from './prompts/questions';
 import {validate} from './options-validator';
 import {questionNames} from './prompts/question-names';
 
 export async function scaffold(options) {
   const projectRoot = process.cwd();
   const {languages = {}, overrides = {}} = validate(options);
-  const answers = await prompt(projectRoot, languages, overrides);
+  const answers = await promptForBaseDetails(projectRoot, languages, overrides);
 
   const projectType = answers[questionNames.PROJECT_TYPE];
   const projectName = answers[questionNames.PROJECT_NAME];

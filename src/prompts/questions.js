@@ -1,6 +1,6 @@
 import gitConfig from 'git-config';
 import {basename} from 'path';
-import {prompt as promptWithInquirer} from 'inquirer';
+import {prompt as promptWithInquirer, Separator} from 'inquirer';
 import spdxLicenseList from 'spdx-license-list/simple';
 import {
   copyrightInformationShouldBeRequested,
@@ -60,8 +60,7 @@ function includeVcsQuestions(githubAccount) {
   ];
 }
 
-
-export function prompt(projectRoot, languages, overrides) {
+export function promptForBaseDetails(projectRoot, languages, overrides) {
   return promptWithInquirer([
     {name: questionNames.PROJECT_NAME, message: 'What is the name of this project?', default: basename(projectRoot)},
     {name: questionNames.DESCRIPTION, message: 'How should this project be described?'},
@@ -79,6 +78,17 @@ export function prompt(projectRoot, languages, overrides) {
       type: 'list',
       message: 'What type of project is this?',
       choices: [...Object.keys(languages), 'Other']
+    }
+  ]);
+}
+
+export function promptForLanguageDetails(languages) {
+  return promptWithInquirer([
+    {
+      name: questionNames.PROJECT_TYPE,
+      type: 'list',
+      message: 'What type of project is this?',
+      choices: [...Object.keys(languages), new Separator(), 'Other']
     }
   ]);
 }

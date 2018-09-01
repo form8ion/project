@@ -34,7 +34,7 @@ suite('project scaffolder', () => {
     sandbox = sinon.createSandbox();
 
     sandbox.stub(process, 'cwd');
-    sandbox.stub(prompts, 'prompt');
+    sandbox.stub(prompts, 'promptForBaseDetails');
     sandbox.stub(optionsValidator, 'validate');
     sandbox.stub(readmeScaffolder, 'default');
     sandbox.stub(gitScaffolder, 'initialize');
@@ -61,7 +61,7 @@ suite('project scaffolder', () => {
     const overrides = any.simpleObject();
     const vcsIgnore = any.simpleObject();
     optionsValidator.validate.withArgs(options).returns({languages: scaffolders, overrides});
-    prompts.prompt.withArgs(projectPath, scaffolders, overrides).resolves({
+    prompts.promptForBaseDetails.withArgs(projectPath, scaffolders, overrides).resolves({
       [questionNames.PROJECT_NAME]: projectName,
       [questionNames.PROJECT_TYPE]: projectType,
       [questionNames.GIT_REPO]: true,
@@ -106,7 +106,7 @@ suite('project scaffolder', () => {
 
   test('that the options are optional', () => {
     optionsValidator.validate.returns({});
-    prompts.prompt.withArgs(projectPath, {}, {}).resolves({});
+    prompts.promptForBaseDetails.withArgs(projectPath, {}, {}).resolves({});
 
     return scaffold();
   });
@@ -114,14 +114,14 @@ suite('project scaffolder', () => {
   test('that each option is optional', () => {
     const emptyOptions = {};
     optionsValidator.validate.withArgs(emptyOptions).returns({});
-    prompts.prompt.withArgs(projectPath, {}, {}).resolves({});
+    prompts.promptForBaseDetails.withArgs(projectPath, {}, {}).resolves({});
 
     return scaffold(emptyOptions);
   });
 
   test('that the PRs-welcome badge is included for public projects', () => {
     optionsValidator.validate.withArgs(options).returns({});
-    prompts.prompt.resolves({
+    prompts.promptForBaseDetails.resolves({
       [questionNames.PROJECT_NAME]: projectName,
       [questionNames.LICENSE]: license,
       [questionNames.GIT_REPO]: true,
@@ -156,7 +156,7 @@ suite('project scaffolder', () => {
   test('that the badge lists passed to the readme are empty if none are defined', () => {
     optionsValidator.validate.withArgs(options).returns({});
     licenseScaffolder.default.resolves({});
-    prompts.prompt.resolves({
+    prompts.promptForBaseDetails.resolves({
       [questionNames.PROJECT_NAME]: projectName,
       [questionNames.LICENSE]: license,
       [questionNames.DESCRIPTION]: description,
@@ -180,7 +180,7 @@ suite('project scaffolder', () => {
 
   test('that the git repo is not initialized if not requested', () => {
     optionsValidator.validate.withArgs(options).returns({});
-    prompts.prompt.resolves({[questionNames.GIT_REPO]: false});
+    prompts.promptForBaseDetails.resolves({[questionNames.GIT_REPO]: false});
     readmeScaffolder.default.resolves();
 
     return scaffold(options).then(() => assert.notCalled(gitScaffolder.scaffold));
@@ -192,7 +192,7 @@ suite('project scaffolder', () => {
     const language = any.word();
     const ci = any.word();
     optionsValidator.validate.withArgs(options).returns({languages: scaffolders});
-    prompts.prompt.resolves({
+    prompts.promptForBaseDetails.resolves({
       [questionNames.PROJECT_NAME]: projectName,
       [questionNames.PROJECT_TYPE]: language,
       [questionNames.VISIBILITY]: visibility,
@@ -258,7 +258,7 @@ suite('project scaffolder', () => {
 
   test('that the license is passed to the language scaffolder as `UNLICENSED` when no license was chosen', () => {
     optionsValidator.validate.withArgs(options).returns({});
-    prompts.prompt.resolves({[questionNames.PROJECT_TYPE]: projectType});
+    prompts.promptForBaseDetails.resolves({[questionNames.PROJECT_TYPE]: projectType});
 
     return scaffold(options).then(() => assert.calledWithMatch(
       languageScaffolder.scaffold,
@@ -270,7 +270,7 @@ suite('project scaffolder', () => {
 
   test('that running a verification command is not attempted when not provided', () => {
     optionsValidator.validate.withArgs(options).returns({});
-    prompts.prompt.resolves({});
+    prompts.promptForBaseDetails.resolves({});
     languageScaffolder.scaffold.resolves({badges: {}, projectDetails: {}});
 
     return scaffold(options).then(() => assert.notCalled(exec.default));
