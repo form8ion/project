@@ -97,12 +97,6 @@ suite('project scaffolder prompts', () => {
             name: questionNames.REPO_OWNER,
             message: 'What is the id of the repository owner?',
             default: ''
-          },
-          {
-            name: questionNames.PROJECT_TYPE,
-            type: 'list',
-            message: 'What type of project is this?',
-            choices: [...Object.keys(languages), 'Other']
           }
         ]
       ));

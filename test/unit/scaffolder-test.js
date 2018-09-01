@@ -35,6 +35,7 @@ suite('project scaffolder', () => {
 
     sandbox.stub(process, 'cwd');
     sandbox.stub(prompts, 'promptForBaseDetails');
+    sandbox.stub(prompts, 'promptForLanguageDetails');
     sandbox.stub(optionsValidator, 'validate');
     sandbox.stub(readmeScaffolder, 'default');
     sandbox.stub(gitScaffolder, 'initialize');
@@ -61,19 +62,21 @@ suite('project scaffolder', () => {
     const overrides = any.simpleObject();
     const vcsIgnore = any.simpleObject();
     optionsValidator.validate.withArgs(options).returns({languages: scaffolders, overrides});
-    prompts.promptForBaseDetails.withArgs(projectPath, scaffolders, overrides).resolves({
-      [questionNames.PROJECT_NAME]: projectName,
-      [questionNames.PROJECT_TYPE]: projectType,
-      [questionNames.GIT_REPO]: true,
-      [questionNames.REPO_HOST]: repoHost,
-      [questionNames.REPO_OWNER]: repoOwner,
-      [questionNames.LICENSE]: license,
-      [questionNames.DESCRIPTION]: description,
-      [questionNames.COPYRIGHT_HOLDER]: holder,
-      [questionNames.COPYRIGHT_YEAR]: year,
-      [questionNames.VISIBILITY]: visibility,
-      [questionNames.CI]: 'Travis'
-    });
+    prompts.promptForBaseDetails
+      .withArgs(projectPath, scaffolders, overrides)
+      .resolves({
+        [questionNames.PROJECT_NAME]: projectName,
+        [questionNames.GIT_REPO]: true,
+        [questionNames.REPO_HOST]: repoHost,
+        [questionNames.REPO_OWNER]: repoOwner,
+        [questionNames.LICENSE]: license,
+        [questionNames.DESCRIPTION]: description,
+        [questionNames.COPYRIGHT_HOLDER]: holder,
+        [questionNames.COPYRIGHT_YEAR]: year,
+        [questionNames.VISIBILITY]: visibility,
+        [questionNames.CI]: 'Travis'
+      });
+    prompts.promptForLanguageDetails.withArgs(scaffolders).resolves({[questionNames.PROJECT_TYPE]: projectType});
     readmeScaffolder.default.resolves();
     gitScaffolder.scaffold.resolves();
     licenseScaffolder.default
@@ -107,6 +110,7 @@ suite('project scaffolder', () => {
   test('that the options are optional', () => {
     optionsValidator.validate.returns({});
     prompts.promptForBaseDetails.withArgs(projectPath, {}, {}).resolves({});
+    prompts.promptForLanguageDetails.resolves({});
 
     return scaffold();
   });
@@ -115,6 +119,7 @@ suite('project scaffolder', () => {
     const emptyOptions = {};
     optionsValidator.validate.withArgs(emptyOptions).returns({});
     prompts.promptForBaseDetails.withArgs(projectPath, {}, {}).resolves({});
+    prompts.promptForLanguageDetails.resolves({});
 
     return scaffold(emptyOptions);
   });
@@ -128,6 +133,7 @@ suite('project scaffolder', () => {
       [questionNames.DESCRIPTION]: description,
       [questionNames.VISIBILITY]: 'Public'
     });
+    prompts.promptForLanguageDetails.resolves({});
 
     return scaffold(options).then(() => {
       assert.calledWith(gitScaffolder.scaffold, {projectRoot: projectPath});
@@ -162,6 +168,7 @@ suite('project scaffolder', () => {
       [questionNames.DESCRIPTION]: description,
       [questionNames.GIT_REPO]: false
     });
+    prompts.promptForLanguageDetails.resolves({});
     readmeScaffolder.default.resolves();
 
     return scaffold(options).then(() => {
@@ -181,6 +188,7 @@ suite('project scaffolder', () => {
   test('that the git repo is not initialized if not requested', () => {
     optionsValidator.validate.withArgs(options).returns({});
     prompts.promptForBaseDetails.resolves({[questionNames.GIT_REPO]: false});
+    prompts.promptForLanguageDetails.resolves({});
     readmeScaffolder.default.resolves();
 
     return scaffold(options).then(() => assert.notCalled(gitScaffolder.scaffold));
@@ -194,7 +202,6 @@ suite('project scaffolder', () => {
     optionsValidator.validate.withArgs(options).returns({languages: scaffolders});
     prompts.promptForBaseDetails.resolves({
       [questionNames.PROJECT_NAME]: projectName,
-      [questionNames.PROJECT_TYPE]: language,
       [questionNames.VISIBILITY]: visibility,
       [questionNames.GIT_REPO]: true,
       [questionNames.REPO_HOST]: repoHost,
@@ -203,6 +210,7 @@ suite('project scaffolder', () => {
       [questionNames.CI]: ci,
       [questionNames.DESCRIPTION]: description
     });
+    prompts.promptForLanguageDetails.withArgs(scaffolders).resolves({[questionNames.PROJECT_TYPE]: language});
     const languageConsumerBadges = any.simpleObject();
     const languageContributionBadges = any.simpleObject();
     const languageStatusBadges = any.simpleObject();

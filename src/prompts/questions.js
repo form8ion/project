@@ -72,13 +72,7 @@ export function promptForBaseDetails(projectRoot, languages, overrides) {
       default: 'Private'
     },
     ...includeLicenseQuestions(overrides.copyrightHolder),
-    ...includeVcsQuestions(overrides.githubAccount),
-    {
-      name: questionNames.PROJECT_TYPE,
-      type: 'list',
-      message: 'What type of project is this?',
-      choices: [...Object.keys(languages), 'Other']
-    }
+    ...includeVcsQuestions(overrides.githubAccount)
   ]);
 }
 
