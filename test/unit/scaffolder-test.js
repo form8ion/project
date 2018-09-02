@@ -19,7 +19,6 @@ suite('project scaffolder', () => {
   const options = any.simpleObject();
   const projectPath = any.string();
   const projectName = any.string();
-  const vcsProjectName = any.string();
   const repoHost = any.word();
   const repoOwner = any.word();
   const description = any.string();
@@ -29,7 +28,7 @@ suite('project scaffolder', () => {
   const licenseBadge = any.url();
   const scaffolders = any.simpleObject();
   const documentation = any.simpleObject();
-  const vcs = {host: repoHost, owner: repoOwner, name: vcsProjectName};
+  const vcs = any.simpleObject();
 
   setup(() => {
     sandbox = sinon.createSandbox();
@@ -266,7 +265,7 @@ suite('project scaffolder', () => {
       );
       assert.calledWith(exec.default, verificationCommand, {silent: false});
       assert.calledWith(vcsHostScaffolder.default, {
-        host: repoHost,
+        ...vcs,
         projectRoot: projectPath,
         projectType: language,
         description,
