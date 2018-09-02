@@ -15,20 +15,17 @@ suite('vcs host scaffolder', () => {
 
   teardown(() => sandbox.restore());
 
-  test('that hosting details are returned', () => {
-    const host = any.string();
+  test('that hosting details are returned', async () => {
+    await scaffoldVcsHost({host: any.string()});
 
-    return scaffoldVcsHost({host}).then(() => assert.notCalled(githubScaffolder.default));
+    assert.notCalled(githubScaffolder.default);
   });
 
-  test('that github is scaffolded if github was chosen as the host', () => {
-    const projectRoot = any.string();
-    const projectType = any.string();
-    const description = any.sentence();
-    const homepage = any.url();
-    githubScaffolder.default.resolves();
+  test('that github is scaffolded if github was chosen as the host', async () => {
+    const otherOptions = any.simpleObject();
+    const results = any.simpleObject();
+    githubScaffolder.default.withArgs(otherOptions).resolves(results);
 
-    return scaffoldVcsHost({host: 'GitHub', projectRoot, projectType, description, homepage})
-      .then(() => assert.calledWith(githubScaffolder.default, {projectRoot, projectType, description, homepage}));
+    await scaffoldVcsHost({...otherOptions, host: 'GitHub'});
   });
 });

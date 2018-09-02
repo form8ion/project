@@ -19,6 +19,7 @@ suite('project scaffolder', () => {
   const options = any.simpleObject();
   const projectPath = any.string();
   const projectName = any.string();
+  const vcsProjectName = any.string();
   const repoHost = any.word();
   const repoOwner = any.word();
   const description = any.string();
@@ -28,7 +29,7 @@ suite('project scaffolder', () => {
   const licenseBadge = any.url();
   const scaffolders = any.simpleObject();
   const documentation = any.simpleObject();
-  const vcs = {host: repoHost, owner: repoOwner, name: projectName};
+  const vcs = {host: repoHost, owner: repoOwner, name: vcsProjectName};
 
   setup(() => {
     sandbox = sinon.createSandbox();
@@ -62,12 +63,13 @@ suite('project scaffolder', () => {
     const visibility = any.word();
     const overrides = {...any.simpleObject(), githubAccount: any.word(), copyrightHolder: any.string()};
     const vcsIgnore = any.simpleObject();
+    const gitRepoShouldBeInitialized = true;
     optionsValidator.validate.withArgs(options).returns({languages: scaffolders, overrides});
     prompts.promptForBaseDetails
       .withArgs(projectPath, overrides.copyrightHolder)
       .resolves({
         [questionNames.PROJECT_NAME]: projectName,
-        [questionNames.GIT_REPO]: true,
+        [questionNames.GIT_REPO]: gitRepoShouldBeInitialized,
         [questionNames.LICENSE]: license,
         [questionNames.DESCRIPTION]: description,
         [questionNames.COPYRIGHT_HOLDER]: holder,
@@ -76,11 +78,10 @@ suite('project scaffolder', () => {
         [questionNames.CI]: 'Travis'
       });
     prompts.promptForLanguageDetails.withArgs(scaffolders).resolves({[questionNames.PROJECT_TYPE]: projectType});
-    prompts.promptForVcsHostDetails.withArgs(overrides.githubAccount).resolves({
-      [questionNames.REPO_HOST]: repoHost,
-      [questionNames.REPO_OWNER]: repoOwner
-    });
     readmeScaffolder.default.resolves();
+    gitScaffolder.initialize
+      .withArgs(gitRepoShouldBeInitialized, projectPath, projectName, overrides.githubAccount)
+      .resolves(vcs);
     gitScaffolder.scaffold.resolves();
     licenseScaffolder.default
       .withArgs({projectRoot: projectPath, license, copyright, vcs})
@@ -90,7 +91,6 @@ suite('project scaffolder', () => {
       .resolves({badges: {status: {ci: ciBadge}}, vcsIgnore, projectDetails: {}, documentation});
 
     return scaffold(options).then(() => {
-      assert.calledWith(gitScaffolder.initialize, projectPath);
       assert.calledWith(gitScaffolder.scaffold, {projectRoot: projectPath, ignore: vcsIgnore});
       assert.calledWith(
         readmeScaffolder.default,
@@ -114,6 +114,7 @@ suite('project scaffolder', () => {
     optionsValidator.validate.returns({});
     prompts.promptForBaseDetails.withArgs(projectPath, undefined).resolves({});
     prompts.promptForLanguageDetails.resolves({});
+    gitScaffolder.initialize.resolves({});
 
     return scaffold();
   });
@@ -123,6 +124,7 @@ suite('project scaffolder', () => {
     optionsValidator.validate.withArgs(emptyOptions).returns({});
     prompts.promptForBaseDetails.withArgs(projectPath, undefined).resolves({});
     prompts.promptForLanguageDetails.resolves({});
+    gitScaffolder.initialize.resolves({});
 
     return scaffold(emptyOptions);
   });
@@ -137,6 +139,7 @@ suite('project scaffolder', () => {
       [questionNames.VISIBILITY]: 'Public'
     });
     prompts.promptForLanguageDetails.resolves({});
+    gitScaffolder.initialize.resolves({});
 
     return scaffold(options).then(() => {
       assert.calledWith(gitScaffolder.scaffold, {projectRoot: projectPath});
@@ -173,9 +176,9 @@ suite('project scaffolder', () => {
     });
     prompts.promptForLanguageDetails.resolves({});
     readmeScaffolder.default.resolves();
+    gitScaffolder.initialize.resolves({});
 
     return scaffold(options).then(() => {
-      assert.notCalled(gitScaffolder.initialize);
       assert.notCalled(prompts.promptForVcsHostDetails);
       assert.calledWith(
         readmeScaffolder.default,
@@ -194,6 +197,7 @@ suite('project scaffolder', () => {
     prompts.promptForBaseDetails.resolves({[questionNames.GIT_REPO]: false});
     prompts.promptForLanguageDetails.resolves({});
     readmeScaffolder.default.resolves();
+    gitScaffolder.initialize.resolves({});
 
     return scaffold(options).then(() => assert.notCalled(gitScaffolder.scaffold));
   });
@@ -204,17 +208,20 @@ suite('project scaffolder', () => {
     const language = any.word();
     const ci = any.word();
     optionsValidator.validate.withArgs(options).returns({languages: scaffolders});
+    gitScaffolder.initialize.resolves(vcs);
     prompts.promptForBaseDetails.resolves({
       [questionNames.PROJECT_NAME]: projectName,
       [questionNames.VISIBILITY]: visibility,
       [questionNames.GIT_REPO]: true,
-      [questionNames.REPO_HOST]: repoHost,
-      [questionNames.REPO_OWNER]: repoOwner,
       [questionNames.LICENSE]: license,
       [questionNames.CI]: ci,
       [questionNames.DESCRIPTION]: description
     });
     prompts.promptForLanguageDetails.withArgs(scaffolders).resolves({[questionNames.PROJECT_TYPE]: language});
+    prompts.promptForVcsHostDetails.resolves({
+      [questionNames.REPO_HOST]: repoHost,
+      [questionNames.REPO_OWNER]: repoOwner
+    });
     const languageConsumerBadges = any.simpleObject();
     const languageContributionBadges = any.simpleObject();
     const languageStatusBadges = any.simpleObject();
@@ -270,7 +277,9 @@ suite('project scaffolder', () => {
 
   test('that the license is passed to the language scaffolder as `UNLICENSED` when no license was chosen', () => {
     optionsValidator.validate.withArgs(options).returns({});
-    prompts.promptForBaseDetails.resolves({[questionNames.PROJECT_TYPE]: projectType});
+    prompts.promptForBaseDetails.resolves({});
+    prompts.promptForLanguageDetails.resolves({[questionNames.PROJECT_TYPE]: projectType});
+    gitScaffolder.initialize.resolves({});
 
     return scaffold(options).then(() => assert.calledWithMatch(
       languageScaffolder.scaffold,
@@ -283,6 +292,8 @@ suite('project scaffolder', () => {
   test('that running a verification command is not attempted when not provided', () => {
     optionsValidator.validate.withArgs(options).returns({});
     prompts.promptForBaseDetails.resolves({});
+    prompts.promptForLanguageDetails.resolves({});
+    gitScaffolder.initialize.resolves({});
     languageScaffolder.scaffold.resolves({badges: {}, projectDetails: {}});
 
     return scaffold(options).then(() => assert.notCalled(exec.default));

@@ -1,5 +1,9 @@
 import scaffoldGithub from './github';
 
-export default async function ({host, projectRoot, projectType, description, homepage}) {
-  if ('GitHub' === host) await scaffoldGithub({projectRoot, projectType, description, homepage});
+export default function (options) {
+  const {host, ...rest} = options;
+
+  if ('GitHub' === host) return scaffoldGithub(rest);
+
+  return {};
 }

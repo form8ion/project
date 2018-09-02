@@ -1,6 +1,8 @@
 import {Repository as gitRepository} from 'nodegit';
 import fs from 'mz/fs';
 import chalk from 'chalk';
+import {promptForVcsHostDetails} from '../prompts/questions';
+import {questionNames} from '../prompts/question-names';
 
 function createIgnoreFile(projectRoot, ignore) {
   const {directories, files} = ignore;
@@ -8,10 +10,19 @@ function createIgnoreFile(projectRoot, ignore) {
   return fs.writeFile(`${projectRoot}/.gitignore`, `${directories.join('\n')}\n\n${files.join('\n')}`);
 }
 
-export function initialize(projectRoot) {
-  console.log(chalk.blue('Initializing Git Repository'));     // eslint-disable-line no-console
+export async function initialize(gitRepoShouldBeInitialized, projectRoot, projectName, githubAccount) {
+  if (gitRepoShouldBeInitialized) {
+    console.log(chalk.blue('Initializing Git Repository'));     // eslint-disable-line no-console
 
-  return gitRepository.init(projectRoot, 0);
+    const [answers] = await Promise.all([
+      promptForVcsHostDetails(githubAccount),
+      gitRepository.init(projectRoot, 0)
+    ]);
+
+    return {host: answers[questionNames.REPO_HOST], owner: answers[questionNames.REPO_OWNER], name: projectName};
+  }
+
+  return {};
 }
 
 export function scaffold({projectRoot, ignore}) {

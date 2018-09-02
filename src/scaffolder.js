@@ -7,7 +7,7 @@ import {initialize as initializeGit, scaffold as scaffoldGit} from './vcs/git';
 import scaffoldLicense from './license';
 import scaffoldVcsHost from './vcs/host';
 import exec from '../third-party-wrappers/exec-as-promised';
-import {promptForBaseDetails, promptForLanguageDetails, promptForVcsHostDetails} from './prompts/questions';
+import {promptForBaseDetails, promptForLanguageDetails} from './prompts/questions';
 import {validate} from './options-validator';
 import {questionNames} from './prompts/question-names';
 
@@ -17,37 +17,28 @@ export async function scaffold(options) {
   const {copyrightHolder, githubAccount} = overrides;
 
   const baseAnswers = await promptForBaseDetails(projectRoot, copyrightHolder);
+  const projectName = baseAnswers[questionNames.PROJECT_NAME];
+  const chosenLicense = baseAnswers[questionNames.LICENSE];
+  const visibility = baseAnswers[questionNames.VISIBILITY];
+  const description = baseAnswers[questionNames.DESCRIPTION];
   const gitRepo = baseAnswers[questionNames.GIT_REPO];
-  const answers = {
-    ...baseAnswers,
-    ...await promptForLanguageDetails(languages),
-    ...gitRepo && await promptForVcsHostDetails(githubAccount)
+  const copyright = {
+    year: baseAnswers[questionNames.COPYRIGHT_YEAR],
+    holder: baseAnswers[questionNames.COPYRIGHT_HOLDER]
   };
 
-  const projectType = answers[questionNames.PROJECT_TYPE];
-  const projectName = answers[questionNames.PROJECT_NAME];
-  const chosenLicense = answers[questionNames.LICENSE];
-  const visibility = answers[questionNames.VISIBILITY];
-  const description = answers[questionNames.DESCRIPTION];
-  const vcs = {host: answers[questionNames.REPO_HOST], owner: answers[questionNames.REPO_OWNER], name: projectName};
+  const languageAnswers = await promptForLanguageDetails(languages);
+  const projectType = languageAnswers[questionNames.PROJECT_TYPE];
 
-  if (gitRepo) await initializeGit(projectRoot);
+  const vcs = await initializeGit(gitRepo, projectRoot, projectName, githubAccount);
 
   const [license, language] = await Promise.all([
-    scaffoldLicense({
-      projectRoot,
-      license: chosenLicense,
-      copyright: {year: answers[questionNames.COPYRIGHT_YEAR], holder: answers[questionNames.COPYRIGHT_HOLDER]},
-      vcs
-    }),
-    scaffoldLanguage(languages, projectType, {
-      projectRoot,
-      projectName,
-      vcs,
-      visibility,
-      license: chosenLicense || 'UNLICENSED',
-      description
-    })
+    scaffoldLicense({projectRoot, license: chosenLicense, copyright, vcs}),
+    scaffoldLanguage(
+      languages,
+      projectType,
+      {projectRoot, projectName, vcs, visibility, license: chosenLicense || 'UNLICENSED', description}
+    )
   ]);
 
   await Promise.all([
@@ -72,7 +63,7 @@ export async function scaffold(options) {
       }
     }),
     scaffoldVcsHost({
-      host: answers[questionNames.REPO_HOST],
+      host: vcs.host,
       projectRoot,
       projectType,
       description,
