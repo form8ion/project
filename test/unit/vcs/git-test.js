@@ -29,11 +29,12 @@ suite('scaffold git', () => {
       const repoOwner = any.word();
       const githubAccount = any.word();
       const projectName = any.word();
+      const vcsHosts = any.simpleObject();
       prompts.promptForVcsHostDetails
-        .withArgs(githubAccount)
+        .withArgs(githubAccount, vcsHosts)
         .resolves({[questionNames.REPO_HOST]: repoHost, [questionNames.REPO_OWNER]: repoOwner});
 
-      const hostDetails = await initialize(true, projectRoot, projectName, githubAccount);
+      const hostDetails = await initialize(true, projectRoot, projectName, githubAccount, vcsHosts);
 
       assert.calledWith(gitRepository.init, projectRoot, 0);
       assert.deepEqual(hostDetails, {host: repoHost, owner: repoOwner, name: projectName});

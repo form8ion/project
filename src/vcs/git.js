@@ -10,12 +10,12 @@ function createIgnoreFile(projectRoot, ignore) {
   return fs.writeFile(`${projectRoot}/.gitignore`, `${directories.join('\n')}\n\n${files.join('\n')}`);
 }
 
-export async function initialize(gitRepoShouldBeInitialized, projectRoot, projectName, githubAccount) {
+export async function initialize(gitRepoShouldBeInitialized, projectRoot, projectName, githubAccount, vcsHosts) {
   if (gitRepoShouldBeInitialized) {
     console.log(chalk.blue('Initializing Git Repository'));     // eslint-disable-line no-console
 
     const [answers] = await Promise.all([
-      promptForVcsHostDetails(githubAccount),
+      promptForVcsHostDetails(githubAccount, vcsHosts),
       gitRepository.init(projectRoot, 0)
     ]);
 
