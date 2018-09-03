@@ -27,6 +27,7 @@ suite('project scaffolder', () => {
   const projectType = any.word();
   const licenseBadge = any.url();
   const scaffolders = any.simpleObject();
+  const vcsHosts = any.simpleObject();
   const documentation = any.simpleObject();
   const vcs = any.simpleObject();
 
@@ -63,7 +64,7 @@ suite('project scaffolder', () => {
     const overrides = {...any.simpleObject(), githubAccount: any.word(), copyrightHolder: any.string()};
     const vcsIgnore = any.simpleObject();
     const gitRepoShouldBeInitialized = true;
-    optionsValidator.validate.withArgs(options).returns({languages: scaffolders, overrides});
+    optionsValidator.validate.withArgs(options).returns({languages: scaffolders, overrides, vcsHosts});
     prompts.promptForBaseDetails
       .withArgs(projectPath, overrides.copyrightHolder)
       .resolves({
@@ -79,7 +80,7 @@ suite('project scaffolder', () => {
     prompts.promptForLanguageDetails.withArgs(scaffolders).resolves({[questionNames.PROJECT_TYPE]: projectType});
     readmeScaffolder.default.resolves();
     gitScaffolder.initialize
-      .withArgs(gitRepoShouldBeInitialized, projectPath, projectName, overrides.githubAccount)
+      .withArgs(gitRepoShouldBeInitialized, projectPath, projectName, overrides.githubAccount, vcsHosts)
       .resolves(vcs);
     gitScaffolder.scaffold.resolves();
     licenseScaffolder.default
@@ -109,13 +110,17 @@ suite('project scaffolder', () => {
     });
   });
 
-  test('that the options are optional', () => {
+  test('that the options are optional', async () => {
+    const gitRepoShouldBeInitialized = any.boolean();
     optionsValidator.validate.returns({});
-    prompts.promptForBaseDetails.withArgs(projectPath, undefined).resolves({});
+    prompts.promptForBaseDetails
+      .withArgs(projectPath, undefined)
+      .resolves({[questionNames.PROJECT_NAME]: projectName, [questionNames.GIT_REPO]: gitRepoShouldBeInitialized});
     prompts.promptForLanguageDetails.resolves({});
-    gitScaffolder.initialize.resolves({});
 
-    return scaffold();
+    await scaffold();
+
+    assert.calledWith(gitScaffolder.initialize, gitRepoShouldBeInitialized, projectPath, projectName, undefined, {});
   });
 
   test('that each option is optional', () => {
