@@ -15,7 +15,7 @@ export async function initialize(gitRepoShouldBeInitialized, projectRoot, projec
     console.log(chalk.blue('Initializing Git Repository'));     // eslint-disable-line no-console
 
     const [answers] = await Promise.all([
-      promptForVcsHostDetails(githubAccount, vcsHosts),
+      promptForVcsHostDetails(vcsHosts, githubAccount),
       gitRepository.init(projectRoot, 0)
     ]);
 

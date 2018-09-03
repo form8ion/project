@@ -68,13 +68,13 @@ export function promptForLanguageDetails(languages) {
   ]);
 }
 
-export function promptForVcsHostDetails(githubAccount) {
+export function promptForVcsHostDetails(hosts, githubAccount) {
   return promptWithInquirer([
     {
       name: questionNames.REPO_HOST,
       type: 'list',
       message: 'Where will the repository be hosted?',
-      choices: ['GitHub', 'BitBucket', 'GitLab', 'KeyBase']
+      choices: [...Object.keys(hosts), new Separator(), 'Other']
     },
     {
       name: questionNames.REPO_OWNER,

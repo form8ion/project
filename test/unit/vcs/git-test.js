@@ -31,7 +31,7 @@ suite('scaffold git', () => {
       const projectName = any.word();
       const vcsHosts = any.simpleObject();
       prompts.promptForVcsHostDetails
-        .withArgs(githubAccount, vcsHosts)
+        .withArgs(vcsHosts, githubAccount)
         .resolves({[questionNames.REPO_HOST]: repoHost, [questionNames.REPO_OWNER]: repoOwner});
 
       const hostDetails = await initialize(true, projectRoot, projectName, githubAccount, vcsHosts);

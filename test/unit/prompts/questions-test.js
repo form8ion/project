@@ -91,6 +91,7 @@ suite('project scaffolder prompts', () => {
 
   suite('vcs host details', () => {
     test('that the user is prompted for the vcs hosting details', async () => {
+      const hosts = any.objectWithKeys(any.listOf(any.string));
       gitConfig.sync.returns({});
       inquirer.prompt
         .withArgs([
@@ -98,7 +99,7 @@ suite('project scaffolder prompts', () => {
             name: questionNames.REPO_HOST,
             type: 'list',
             message: 'Where will the repository be hosted?',
-            choices: ['GitHub', 'BitBucket', 'GitLab', 'KeyBase']
+            choices: [...Object.keys(hosts), new inquirer.Separator(), 'Other']
           },
           {
             name: questionNames.REPO_OWNER,
@@ -108,7 +109,7 @@ suite('project scaffolder prompts', () => {
         ])
         .resolves(answers);
 
-      assert.equal(await promptForVcsHostDetails(), answers);
+      assert.equal(await promptForVcsHostDetails(hosts), answers);
     });
 
     test('that the github user is provided as the default owner value if available in the global config', async () => {
@@ -117,7 +118,7 @@ suite('project scaffolder prompts', () => {
         .withArgs(sinon.match(value => 1 === value.filter(question => githubUser === question.default).length))
         .resolves(answers);
 
-      assert.equal(await promptForVcsHostDetails(), answers);
+      assert.equal(await promptForVcsHostDetails({}), answers);
     });
 
     test('that the github user is not used as the default owner value an override is provided', async () => {
@@ -127,7 +128,7 @@ suite('project scaffolder prompts', () => {
         .withArgs(sinon.match(value => 1 === value.filter(question => githubAccount === question.default).length))
         .resolves(answers);
 
-      assert.equal(await promptForVcsHostDetails(githubAccount), answers);
+      assert.equal(await promptForVcsHostDetails({}, githubAccount), answers);
     });
   });
 
