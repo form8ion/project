@@ -62,7 +62,7 @@ export async function scaffold(options) {
         }
       }
     }),
-    scaffoldVcsHost({
+    scaffoldVcsHost(vcsHosts, {
       ...vcs,
       projectRoot,
       projectType,

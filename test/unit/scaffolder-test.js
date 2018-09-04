@@ -211,7 +211,7 @@ suite('project scaffolder', () => {
     const ignore = any.simpleObject();
     const language = any.word();
     const ci = any.word();
-    optionsValidator.validate.withArgs(options).returns({languages: scaffolders});
+    optionsValidator.validate.withArgs(options).returns({languages: scaffolders, vcsHosts});
     gitScaffolder.initialize.resolves(vcs);
     prompts.promptForBaseDetails.resolves({
       [questionNames.PROJECT_NAME]: projectName,
@@ -269,7 +269,7 @@ suite('project scaffolder', () => {
         }
       );
       assert.calledWith(exec.default, verificationCommand, {silent: false});
-      assert.calledWith(vcsHostScaffolder.default, {
+      assert.calledWith(vcsHostScaffolder.default, vcsHosts, {
         ...vcs,
         projectRoot: projectPath,
         projectType: language,
