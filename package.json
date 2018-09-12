@@ -37,7 +37,7 @@
     }
   },
   "devDependencies": {
-    "@travi/any": "1.7.5",
+    "@travi/any": "1.8.0",
     "@travi/eslint-config-travi": "^1.6.18",
     "babel-plugin-transform-object-rest-spread": "6.26.0",
     "babel-preset-env": "^1.7.0",
