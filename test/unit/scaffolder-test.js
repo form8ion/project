@@ -61,7 +61,7 @@ suite('project scaffolder', () => {
     const holder = any.sentence();
     const copyright = {year, holder};
     const visibility = any.word();
-    const overrides = {...any.simpleObject(), githubAccount: any.word(), copyrightHolder: any.string()};
+    const overrides = {...any.simpleObject(), copyrightHolder: any.string()};
     const vcsIgnore = any.simpleObject();
     const gitRepoShouldBeInitialized = true;
     optionsValidator.validate.withArgs(options).returns({languages: scaffolders, overrides, vcsHosts});
@@ -80,7 +80,7 @@ suite('project scaffolder', () => {
     prompts.promptForLanguageDetails.withArgs(scaffolders).resolves({[questionNames.PROJECT_TYPE]: projectType});
     readmeScaffolder.default.resolves();
     gitScaffolder.initialize
-      .withArgs(gitRepoShouldBeInitialized, projectPath, projectName, overrides.githubAccount, vcsHosts)
+      .withArgs(gitRepoShouldBeInitialized, projectPath, projectName, vcsHosts)
       .resolves(vcs);
     gitScaffolder.scaffold.resolves();
     licenseScaffolder.default
@@ -120,7 +120,7 @@ suite('project scaffolder', () => {
 
     await scaffold();
 
-    assert.calledWith(gitScaffolder.initialize, gitRepoShouldBeInitialized, projectPath, projectName, undefined, {});
+    assert.calledWith(gitScaffolder.initialize, gitRepoShouldBeInitialized, projectPath, projectName, {});
   });
 
   test('that each option is optional', () => {
