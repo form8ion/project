@@ -17,7 +17,14 @@ suite('options validator', () => {
       overrides: {copyrightHolder: any.string()},
       vcsHosts: any.objectWithKeys(
         any.listOf(any.string),
-        {factory: () => ({scaffolder: foo => foo, prompt: () => undefined})}
+        {
+          factory: () => ({
+            scaffolder: foo => foo,
+            prompt: () => undefined,
+            public: any.boolean(),
+            private: any.boolean()
+          })
+        }
       )
     };
 

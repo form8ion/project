@@ -7,7 +7,9 @@ export function validate(options) {
     overrides: joi.object({copyrightHolder: joi.string()}),
     vcsHosts: joi.object().pattern(/^/, joi.object({
       scaffolder: joi.func().arity(1).required(),
-      prompt: joi.func().required()
+      prompt: joi.func().required(),
+      public: joi.boolean(),
+      private: joi.boolean()
     }))
   }));
 
