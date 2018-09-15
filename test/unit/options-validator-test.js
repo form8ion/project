@@ -14,10 +14,18 @@ suite('options validator', () => {
   test('that validated options are returned', () => {
     const options = {
       languages: any.objectWithKeys(any.listOf(any.string), {factory: () => foo => foo}),
-      overrides: {
-        githubAccount: any.string(),
-        copyrightHolder: any.string()
-      }
+      overrides: {copyrightHolder: any.string()},
+      vcsHosts: any.objectWithKeys(
+        any.listOf(any.string),
+        {
+          factory: () => ({
+            scaffolder: foo => foo,
+            prompt: () => undefined,
+            public: any.boolean(),
+            private: any.boolean()
+          })
+        }
+      )
     };
 
     assert.deepEqual(validate(options), options);
@@ -48,10 +56,42 @@ suite('options validator', () => {
     );
   });
 
-  test('that the copyright-holder must be a string, when provided', () => {
+  test('that a provided vcs-host must define options as an object', () => {
+    const key = any.word();
+
     assert.throws(
-      () => validate({overrides: {githubAccount: any.integer()}}),
-      'child "overrides" fails because [child "githubAccount" fails because ["githubAccount" must be a string]]'
+      () => validate({vcsHosts: {[key]: []}}),
+      `child "vcsHosts" fails because [child "${key}" fails because ["${key}" must be an object]]`
+    );
+  });
+
+  test('that a provided vcs-host must provide a scaffold function', () => {
+    const key = any.word();
+
+    assert.throws(
+      () => validate({vcsHosts: {[key]: {}}}),
+      `child "vcsHosts" fails because [child "${key}" fails because ` +
+      '[child "scaffolder" fails because ["scaffolder" is required]]]'
+    );
+  });
+
+  test('that a provided vcs-host scaffolder must accept a single argument', () => {
+    const key = any.word();
+
+    assert.throws(
+      () => validate({vcsHosts: {[key]: {scaffolder: () => undefined}}}),
+      `child "vcsHosts" fails because [child "${key}" fails because ` +
+      '[child "scaffolder" fails because ["scaffolder" must have an arity of 1]]]'
+    );
+  });
+
+  test('that a provided vcs-host must provide a prompt function', () => {
+    const key = any.word();
+
+    assert.throws(
+      () => validate({vcsHosts: {[key]: {scaffolder: foo => foo}}}),
+      `child "vcsHosts" fails because [child "${key}" fails because ` +
+      '[child "prompt" fails because ["prompt" is required]]]'
     );
   });
 });

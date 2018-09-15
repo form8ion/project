@@ -1,4 +1,3 @@
-import gitConfig from 'git-config';
 import {basename} from 'path';
 import {prompt as promptWithInquirer, Separator} from 'inquirer';
 import spdxLicenseList from 'spdx-license-list/simple';
@@ -68,18 +67,16 @@ export function promptForLanguageDetails(languages) {
   ]);
 }
 
-export function promptForVcsHostDetails(githubAccount) {
-  return promptWithInquirer([
+export async function promptForVcsHostDetails(hosts) {
+  const answers = await promptWithInquirer([
     {
       name: questionNames.REPO_HOST,
       type: 'list',
       message: 'Where will the repository be hosted?',
-      choices: ['GitHub', 'BitBucket', 'GitLab', 'KeyBase']
-    },
-    {
-      name: questionNames.REPO_OWNER,
-      message: 'What is the id of the repository owner?',
-      default: githubAccount || (gitConfig.sync().github ? gitConfig.sync().github.user : '')
+      choices: [...Object.keys(hosts), new Separator(), 'Other']
     }
   ]);
+  const host = hosts[answers[questionNames.REPO_HOST]];
+
+  return {...answers, ...host && await host.prompt()};
 }

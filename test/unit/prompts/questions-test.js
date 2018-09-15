@@ -1,4 +1,3 @@
-import gitConfig from 'git-config';
 import path from 'path';
 import inquirer from 'inquirer';
 import spdxLicenseList from 'spdx-license-list/simple';
@@ -16,15 +15,13 @@ import {questionNames} from '../../../src/prompts/question-names';
 suite('project scaffolder prompts', () => {
   let sandbox;
   const projectPath = any.string();
-  const githubUser = any.word();
-  const answers = any.listOf(any.string);
+  const answers = any.simpleObject();
 
   setup(() => {
     sandbox = sinon.createSandbox();
 
     sandbox.stub(path, 'basename');
     sandbox.stub(inquirer, 'prompt');
-    sandbox.stub(gitConfig, 'sync');
   });
 
   teardown(() => sandbox.restore());
@@ -83,7 +80,6 @@ suite('project scaffolder prompts', () => {
           }
         ])
         .resolves(answers);
-      gitConfig.sync.returns({});
 
       assert.equal(await promptForBaseDetails(projectPath, copyrightHolder), answers);
     });
@@ -91,43 +87,44 @@ suite('project scaffolder prompts', () => {
 
   suite('vcs host details', () => {
     test('that the user is prompted for the vcs hosting details', async () => {
-      gitConfig.sync.returns({});
+      const host = any.string();
+      const hostNames = [...any.listOf(any.string), host];
+      const hostPrompt = sinon.stub();
+      const hosts = any.objectWithKeys(
+        hostNames,
+        {factory: key => ({prompt: host === key ? hostPrompt : () => undefined})}
+      );
+      const answersWithHostChoice = {...answers, [questionNames.REPO_HOST]: host};
+      const hostAnswers = any.simpleObject();
+      hostPrompt.returns(hostAnswers);
       inquirer.prompt
         .withArgs([
           {
             name: questionNames.REPO_HOST,
             type: 'list',
             message: 'Where will the repository be hosted?',
-            choices: ['GitHub', 'BitBucket', 'GitLab', 'KeyBase']
-          },
-          {
-            name: questionNames.REPO_OWNER,
-            message: 'What is the id of the repository owner?',
-            default: ''
+            choices: [...Object.keys(hosts), new inquirer.Separator(), 'Other']
           }
         ])
-        .resolves(answers);
+        .resolves(answersWithHostChoice);
 
-      assert.equal(await promptForVcsHostDetails(), answers);
+      assert.deepEqual(await promptForVcsHostDetails(hosts), {...answersWithHostChoice, ...hostAnswers});
     });
 
-    test('that the github user is provided as the default owner value if available in the global config', async () => {
-      gitConfig.sync.returns({github: {user: githubUser}});
+    test('that choosing `Other` does not error trying to prompt for host details', async () => {
+      const answersWithHostChoice = {...answers, [questionNames.REPO_HOST]: 'Other'};
       inquirer.prompt
-        .withArgs(sinon.match(value => 1 === value.filter(question => githubUser === question.default).length))
-        .resolves(answers);
+        .withArgs([
+          {
+            name: questionNames.REPO_HOST,
+            type: 'list',
+            message: 'Where will the repository be hosted?',
+            choices: [new inquirer.Separator(), 'Other']
+          }
+        ])
+        .resolves(answersWithHostChoice);
 
-      assert.equal(await promptForVcsHostDetails(), answers);
-    });
-
-    test('that the github user is not used as the default owner value an override is provided', async () => {
-      const githubAccount = any.word();
-      gitConfig.sync.returns({github: {user: githubUser}});
-      inquirer.prompt
-        .withArgs(sinon.match(value => 1 === value.filter(question => githubAccount === question.default).length))
-        .resolves(answers);
-
-      assert.equal(await promptForVcsHostDetails(githubAccount), answers);
+      assert.deepEqual(await promptForVcsHostDetails({}), answersWithHostChoice);
     });
   });
 

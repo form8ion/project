@@ -1,31 +1,21 @@
 import {assert} from 'chai';
 import any from '@travi/any';
 import sinon from 'sinon';
-import * as githubScaffolder from '../../../src/vcs/github';
 import scaffoldVcsHost from '../../../src/vcs/host';
 
 suite('vcs host scaffolder', () => {
-  let sandbox;
-
-  setup(() => {
-    sandbox = sinon.createSandbox();
-
-    sandbox.stub(githubScaffolder, 'default');
-  });
-
-  teardown(() => sandbox.restore());
-
-  test('that hosting details are returned', async () => {
-    await scaffoldVcsHost({host: any.string()});
-
-    assert.notCalled(githubScaffolder.default);
-  });
-
   test('that github is scaffolded if github was chosen as the host', async () => {
+    const chosenHost = any.word();
     const otherOptions = any.simpleObject();
     const results = any.simpleObject();
-    githubScaffolder.default.withArgs(otherOptions).resolves(results);
+    const chosenHostScaffolder = sinon.stub();
+    const hostScaffolders = {...any.simpleObject(), [chosenHost]: {scaffolder: chosenHostScaffolder}};
+    chosenHostScaffolder.withArgs(otherOptions).resolves(results);
 
-    await scaffoldVcsHost({...otherOptions, host: 'GitHub'});
+    assert.equal(await scaffoldVcsHost(hostScaffolders, {...otherOptions, host: chosenHost}), results);
+  });
+
+  test('that that choosing a host without a defined scaffolder does not result in an error', async () => {
+    await scaffoldVcsHost(any.simpleObject(), {...any.simpleObject(), host: any.string()});
   });
 });

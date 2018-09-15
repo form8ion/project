@@ -17,6 +17,7 @@ opinionated scaffolder for new projects
     * [Example](#example)
     * [Options](#options)
       * [`languages` (_optional_)](#languages-_optional_)
+      * [`vcsHosts` (_optional_)](#vcshosts-_optional_)
       * [`overrides` (_optional_)](#overrides-_optional_)
         * [`copyrightHolder`](#copyrightholder)
         * [`githubAccount`](#githubaccount)
@@ -24,6 +25,7 @@ opinionated scaffolder for new projects
   * [Dependencies](#dependencies)
   * [Verification](#verification)
 * [Related Projects](#related-projects)
+* [Inspiration](#inspiration)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -110,6 +112,38 @@ __object__:
     * `ci`: __string__ name of the chosen CI service. defaults to `Travis`
     * `description `: __string__ short summary of the project
     
+##### `vcsHosts` (_optional_)
+
+provides the vcs hosts to choose from and the functions to perform the scaffolding
+for the chosen host. if no hosts are provided, `Other` will be the only choice
+presented. Choosing `Other` will perform no host-specific scaffolding. 
+
+__object__:
+
+* keys: __string__ Name of the language
+* values: __object__
+  * `prompt`: __function__ (_required_) prompts for host specific details
+    * MUST return an object of the prompt answers, which MUST include the name
+      of the account for the host that owns the repo as `repoOwner`
+  * `scaffolder`: __function__ (_required_) scaffolds the host options
+    * receives an options object as its first argument to pass along answers to
+      the project-level prompts
+      * `host`: __string__ name of the chosen host, as provided in the key of the
+        `vcsHosts` object
+      * `name`: __string__ name chosen for the project. defaults to the directory
+        name.
+      * `owner`: the account name of the owner of the repo on the host, as returned
+        from the `prompt` function 
+      * `projectRoot`: __string__ path of the working directory where the CLI
+        command was executed
+      * `projectType`: __string__ primary language for the project
+      * `description`: __string__ brief summary of the project
+      * `homepage`: __string__ url of the project homepage
+  * `public`: __boolean__ (_optional_) whether this host should be presented
+    as a public option
+  * `private`: __boolean__ (_optional_) whether this host should be presented
+    as a private option
+
 ##### `overrides` (_optional_)
 
 ###### `copyrightHolder`

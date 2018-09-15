@@ -13,8 +13,8 @@ import {questionNames} from './prompts/question-names';
 
 export async function scaffold(options) {
   const projectRoot = process.cwd();
-  const {languages = {}, overrides = {}} = validate(options);
-  const {copyrightHolder, githubAccount} = overrides;
+  const {languages = {}, overrides = {}, vcsHosts = {}} = validate(options);
+  const {copyrightHolder} = overrides;
 
   const baseAnswers = await promptForBaseDetails(projectRoot, copyrightHolder);
   const projectName = baseAnswers[questionNames.PROJECT_NAME];
@@ -30,7 +30,7 @@ export async function scaffold(options) {
   const languageAnswers = await promptForLanguageDetails(languages);
   const projectType = languageAnswers[questionNames.PROJECT_TYPE];
 
-  const vcs = await initializeGit(gitRepo, projectRoot, projectName, githubAccount);
+  const vcs = await initializeGit(gitRepo, projectRoot, projectName, vcsHosts);
 
   const [license, language] = await Promise.all([
     scaffoldLicense({projectRoot, license: chosenLicense, copyright, vcs}),
@@ -62,7 +62,7 @@ export async function scaffold(options) {
         }
       }
     }),
-    scaffoldVcsHost({
+    scaffoldVcsHost(vcsHosts, {
       ...vcs,
       projectRoot,
       projectType,

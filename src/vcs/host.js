@@ -1,9 +1,8 @@
-import scaffoldGithub from './github';
+export default function (hosts, options) {
+  const {host: chosenHost, ...rest} = options;
+  const host = hosts[chosenHost];
 
-export default function (options) {
-  const {host, ...rest} = options;
-
-  if ('GitHub' === host) return scaffoldGithub(rest);
+  if (host) return host.scaffolder(rest);
 
   return {};
 }
