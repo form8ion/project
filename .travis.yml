@@ -11,7 +11,7 @@ branches:
   except:
   - "/^v\\d+\\.\\d+\\.\\d+$/"
 install:
-- npm install
+- case $TRAVIS_BRANCH in greenkeeper*) npm i;; *) npm ci;; esac;
 - gem install travis
 before_script: npm run greenkeeper:update-lockfile
 after_script: npm run greenkeeper:upload-lockfile
