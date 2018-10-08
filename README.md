@@ -88,7 +88,7 @@ configurable in order to support multiple contexts.
 
 provides the languages to choose from and the functions to perform the scaffolding
 for the chosen language. if no languages are provided, `Other` will be the only
-choice presented. Choosing `Other` will perform no language-specific scaffolding. 
+choice presented. Choosing `Other` will perform no language-specific scaffolding.
 
 __object__:
 
@@ -108,15 +108,15 @@ __object__:
         owner. defaults to `$ git config github.user` or the [overridden value](#githubaccount)
     * `visibility`: __string__ `Public` or `Private`. defaults to `Private`
     * `license`: __string__ identifier of the chosen [SPDX License](https://spdx.org/licenses/)
-      or `UNLICENSED` 
+      or `UNLICENSED`
     * `ci`: __string__ name of the chosen CI service. defaults to `Travis`
     * `description `: __string__ short summary of the project
-    
+
 ##### `vcsHosts` (_optional_)
 
 provides the vcs hosts to choose from and the functions to perform the scaffolding
 for the chosen host. if no hosts are provided, `Other` will be the only choice
-presented. Choosing `Other` will perform no host-specific scaffolding. 
+presented. Choosing `Other` will perform no host-specific scaffolding.
 
 __object__:
 
@@ -133,7 +133,7 @@ __object__:
       * `name`: __string__ name chosen for the project. defaults to the directory
         name.
       * `owner`: the account name of the owner of the repo on the host, as returned
-        from the `prompt` function 
+        from the `prompt` function
       * `projectRoot`: __string__ path of the working directory where the CLI
         command was executed
       * `projectType`: __string__ primary language for the project
@@ -151,11 +151,11 @@ __object__:
 __string__ enables setting the value of the prompt default for the copyright
 holder. if not provided, the default will be empty.
 
-###### `githubAccount` 
+###### `githubAccount`
 
 __string__ enables setting the GitHub account for the prompt default to define
 the owner of scaffolded repositories. if not provided, the default will use the
-result of `$ git config github.user`    
+result of `$ git config github.user`
 
 ## Contributing
 
@@ -183,6 +183,8 @@ $ npm test
 
 * [javascript-scaffolder](https://npm.im/@travi/javascript-scaffolder)
 * [scaffolder-sub-command](https://github.com/travi/scaffolder-sub-command)
+* [github-scaffolder](https://github.com/travi/github-scaffolder)
+* [travis-scaffolder-javascript](https://github.com/travi/travis-scaffolder-javascript)
 * [cli](https://npm.im/@travi/cli)
 
 ## Inspiration
