@@ -84,9 +84,10 @@ configurable in order to support multiple contexts.
 
 ##### `languages` (_optional_)
 
-provides the languages to choose from and the functions to perform the scaffolding
-for the chosen language. if no languages are provided, `Other` will be the only
-choice presented. Choosing `Other` will perform no language-specific scaffolding.
+provides the languages to choose from and the functions to perform the
+scaffolding for the chosen language. if no languages are provided, `Other` will
+be the only choice presented. Choosing `Other` will perform no language-specific
+scaffolding.
 
 __object__:
 
@@ -112,9 +113,10 @@ __object__:
 
 ##### `vcsHosts` (_optional_)
 
-provides the vcs hosts to choose from and the functions to perform the scaffolding
-for the chosen host. if no hosts are provided, `Other` will be the only choice
-presented. Choosing `Other` will perform no host-specific scaffolding.
+provides the vcs hosts to choose from and the functions to perform the
+scaffolding for the chosen host. if no hosts are provided, `Other` will be the
+only choice presented. Choosing `Other` will perform no host-specific
+scaffolding.
 
 __object__:
 
@@ -126,12 +128,12 @@ __object__:
   * `scaffolder`: __function__ (_required_) scaffolds the host options
     * receives an options object as its first argument to pass along answers to
       the project-level prompts
-      * `host`: __string__ name of the chosen host, as provided in the key of the
-        `vcsHosts` object
-      * `name`: __string__ name chosen for the project. defaults to the directory
-        name.
-      * `owner`: the account name of the owner of the repo on the host, as returned
-        from the `prompt` function
+      * `host`: __string__ name of the chosen host, as provided in the key of
+        the `vcsHosts` object
+      * `name`: __string__ name chosen for the project. defaults to the
+        directory name.
+      * `owner`: the account name of the owner of the repo on the host, as
+        returned from the `prompt` function
       * `projectRoot`: __string__ path of the working directory where the CLI
         command was executed
       * `projectType`: __string__ primary language for the project
