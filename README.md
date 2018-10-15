@@ -3,12 +3,11 @@
 opinionated scaffolder for new projects
 
 <!-- status badges -->
+
 [![Build Status][ci-badge]][ci-link]
 [![Codecov](https://img.shields.io/codecov/c/github/travi/project-scaffolder.svg)](https://codecov.io/github/travi/project-scaffolder)
 
-<!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-
+## Table of Contents
 
 * [Features](#features)
 * [Usage](#usage)
@@ -16,18 +15,16 @@ opinionated scaffolder for new projects
   * [Consumption in a CLI tool](#consumption-in-a-cli-tool)
     * [Example](#example)
     * [Options](#options)
-      * [`languages` (_optional_)](#languages-_optional_)
-      * [`vcsHosts` (_optional_)](#vcshosts-_optional_)
-      * [`overrides` (_optional_)](#overrides-_optional_)
-        * [`copyrightHolder`](#copyrightholder)
-        * [`githubAccount`](#githubaccount)
+      * [languages (optional)](#languages-optional)
+      * [vcsHosts (optional)](#vcshosts-optional)
+      * [overrides (optional)](#overrides-optional)
+        * [copyrightHolder](#copyrightholder)
+        * [githubAccount](#githubaccount)
 * [Contributing](#contributing)
   * [Dependencies](#dependencies)
   * [Verification](#verification)
 * [Related Projects](#related-projects)
 * [Inspiration](#inspiration)
-
-<!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 ## Features
 
@@ -48,6 +45,7 @@ opinionated scaffolder for new projects
 ## Usage
 
 <!-- consumer badges -->
+
 [![npm][npm-badge]][npm-link]
 [![MIT license][license-badge]][license-link]
 
@@ -110,7 +108,7 @@ __object__:
     * `license`: __string__ identifier of the chosen [SPDX License](https://spdx.org/licenses/)
       or `UNLICENSED`
     * `ci`: __string__ name of the chosen CI service. defaults to `Travis`
-    * `description `: __string__ short summary of the project
+    * `description`: __string__ short summary of the project
 
 ##### `vcsHosts` (_optional_)
 
@@ -160,11 +158,12 @@ result of `$ git config github.user`
 ## Contributing
 
 <!-- contribution badges -->
+
 [![Conventional Commits][commit-convention-badge]][commit-convention-link]
 [![Commitizen friendly][commitizen-badge]][commitizen-link]
 [![semantic-release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg)](https://github.com/semantic-release/semantic-release)
 [![Greenkeeper badge](https://badges.greenkeeper.io/travi/project-scaffolder.svg)](https://greenkeeper.io/)
-[![PRs Welcome][PRs-badge]][PRs-link]
+[![PRs Welcome][prs-badge]][prs-link]
 
 ### Dependencies
 
@@ -193,14 +192,25 @@ $ npm test
 * [Lass](https://lass.js.org/)
 
 [npm-link]: https://www.npmjs.com/package/@travi/project-scaffolder
+
 [npm-badge]: https://img.shields.io/npm/v/@travi/project-scaffolder.svg
+
 [license-link]: LICENSE
+
 [license-badge]: https://img.shields.io/github/license/travi/project-scaffolder.svg
+
 [ci-link]: https://travis-ci.org/travi/project-scaffolder
+
 [ci-badge]: https://img.shields.io/travis/travi/project-scaffolder.svg?branch=master
+
 [commit-convention-link]: https://conventionalcommits.org
+
 [commit-convention-badge]: https://img.shields.io/badge/Conventional%20Commits-1.0.0-yellow.svg
+
 [commitizen-link]: http://commitizen.github.io/cz-cli/
+
 [commitizen-badge]: https://img.shields.io/badge/commitizen-friendly-brightgreen.svg
-[PRs-link]: http://makeapullrequest.com
-[PRs-badge]: https://img.shields.io/badge/PRs-welcome-brightgreen.svg
+
+[prs-link]: http://makeapullrequest.com
+
+[prs-badge]: https://img.shields.io/badge/PRs-welcome-brightgreen.svg
