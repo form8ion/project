@@ -65,7 +65,7 @@
     "hoek": "^6.0.0",
     "inquirer": "6.2.0",
     "joi": "^14.0.0",
-    "mustache": "3.0.0",
+    "mustache": "3.0.1",
     "mz": "2.7.0",
     "nodegit": "0.23.0",
     "shelljs": "0.8.2",
