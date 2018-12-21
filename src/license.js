@@ -8,11 +8,10 @@ export default async function ({projectRoot, license, copyright, vcs}) {
     console.log(chalk.blue('Generating License'));     // eslint-disable-line no-console
 
     const licenseContent = `${spdxLicenseList[license].licenseText}\n`.replace(/\n/gm, '\n\n');
-    mustache.parse(licenseContent, ['<', '>']);
 
     await fs.writeFile(
       `${projectRoot}/LICENSE`,
-      mustache.render(licenseContent, {year: copyright.year, 'copyright holders': copyright.holder})
+      mustache.render(licenseContent, {year: copyright.year, 'copyright holders': copyright.holder}, {}, ['<', '>'])
     );
 
     return {
