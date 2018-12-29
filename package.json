@@ -50,7 +50,7 @@
     "chai-as-promised": "7.1.1",
     "codecov": "^3.0.4",
     "commitlint-config-travi": "1.2.40",
-    "cucumber": "5.0.2",
+    "cucumber": "5.1.0",
     "cz-conventional-changelog": "2.1.0",
     "husky": "^2.0.0",
     "mocha": "6.1.4",
