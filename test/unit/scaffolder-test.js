@@ -274,7 +274,8 @@ suite('project scaffolder', () => {
         projectRoot: projectPath,
         projectType: language,
         description,
-        homepage
+        homepage,
+        visibility
       });
     });
   });

@@ -67,6 +67,7 @@ export async function scaffold(options) {
       projectRoot,
       projectType,
       description,
+      visibility,
       homepage: language && language.projectDetails.homepage
     }),
     gitRepo && scaffoldGit({projectRoot, ...language && {ignore: language.vcsIgnore}}),
