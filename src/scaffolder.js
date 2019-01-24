@@ -64,6 +64,7 @@ export async function scaffold(options) {
     }),
     scaffoldVcsHost(vcsHosts, {
       ...vcs,
+      projectName,
       projectRoot,
       projectType,
       description,

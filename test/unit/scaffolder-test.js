@@ -273,6 +273,7 @@ suite('project scaffolder', () => {
         ...vcs,
         projectRoot: projectPath,
         projectType: language,
+        projectName,
         description,
         homepage,
         visibility
