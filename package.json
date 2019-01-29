@@ -30,6 +30,7 @@
   "publishConfig": {
     "access": "public"
   },
+  "files": ["lib/", "templates/"],
   "config": {
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
