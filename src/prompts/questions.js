@@ -80,14 +80,3 @@ export async function promptForVcsHostDetails(hosts) {
 
   return {...answers, ...host && await host.prompt()};
 }
-
-export async function promptForHostDetails(hosts) {
-  return promptWithInquirer([
-    {
-      name: questionNames.HOST,
-      type: 'list',
-      message: 'Where will the application be hosted?',
-      choices: [...Object.keys(hosts), new Separator(), 'Other']
-    }
-  ]);
-}
