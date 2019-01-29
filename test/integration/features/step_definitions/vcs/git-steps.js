@@ -4,7 +4,7 @@ import bddStdIn from 'bdd-stdin';
 import {assert} from 'chai';
 import {questionNames} from '../../../../../src/prompts/question-names';
 
-Given('the project should be versioned in git', async function () {
+Given(/^the project should be versioned in git$/, async function () {
   this.setAnswerFor(questionNames.GIT_REPO, '\n');
 
   bddStdIn(
@@ -19,7 +19,7 @@ Given('the project should be versioned in git', async function () {
   );
 });
 
-Given('the project should not be versioned in git', async function () {
+Given(/^the project should not be versioned in git$/, async function () {
   this.setAnswerFor(questionNames.GIT_REPO, 'n');
 
   bddStdIn(
@@ -34,14 +34,14 @@ Given('the project should not be versioned in git', async function () {
   );
 });
 
-Then('the base git files should be present', async function () {
+Then(/^the base git files should be present$/, async function () {
   const gitAttributes = await readFile(`${process.cwd()}/.gitattributes`);
 
   assert.equal(gitAttributes, '* text=auto');
   // assert.isTrue(gitDirectoryStats.isDirectory());
 });
 
-Then('the base git files should not be present', async function () {
+Then(/^the base git files should not be present$/, async function () {
   assert.isFalse(await exists(`${process.cwd()}/.git`));
   assert.isFalse(await exists(`${process.cwd()}/.gitattributes`));
   assert.isFalse(await exists(`${process.cwd()}/.gitignore`));
