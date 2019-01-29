@@ -9,7 +9,12 @@ import {
   licenseChoicesShouldBePresented,
   unlicensedConfirmationShouldBePresented
 } from '../../../src/prompts/conditionals';
-import {promptForBaseDetails, promptForLanguageDetails, promptForVcsHostDetails} from '../../../src/prompts/questions';
+import {
+  promptForBaseDetails,
+  promptForLanguageDetails,
+  promptForVcsHostDetails,
+  promptForHostDetails
+} from '../../../src/prompts/questions';
 import {questionNames} from '../../../src/prompts/question-names';
 
 suite('project scaffolder prompts', () => {
@@ -143,6 +148,24 @@ suite('project scaffolder prompts', () => {
         .resolves(answers);
 
       assert.equal(await promptForLanguageDetails(languages), answers);
+    });
+  });
+
+  suite('host details', () => {
+    test('that the user is prompted for the host details', async () => {
+      const hosts = any.simpleObject();
+      inquirer.prompt
+        .withArgs([
+          {
+            name: questionNames.HOST,
+            type: 'list',
+            message: 'Where will the application be hosted?',
+            choices: [...Object.keys(hosts), new inquirer.Separator(), 'Other']
+          }
+        ])
+        .resolves(answers);
+
+      assert.equal(await promptForHostDetails(hosts), answers);
     });
   });
 });
