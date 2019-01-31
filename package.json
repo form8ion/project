@@ -46,7 +46,7 @@
     "chai": "4.1.2",
     "chai-as-promised": "7.1.1",
     "codecov": "^3.0.4",
-    "commitlint-config-travi": "1.2.36",
+    "commitlint-config-travi": "1.2.38",
     "cucumber": "5.0.2",
     "cz-conventional-changelog": "2.1.0",
     "husky": "^1.0.0-rc.8",
