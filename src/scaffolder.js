@@ -41,6 +41,15 @@ export async function scaffold(options) {
     )
   ]);
 
+  const vcsHostResults = await scaffoldVcsHost(vcsHosts, {
+    ...vcs,
+    projectRoot,
+    projectType,
+    description,
+    visibility,
+    homepage: language && language.projectDetails.homepage
+  });
+
   await Promise.all([
     scaffoldReadme({
       projectName,
@@ -62,15 +71,7 @@ export async function scaffold(options) {
         }
       }
     }),
-    scaffoldVcsHost(vcsHosts, {
-      ...vcs,
-      projectRoot,
-      projectType,
-      description,
-      visibility,
-      homepage: language && language.projectDetails.homepage
-    }),
-    gitRepo && scaffoldGit({projectRoot, ...language && {ignore: language.vcsIgnore}}),
+    gitRepo && scaffoldGit({projectRoot, ...language && {ignore: language.vcsIgnore}, origin: vcsHostResults}),
     copyFile(resolve(__dirname, '..', 'templates', 'editorconfig.txt'), `${projectRoot}/.editorconfig`)
   ]);
 
