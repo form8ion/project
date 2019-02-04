@@ -30,6 +30,7 @@ suite('project scaffolder', () => {
   const vcsHosts = any.simpleObject();
   const documentation = any.simpleObject();
   const vcs = any.simpleObject();
+  const vcsOriginDetails = any.simpleObject();
 
   setup(() => {
     sandbox = sinon.createSandbox();
@@ -86,12 +87,17 @@ suite('project scaffolder', () => {
     licenseScaffolder.default
       .withArgs({projectRoot: projectPath, license, copyright, vcs})
       .resolves({badge: licenseBadge});
-    vcsHostScaffolder.default.withArgs({host: repoHost, projectRoot: projectPath, projectType, description}).resolves();
+    vcsHostScaffolder.default
+      .withArgs(vcsHosts, {...vcs, projectRoot: projectPath, projectType, description, visibility, homepage: undefined})
+      .resolves(vcsOriginDetails);
     languageScaffolder.scaffold
       .resolves({badges: {status: {ci: ciBadge}}, vcsIgnore, projectDetails: {}, documentation});
 
     return scaffold(options).then(() => {
-      assert.calledWith(gitScaffolder.scaffold, {projectRoot: projectPath, ignore: vcsIgnore});
+      assert.calledWith(
+        gitScaffolder.scaffold,
+        {projectRoot: projectPath, ignore: vcsIgnore, origin: vcsOriginDetails}
+      );
       assert.calledWith(
         readmeScaffolder.default,
         {
@@ -144,9 +150,10 @@ suite('project scaffolder', () => {
     });
     prompts.promptForLanguageDetails.resolves({});
     gitScaffolder.initialize.resolves({});
+    vcsHostScaffolder.default.resolves(vcsOriginDetails);
 
     return scaffold(options).then(() => {
-      assert.calledWith(gitScaffolder.scaffold, {projectRoot: projectPath});
+      assert.calledWith(gitScaffolder.scaffold, {projectRoot: projectPath, origin: vcsOriginDetails});
       assert.calledWith(
         readmeScaffolder.default,
         {
@@ -250,10 +257,12 @@ suite('project scaffolder', () => {
         verificationCommand,
         projectDetails: {homepage}
       });
-    vcsHostScaffolder.default.resolves();
+    vcsHostScaffolder.default
+      .withArgs(vcsHosts, {...vcs, projectRoot: projectPath, projectType: language, description, homepage, visibility})
+      .resolves(vcsOriginDetails);
 
     return scaffold(options).then(() => {
-      assert.calledWith(gitScaffolder.scaffold, {projectRoot: projectPath, ignore});
+      assert.calledWith(gitScaffolder.scaffold, {projectRoot: projectPath, ignore, origin: vcsOriginDetails});
       assert.calledWith(
         readmeScaffolder.default,
         {
@@ -269,14 +278,6 @@ suite('project scaffolder', () => {
         }
       );
       assert.calledWith(exec.default, verificationCommand, {silent: false});
-      assert.calledWith(vcsHostScaffolder.default, vcsHosts, {
-        ...vcs,
-        projectRoot: projectPath,
-        projectType: language,
-        description,
-        homepage,
-        visibility
-      });
     });
   });
 

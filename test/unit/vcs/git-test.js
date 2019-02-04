@@ -1,4 +1,4 @@
-import {Repository as gitRepository} from 'nodegit';
+import {Remote as gitRemote, Repository as gitRepository} from 'nodegit';
 import fs from 'mz/fs';
 import any from '@travi/any';
 import sinon from 'sinon';
@@ -16,6 +16,8 @@ suite('scaffold git', () => {
 
     sandbox.stub(fs, 'writeFile');
     sandbox.stub(gitRepository, 'init');
+    sandbox.stub(gitRepository, 'open');
+    sandbox.stub(gitRemote, 'create');
     sandbox.stub(prompts, 'promptForVcsHostDetails');
 
     gitRepository.init.resolves();
@@ -59,9 +61,10 @@ suite('scaffold git', () => {
     test('that the git repo is initialized', () => {
       fs.writeFile.resolves();
 
-      return scaffold({projectRoot}).then(() => {
+      return scaffold({projectRoot, origin: {}}).then(() => {
         assert.calledWith(fs.writeFile, `${projectRoot}/.gitattributes`, '* text=auto');
         assert.neverCalledWith(fs.writeFile, `${projectRoot}/.gitignore`);
+        assert.notCalled(gitRemote.create);
       });
     });
 
@@ -70,11 +73,22 @@ suite('scaffold git', () => {
       const files = any.listOf(any.string);
       fs.writeFile.resolves();
 
-      return scaffold({projectRoot, ignore: {directories, files}}).then(() => assert.calledWith(
+      return scaffold({projectRoot, ignore: {directories, files}, origin: {}}).then(() => assert.calledWith(
         fs.writeFile,
         `${projectRoot}/.gitignore`,
         `${directories.join('\n')}\n\n${files.join('\n')}`
       ));
+    });
+
+    test('that the remote origin is defined when an ssl-url is provided for the remote', async () => {
+      const repository = any.simpleObject();
+      const sshUrl = any.url();
+      gitRepository.open.withArgs(projectRoot).resolves(repository);
+      gitRemote.create.resolves();
+
+      await scaffold({projectRoot, origin: {sshUrl}});
+
+      assert.calledWith(gitRemote.create, repository, 'origin', sshUrl);
     });
   });
 });
