@@ -20,10 +20,10 @@ function generateConfigFiles(projectRoot, ignore) {
 }
 
 async function defineRemoteOrigin(projectRoot, origin) {
-  if (origin.sslUrl) {
-    console.log(chalk.grey(`Setting remote origin to ${origin.sslUrl}`));     // eslint-disable-line no-console
+  if (origin.sshUrl) {
+    console.log(chalk.grey(`Setting remote origin to ${origin.sshUrl}`));     // eslint-disable-line no-console
 
-    await gitRemote.create(await gitRepository.open(projectRoot), 'origin', origin.sslUrl);
+    await gitRemote.create(await gitRepository.open(projectRoot), 'origin', origin.sshUrl);
   }
 }
 

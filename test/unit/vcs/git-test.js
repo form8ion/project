@@ -82,13 +82,13 @@ suite('scaffold git', () => {
 
     test('that the remote origin is defined when an ssl-url is provided for the remote', async () => {
       const repository = any.simpleObject();
-      const sslUrl = any.url();
+      const sshUrl = any.url();
       gitRepository.open.withArgs(projectRoot).resolves(repository);
       gitRemote.create.resolves();
 
-      await scaffold({projectRoot, origin: {sslUrl}});
+      await scaffold({projectRoot, origin: {sshUrl}});
 
-      assert.calledWith(gitRemote.create, repository, 'origin', sslUrl);
+      assert.calledWith(gitRemote.create, repository, 'origin', sshUrl);
     });
   });
 });
