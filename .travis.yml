@@ -9,7 +9,7 @@ notifications:
   email: false
 branches:
   except:
-  - "/^v\\d+\\.\\d+\\.\\d+$/"
+    - /^v\d+\.\d+\.\d+(-(alpha|beta)\.\d+(@(alpha|beta))?)?$/
 install:
 - npm ci
 - gem install travis
@@ -17,7 +17,9 @@ after_success: npm run coverage:report
 deploy:
   provider: script
   skip_cleanup: true
-  script: npx semantic-release
+  script: npx semantic-release@beta
+  on:
+    all_branches: true
 env:
   global:
   - FORCE_COLOR=1
