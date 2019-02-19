@@ -1,6 +1,7 @@
 import fs from 'mz/fs';
 import spdxLicenseList from 'spdx-license-list/simple';
 import spdxLicenseListWithContent from 'spdx-license-list/full';
+import wrap from 'word-wrap';
 import sinon from 'sinon';
 import {assert} from 'chai';
 import any from '@travi/any';
@@ -36,11 +37,13 @@ suite('license', () => {
   ).then(() => assert.calledWith(
     fs.writeFile,
     `${projectRoot}/LICENSE`,
-    `${spdxLicenseListWithContent[license].licenseText}\n`
-      .replace(/\n/gm, '\n\n')
-      .replace(/<\s*year\s*>/gm, year)
-      .replace(/<copyright holders>/gm, copyrightHolders)
-      .replace(/<(.+?)>/gm, '')
+    `${wrap(
+      `${spdxLicenseListWithContent[license].licenseText}\n`
+        .replace(/<\s*year\s*>/gm, year)
+        .replace(/<copyright holders>/gm, copyrightHolders)
+        .replace(/<(.+?)>/gm, ''),
+      {width: 80, indent: ''}
+    )}\n`
   )));
 
   test('that the contents for the MIT license are written to LICENSE, when chosen', () => assert.becomes(
@@ -49,11 +52,13 @@ suite('license', () => {
   ).then(() => assert.calledWith(
     fs.writeFile,
     `${projectRoot}/LICENSE`,
-    `${spdxLicenseListWithContent.MIT.licenseText}\n`
-      .replace(/\n/gm, '\n\n')
-      .replace(/<\s*year\s*>/gm, year)
-      .replace(/<copyright holders>/gm, copyrightHolders)
-      .replace(/<(.+?)>/gm, '')
+    `${wrap(
+      spdxLicenseListWithContent.MIT.licenseText
+        .replace(/<\s*year\s*>/gm, year)
+        .replace(/<copyright holders>/gm, copyrightHolders)
+        .replace(/<(.+?)>/gm, ''),
+      {width: 80, indent: ''}
+    )}\n`
   )));
 
   test('that badge information is returned if the vcs is hosted at github', () => {
