@@ -16,16 +16,16 @@ export async function scaffold(options) {
   const {languages = {}, overrides = {}, vcsHosts = {}} = validate(options);
   const {copyrightHolder} = overrides;
 
-  const baseAnswers = await promptForBaseDetails(projectRoot, copyrightHolder);
-  const projectName = baseAnswers[questionNames.PROJECT_NAME];
-  const chosenLicense = baseAnswers[questionNames.LICENSE];
-  const visibility = baseAnswers[questionNames.VISIBILITY];
-  const description = baseAnswers[questionNames.DESCRIPTION];
-  const gitRepo = baseAnswers[questionNames.GIT_REPO];
-  const copyright = {
-    year: baseAnswers[questionNames.COPYRIGHT_YEAR],
-    holder: baseAnswers[questionNames.COPYRIGHT_HOLDER]
-  };
+  const {
+    [questionNames.PROJECT_NAME]: projectName,
+    [questionNames.LICENSE]: chosenLicense,
+    [questionNames.VISIBILITY]: visibility,
+    [questionNames.DESCRIPTION]: description,
+    [questionNames.GIT_REPO]: gitRepo,
+    [questionNames.COPYRIGHT_YEAR]: copyrightYear,
+    [questionNames.COPYRIGHT_HOLDER]: copyHolder
+  } = await promptForBaseDetails(projectRoot, copyrightHolder);
+  const copyright = {year: copyrightYear, holder: copyHolder};
 
   const vcs = await initializeGit(gitRepo, projectRoot, projectName, vcsHosts);
 
