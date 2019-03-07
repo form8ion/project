@@ -1,10 +1,12 @@
+import {Separator} from 'inquirer';
 import {assert} from 'chai';
 import any from '@travi/any';
 import {questionNames} from '../../../src/prompts/question-names';
 import {
   unlicensedConfirmationShouldBePresented,
   licenseChoicesShouldBePresented,
-  copyrightInformationShouldBeRequested
+  copyrightInformationShouldBeRequested,
+  filterChoicesByVisibility
 } from '../../../src/prompts/conditionals';
 
 suite('prompt conditionals', () => {
@@ -49,6 +51,25 @@ suite('prompt conditionals', () => {
       assert.isFalse(copyrightInformationShouldBeRequested({
         [questionNames.LICENSE]: undefined
       }));
+    });
+  });
+
+  suite('choices by project visibility', () => {
+    const publicChoices = any.objectWithKeys(
+      any.listOf(any.word),
+      {factory: () => ({...any.simpleObject(), public: true})}
+    );
+    const privateChoices = any.objectWithKeys(
+      any.listOf(any.word),
+      {factory: () => ({...any.simpleObject(), private: true})}
+    );
+    const choices = {...publicChoices, ...privateChoices};
+
+    test('that the public hosts are listed for `Public` projects', () => {
+      assert.deepEqual(
+        filterChoicesByVisibility(choices)({[questionNames.VISIBILITY]: 'Public'}),
+        [...Object.keys(publicChoices), new Separator(), 'Other']
+      );
     });
   });
 });

@@ -4,11 +4,7 @@ import spdxLicenseList from 'spdx-license-list/simple';
 import any from '@travi/any';
 import {assert} from 'chai';
 import sinon from 'sinon';
-import {
-  copyrightInformationShouldBeRequested,
-  licenseChoicesShouldBePresented,
-  unlicensedConfirmationShouldBePresented
-} from '../../../src/prompts/conditionals';
+import * as conditionals from '../../../src/prompts/conditionals';
 import {promptForBaseDetails, promptForLanguageDetails, promptForVcsHostDetails} from '../../../src/prompts/questions';
 import {questionNames} from '../../../src/prompts/question-names';
 
@@ -22,6 +18,7 @@ suite('project scaffolder prompts', () => {
 
     sandbox.stub(path, 'basename');
     sandbox.stub(inquirer, 'prompt');
+    sandbox.stub(conditionals, 'filterChoicesByVisibility');
   });
 
   teardown(() => sandbox.restore());
@@ -49,27 +46,27 @@ suite('project scaffolder prompts', () => {
             name: questionNames.UNLICENSED,
             message: 'Since this is a private project, should it be unlicensed?',
             type: 'confirm',
-            when: unlicensedConfirmationShouldBePresented,
+            when: conditionals.unlicensedConfirmationShouldBePresented,
             default: true
           },
           {
             name: questionNames.LICENSE,
             message: 'How should this this project be licensed (https://choosealicense.com/)?',
             type: 'list',
-            when: licenseChoicesShouldBePresented,
+            when: conditionals.licenseChoicesShouldBePresented,
             choices: Array.from(spdxLicenseList),
             default: 'MIT'
           },
           {
             name: questionNames.COPYRIGHT_HOLDER,
             message: 'Who is the copyright holder of this project?',
-            when: copyrightInformationShouldBeRequested,
+            when: conditionals.copyrightInformationShouldBeRequested,
             default: copyrightHolder
           },
           {
             name: questionNames.COPYRIGHT_YEAR,
             message: 'What is the copyright year?',
-            when: copyrightInformationShouldBeRequested,
+            when: conditionals.copyrightInformationShouldBeRequested,
             default: new Date().getFullYear()
           },
           {
@@ -86,6 +83,8 @@ suite('project scaffolder prompts', () => {
   });
 
   suite('vcs host details', () => {
+    const filteredHostChoices = any.listOf(any.word);
+
     test('that the user is prompted for the vcs hosting details', async () => {
       const host = any.string();
       const hostNames = [...any.listOf(any.string), host];
@@ -97,13 +96,14 @@ suite('project scaffolder prompts', () => {
       const answersWithHostChoice = {...answers, [questionNames.REPO_HOST]: host};
       const hostAnswers = any.simpleObject();
       hostPrompt.returns(hostAnswers);
+      conditionals.filterChoicesByVisibility.withArgs(hosts).returns(filteredHostChoices);
       inquirer.prompt
         .withArgs([
           {
             name: questionNames.REPO_HOST,
             type: 'list',
             message: 'Where will the repository be hosted?',
-            choices: [...Object.keys(hosts), new inquirer.Separator(), 'Other']
+            choices: filteredHostChoices
           }
         ])
         .resolves(answersWithHostChoice);
@@ -112,19 +112,21 @@ suite('project scaffolder prompts', () => {
     });
 
     test('that choosing `Other` does not error trying to prompt for host details', async () => {
+      const hosts = {};
       const answersWithHostChoice = {...answers, [questionNames.REPO_HOST]: 'Other'};
+      conditionals.filterChoicesByVisibility.withArgs(hosts).returns(filteredHostChoices);
       inquirer.prompt
         .withArgs([
           {
             name: questionNames.REPO_HOST,
             type: 'list',
             message: 'Where will the repository be hosted?',
-            choices: [new inquirer.Separator(), 'Other']
+            choices: filteredHostChoices
           }
         ])
         .resolves(answersWithHostChoice);
 
-      assert.deepEqual(await promptForVcsHostDetails({}), answersWithHostChoice);
+      assert.deepEqual(await promptForVcsHostDetails(hosts), answersWithHostChoice);
     });
   });
 

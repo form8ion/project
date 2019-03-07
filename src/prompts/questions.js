@@ -4,7 +4,8 @@ import spdxLicenseList from 'spdx-license-list/simple';
 import {
   copyrightInformationShouldBeRequested,
   licenseChoicesShouldBePresented,
-  unlicensedConfirmationShouldBePresented
+  unlicensedConfirmationShouldBePresented,
+  filterChoicesByVisibility
 } from './conditionals';
 import {questionNames} from './question-names';
 
@@ -73,7 +74,7 @@ export async function promptForVcsHostDetails(hosts) {
       name: questionNames.REPO_HOST,
       type: 'list',
       message: 'Where will the repository be hosted?',
-      choices: [...Object.keys(hosts), new Separator(), 'Other']
+      choices: filterChoicesByVisibility(hosts)
     }
   ]);
   const host = hosts[answers[questionNames.REPO_HOST]];
