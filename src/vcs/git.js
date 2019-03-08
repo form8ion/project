@@ -27,12 +27,12 @@ async function defineRemoteOrigin(projectRoot, origin) {
   }
 }
 
-export async function initialize(gitRepoShouldBeInitialized, projectRoot, projectName, vcsHosts) {
+export async function initialize(gitRepoShouldBeInitialized, projectRoot, projectName, vcsHosts, visibility) {
   if (gitRepoShouldBeInitialized) {
     console.log(chalk.blue('Initializing Git Repository'));     // eslint-disable-line no-console
 
     const [answers] = await Promise.all([
-      promptForVcsHostDetails(vcsHosts),
+      promptForVcsHostDetails(vcsHosts, visibility),
       gitRepository.init(projectRoot, 0)
     ]);
 

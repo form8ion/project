@@ -27,7 +27,7 @@ export async function scaffold(options) {
   } = await promptForBaseDetails(projectRoot, copyrightHolder);
   const copyright = {year: copyrightYear, holder: copyHolder};
 
-  const vcs = await initializeGit(gitRepo, projectRoot, projectName, vcsHosts);
+  const vcs = await initializeGit(gitRepo, projectRoot, projectName, vcsHosts, visibility);
 
   const languageAnswers = await promptForLanguageDetails(languages);
   const projectType = languageAnswers[questionNames.PROJECT_TYPE];

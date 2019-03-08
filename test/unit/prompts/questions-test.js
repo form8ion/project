@@ -113,8 +113,9 @@ suite('project scaffolder prompts', () => {
 
     test('that choosing `Other` does not error trying to prompt for host details', async () => {
       const hosts = {};
+      const visibility = any.word();
       const answersWithHostChoice = {...answers, [questionNames.REPO_HOST]: 'Other'};
-      conditionals.filterChoicesByVisibility.withArgs(hosts).returns(filteredHostChoices);
+      conditionals.filterChoicesByVisibility.withArgs(hosts, visibility).returns(filteredHostChoices);
       inquirer.prompt
         .withArgs([
           {
@@ -126,7 +127,7 @@ suite('project scaffolder prompts', () => {
         ])
         .resolves(answersWithHostChoice);
 
-      assert.deepEqual(await promptForVcsHostDetails(hosts), answersWithHostChoice);
+      assert.deepEqual(await promptForVcsHostDetails(hosts, visibility), answersWithHostChoice);
     });
   });
 

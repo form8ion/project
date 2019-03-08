@@ -10,6 +10,7 @@ import {questionNames} from '../../../src/prompts/question-names';
 suite('scaffold git', () => {
   let sandbox;
   const projectRoot = any.string();
+  const visibility = any.word();
 
   setup(() => {
     sandbox = sinon.createSandbox();
@@ -32,10 +33,10 @@ suite('scaffold git', () => {
       const projectName = any.word();
       const vcsHosts = any.simpleObject();
       prompts.promptForVcsHostDetails
-        .withArgs(vcsHosts)
+        .withArgs(vcsHosts, visibility)
         .resolves({[questionNames.REPO_HOST]: repoHost, [questionNames.REPO_OWNER]: repoOwner});
 
-      const hostDetails = await initialize(true, projectRoot, projectName, vcsHosts);
+      const hostDetails = await initialize(true, projectRoot, projectName, vcsHosts, visibility);
 
       assert.calledWith(gitRepository.init, projectRoot, 0);
       assert.deepEqual(hostDetails, {host: repoHost, owner: repoOwner, name: projectName});

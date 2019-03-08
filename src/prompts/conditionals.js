@@ -13,12 +13,12 @@ export function copyrightInformationShouldBeRequested(answers) {
   return !!answers[questionNames.LICENSE];
 }
 
-export function filterChoicesByVisibility(choices) {
-  return answers => ([
+export function filterChoicesByVisibility(choices, visibility) {
+  return [
     ...Object.entries(choices)
-      .filter(([, choice]) => choice[answers[questionNames.VISIBILITY].toLowerCase()])
+      .filter(([, choice]) => choice[visibility.toLowerCase()])
       .reduce((acc, [name]) => ([...acc, name]), []),
     new Separator(),
     'Other'
-  ]);
+  ];
 }

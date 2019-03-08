@@ -81,7 +81,7 @@ suite('project scaffolder', () => {
     prompts.promptForLanguageDetails.withArgs(scaffolders).resolves({[questionNames.PROJECT_TYPE]: projectType});
     readmeScaffolder.default.resolves();
     gitScaffolder.initialize
-      .withArgs(gitRepoShouldBeInitialized, projectPath, projectName, vcsHosts)
+      .withArgs(gitRepoShouldBeInitialized, projectPath, projectName, vcsHosts, visibility)
       .resolves(vcs);
     gitScaffolder.scaffold.resolves();
     licenseScaffolder.default

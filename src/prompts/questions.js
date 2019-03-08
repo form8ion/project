@@ -68,13 +68,13 @@ export function promptForLanguageDetails(languages) {
   ]);
 }
 
-export async function promptForVcsHostDetails(hosts) {
+export async function promptForVcsHostDetails(hosts, visibility) {
   const answers = await promptWithInquirer([
     {
       name: questionNames.REPO_HOST,
       type: 'list',
       message: 'Where will the repository be hosted?',
-      choices: filterChoicesByVisibility(hosts)
+      choices: filterChoicesByVisibility(hosts, visibility)
     }
   ]);
   const host = hosts[answers[questionNames.REPO_HOST]];
