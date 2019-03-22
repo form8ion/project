@@ -203,14 +203,17 @@ suite('project scaffolder', () => {
     });
   });
 
-  test('that the git repo is not initialized if not requested', () => {
+  test('that the git repo is not initialized if not requested', async () => {
     optionsValidator.validate.withArgs(options).returns({});
     prompts.promptForBaseDetails.resolves({[questionNames.GIT_REPO]: false});
     prompts.promptForLanguageDetails.resolves({});
     readmeScaffolder.default.resolves();
-    gitScaffolder.initialize.resolves({});
+    gitScaffolder.initialize.resolves(undefined);
 
-    return scaffold(options).then(() => assert.notCalled(gitScaffolder.scaffold));
+    await scaffold(options);
+
+    assert.notCalled(gitScaffolder.scaffold);
+    assert.notCalled(vcsHostScaffolder.default);
   });
 
   test('that the language details get scaffolded', () => {

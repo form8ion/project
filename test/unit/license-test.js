@@ -82,4 +82,9 @@ suite('license', () => {
     scaffoldLicense({projectRoot, license, copyright, vcs: {host: any.simpleObject()}}),
     {}
   ));
+
+  test('that badge information is not returned if the will not be versioned', () => assert.becomes(
+    scaffoldLicense({projectRoot, license, copyright, vcs: undefined}),
+    {}
+  ));
 });

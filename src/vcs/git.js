@@ -39,7 +39,7 @@ export async function initialize(gitRepoShouldBeInitialized, projectRoot, projec
     return {host: answers[questionNames.REPO_HOST], owner: answers[questionNames.REPO_OWNER], name: projectName};
   }
 
-  return {};
+  return undefined;
 }
 
 export async function scaffold({projectRoot, ignore, origin}) {

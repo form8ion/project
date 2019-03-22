@@ -41,7 +41,7 @@ export async function scaffold(options) {
     )
   ]);
 
-  const vcsHostResults = await scaffoldVcsHost(vcsHosts, {
+  const vcsHostResults = vcs && await scaffoldVcsHost(vcsHosts, {
     ...vcs,
     projectRoot,
     projectType,

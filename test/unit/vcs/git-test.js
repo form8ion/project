@@ -54,7 +54,7 @@ suite('scaffold git', () => {
       const hostDetails = await initialize(false, projectRoot, projectName, githubAccount);
 
       assert.notCalled(gitRepository.init);
-      assert.deepEqual(hostDetails, {});
+      assert.isUndefined(hostDetails);
     });
   });
 
