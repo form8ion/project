@@ -4,7 +4,7 @@ import sinon from 'sinon';
 import scaffoldVcsHost from '../../../src/vcs/host';
 
 suite('vcs host scaffolder', () => {
-  test('that github is scaffolded if github was chosen as the host', async () => {
+  test('that the chosen vcs host is scaffolded', async () => {
     const chosenHost = any.word();
     const otherOptions = any.simpleObject();
     const results = any.simpleObject();
