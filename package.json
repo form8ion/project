@@ -65,7 +65,7 @@
     "sinon": "^7.2.3"
   },
   "dependencies": {
-    "chalk": "^2.4.1",
+    "@travi/cli-messages": "1.0.0",
     "hoek": "^6.0.0",
     "inquirer": "6.3.1",
     "joi": "^14.0.0",

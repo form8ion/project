@@ -1,6 +1,6 @@
 import {Remote as gitRemote, Repository as gitRepository} from 'nodegit';
 import fs from 'mz/fs';
-import chalk from 'chalk';
+import {info} from '@travi/cli-messages';
 import {promptForVcsHostDetails} from '../prompts/questions';
 import {questionNames} from '../prompts/question-names';
 
@@ -11,7 +11,7 @@ function createIgnoreFile(projectRoot, ignore) {
 }
 
 function generateConfigFiles(projectRoot, ignore) {
-  console.log(chalk.grey('Generating Git config files'));     // eslint-disable-line no-console
+  info('Generating Git config files', {level: 'secondary'});
 
   return Promise.all([
     fs.writeFile(`${projectRoot}/.gitattributes`, '* text=auto'),
@@ -21,7 +21,7 @@ function generateConfigFiles(projectRoot, ignore) {
 
 async function defineRemoteOrigin(projectRoot, origin) {
   if (origin.sshUrl) {
-    console.log(chalk.grey(`Setting remote origin to ${origin.sshUrl}`));     // eslint-disable-line no-console
+    info(`Setting remote origin to ${origin.sshUrl}`, {level: 'secondary'});
 
     await gitRemote.create(await gitRepository.open(projectRoot), 'origin', origin.sshUrl);
   }
@@ -29,7 +29,7 @@ async function defineRemoteOrigin(projectRoot, origin) {
 
 export async function initialize(gitRepoShouldBeInitialized, projectRoot, projectName, vcsHosts, visibility) {
   if (gitRepoShouldBeInitialized) {
-    console.log(chalk.blue('Initializing Git Repository'));     // eslint-disable-line no-console
+    info('Initializing Git Repository');
 
     const [answers] = await Promise.all([
       promptForVcsHostDetails(vcsHosts, visibility),
@@ -43,7 +43,7 @@ export async function initialize(gitRepoShouldBeInitialized, projectRoot, projec
 }
 
 export async function scaffold({projectRoot, ignore, origin}) {
-  console.log(chalk.blue('Finishing Git Configuration'));     // eslint-disable-line no-console
+  info('Finishing Git Configuration');
 
   return Promise.all([
     generateConfigFiles(projectRoot, ignore),

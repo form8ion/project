@@ -1,16 +1,16 @@
-import fs from 'mz/fs';
-import chalk from 'chalk';
+import {writeFile} from 'mz/fs';
 import wrap from 'word-wrap';
 import mustache from 'mustache';
 import spdxLicenseList from 'spdx-license-list/full';
+import {info} from '@travi/cli-messages';
 
 export default async function ({projectRoot, license, copyright, vcs}) {
   if (license) {
-    console.log(chalk.blue('Generating License'));     // eslint-disable-line no-console
+    info('Generating License');
 
     const licenseContent = spdxLicenseList[license].licenseText;
 
-    await fs.writeFile(
+    await writeFile(
       `${projectRoot}/LICENSE`,
       `${wrap(
         mustache.render(licenseContent, {year: copyright.year, 'copyright holders': copyright.holder}, {}, ['<', '>']),

@@ -1,7 +1,7 @@
 import {readFile, writeFile} from 'mz/fs';
 import {resolve} from 'path';
-import chalk from 'chalk';
 import mustache from 'mustache';
+import {info} from '@travi/cli-messages';
 
 function buildBadgeMarkdown([name, badge]) {
   return `[![${badge.text}][${name}-badge]][${name}-link]`;
@@ -17,7 +17,7 @@ function buildBadgeReferences(acc, [name, badge]) {
 
 
 export default async function ({projectName, projectRoot, description, badges, documentation}) {
-  console.log(chalk.blue('Generating README'));     // eslint-disable-line no-console
+  info('Generating README');
 
   const markdownBadges = {
     consumer: Object.entries(badges.consumer).map(buildBadgeMarkdown),

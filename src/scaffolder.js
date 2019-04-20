@@ -1,6 +1,6 @@
 import {resolve} from 'path';
 import {copyFile} from 'mz/fs';
-import chalk from 'chalk';
+import {info} from '@travi/cli-messages';
 import {scaffold as scaffoldLanguage} from './language-scaffolder';
 import scaffoldReadme from './readme';
 import {initialize as initializeGit, scaffold as scaffoldGit} from './vcs/git';
@@ -75,6 +75,6 @@ export async function scaffold(options) {
     copyFile(resolve(__dirname, '..', 'templates', 'editorconfig.txt'), `${projectRoot}/.editorconfig`)
   ]);
 
-  console.log(chalk.blue('Verifying the generated project'));       // eslint-disable-line no-console
+  info('Verifying the generated project');
   if (language && language.verificationCommand) await exec(language.verificationCommand, {silent: false});
 }
