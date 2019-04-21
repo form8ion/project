@@ -13,7 +13,7 @@
     "clean": "rimraf lib/",
     "lint:js": "eslint . --cache",
     "lint:md": "remark --quiet . --frail",
-    "lint:travis": "travis lint --no-interactive",
+    "lint:travis": "travis-lint .travis.yml",
     "test": "npm-run-all --print-label --parallel lint:* --parallel test:*",
     "test:unit:base": "mocha --recursive test/unit",
     "test:unit": "nyc run-s test:unit:base",
@@ -62,7 +62,8 @@
     "remark-preset-lint-travi": "1.2.0",
     "remark-toc": "^5.0.0",
     "rollup": "^1.0.0",
-    "sinon": "^7.2.3"
+    "sinon": "^7.2.3",
+    "travis-lint": "^1.0.0"
   },
   "dependencies": {
     "@travi/cli-messages": "1.0.0",

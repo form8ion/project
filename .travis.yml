@@ -1,18 +1,10 @@
+dist: xenial
 language: node_js
-addons:
-  apt:
-    sources:
-    - ubuntu-toolchain-r-test
-    packages:
-    - libstdc++-4.9-dev
 notifications:
   email: false
 branches:
   except:
     - /^v\d+\.\d+\.\d+(-(alpha|beta)\.\d+(@(alpha|beta))?)?$/
-install:
-- npm ci
-- gem install travis
 after_success: npm run coverage:report
 deploy:
   provider: script
