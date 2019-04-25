@@ -19,6 +19,7 @@ suite('scaffold git', () => {
     sandbox.stub(gitRepository, 'init');
     sandbox.stub(gitRepository, 'open');
     sandbox.stub(gitRemote, 'create');
+    sandbox.stub(gitRemote, 'list');
     sandbox.stub(prompts, 'promptForVcsHostDetails');
 
     gitRepository.init.resolves();
@@ -59,6 +60,13 @@ suite('scaffold git', () => {
   });
 
   suite('scaffold', () => {
+    const repository = any.simpleObject();
+
+    setup(() => {
+      gitRepository.open.withArgs(projectRoot).resolves(repository);
+      gitRemote.list.withArgs(repository).resolves(any.listOf(any.word));
+    });
+
     test('that the git repo is initialized', () => {
       fs.writeFile.resolves();
 
@@ -82,14 +90,22 @@ suite('scaffold git', () => {
     });
 
     test('that the remote origin is defined when an ssl-url is provided for the remote', async () => {
-      const repository = any.simpleObject();
       const sshUrl = any.url();
-      gitRepository.open.withArgs(projectRoot).resolves(repository);
       gitRemote.create.resolves();
 
       await scaffold({projectRoot, origin: {sshUrl}});
 
       assert.calledWith(gitRemote.create, repository, 'origin', sshUrl);
+    });
+
+    test('that the remote origin is not defined if it already exists', async () => {
+      const sshUrl = any.url();
+      gitRemote.list.withArgs(repository).resolves(['origin']);
+      gitRemote.create.resolves();
+
+      await scaffold({projectRoot, origin: {sshUrl}});
+
+      assert.notCalled(gitRemote.create);
     });
   });
 });

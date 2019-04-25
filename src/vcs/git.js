@@ -1,6 +1,6 @@
 import {Remote as gitRemote, Repository as gitRepository} from 'nodegit';
 import fs from 'mz/fs';
-import {info} from '@travi/cli-messages';
+import {info, warn} from '@travi/cli-messages';
 import {promptForVcsHostDetails} from '../prompts/questions';
 import {questionNames} from '../prompts/question-names';
 
@@ -20,11 +20,15 @@ function generateConfigFiles(projectRoot, ignore) {
 }
 
 async function defineRemoteOrigin(projectRoot, origin) {
-  if (origin.sshUrl) {
+  const repository = await gitRepository.open(projectRoot);
+  const existingRemotes = await gitRemote.list(repository);
+
+  if (existingRemotes.includes('origin')) warn('The `origin` remote is already defined for this repository');
+  else if (origin.sshUrl) {
     info(`Setting remote origin to ${origin.sshUrl}`, {level: 'secondary'});
 
-    await gitRemote.create(await gitRepository.open(projectRoot), 'origin', origin.sshUrl);
-  }
+    await gitRemote.create(repository, 'origin', origin.sshUrl);
+  } else warn('URL not available to configure remote `origin`');
 }
 
 export async function initialize(gitRepoShouldBeInitialized, projectRoot, projectName, vcsHosts, visibility) {
