@@ -67,7 +67,7 @@
   },
   "dependencies": {
     "@hapi/joi": "^15.0.1",
-    "@travi/cli-messages": "1.0.0",
+    "@travi/cli-messages": "1.0.1",
     "hoek": "^6.0.0",
     "inquirer": "6.3.1",
     "mustache": "3.0.1",
