@@ -1,4 +1,4 @@
-import {Remote as gitRemote, Repository as gitRepository} from 'nodegit';
+import {Remote as gitRemote, Repository as gitRepository, Branch as gitBranch, GIT_BRANCH_LOCAL} from 'nodegit';
 import fs from 'mz/fs';
 import any from '@travi/any';
 import sinon from 'sinon';
@@ -20,6 +20,8 @@ suite('scaffold git', () => {
     sandbox.stub(gitRepository, 'open');
     sandbox.stub(gitRemote, 'create');
     sandbox.stub(gitRemote, 'list');
+    sandbox.stub(gitBranch, 'lookup');
+    sandbox.stub(gitBranch, 'setUpstream');
     sandbox.stub(prompts, 'promptForVcsHostDetails');
 
     gitRepository.init.resolves();
@@ -91,21 +93,26 @@ suite('scaffold git', () => {
 
     test('that the remote origin is defined when an ssl-url is provided for the remote', async () => {
       const sshUrl = any.url();
+      const branch = any.simpleObject();
+      gitBranch.lookup.withArgs(repository, 'master', GIT_BRANCH_LOCAL).resolves(branch);
       gitRemote.create.resolves();
+      gitBranch.setUpstream.resolves();
 
       await scaffold({projectRoot, origin: {sshUrl}});
 
       assert.calledWith(gitRemote.create, repository, 'origin', sshUrl);
+      assert.calledWith(gitBranch.setUpstream, branch, 'origin/master');
     });
 
     test('that the remote origin is not defined if it already exists', async () => {
       const sshUrl = any.url();
       gitRemote.list.withArgs(repository).resolves(['origin']);
-      gitRemote.create.resolves();
 
       await scaffold({projectRoot, origin: {sshUrl}});
 
       assert.notCalled(gitRemote.create);
+      assert.notCalled(gitBranch.lookup);
+      assert.notCalled(gitBranch.setUpstream);
     });
   });
 });
