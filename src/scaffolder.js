@@ -57,7 +57,7 @@ export async function scaffold(options) {
       description,
       ...language && {documentation: language.documentation},
       badges: {
-        consumer: {...language && language.badges.consumer, ...license.badge && {license: license.badge}},
+        consumer: {...language && language.badges.consumer, ...license.badges && {license: license.badges.consumer}},
         status: {...language && language.badges.status},
         contribution: {
           ...language && language.badges.contribution,

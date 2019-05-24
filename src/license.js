@@ -20,10 +20,12 @@ export default async function ({projectRoot, license, copyright, vcs}) {
 
     return {
       ...vcs && 'GitHub' === vcs.host && {
-        badge: {
-          img: `https://img.shields.io/github/license/${vcs.owner}/${vcs.name}.svg`,
-          text: `${license} license`,
-          link: 'LICENSE'
+        badges: {
+          consumer: {
+            img: `https://img.shields.io/github/license/${vcs.owner}/${vcs.name}.svg`,
+            text: `${license} license`,
+            link: 'LICENSE'
+          }
         }
       }
     };

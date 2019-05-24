@@ -65,10 +65,12 @@ suite('license', () => {
     const vcs = {host: 'GitHub', owner: any.word(), name: any.word()};
 
     return assert.becomes(scaffoldLicense({projectRoot, license, copyright, vcs}), {
-      badge: {
-        img: `https://img.shields.io/github/license/${vcs.owner}/${vcs.name}.svg`,
-        text: `${license} license`,
-        link: 'LICENSE'
+      badges: {
+        consumer: {
+          img: `https://img.shields.io/github/license/${vcs.owner}/${vcs.name}.svg`,
+          text: `${license} license`,
+          link: 'LICENSE'
+        }
       }
     });
   });

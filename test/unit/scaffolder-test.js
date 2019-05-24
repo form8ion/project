@@ -86,7 +86,7 @@ suite('project scaffolder', () => {
     gitScaffolder.scaffold.resolves();
     licenseScaffolder.default
       .withArgs({projectRoot: projectPath, license, copyright, vcs})
-      .resolves({badge: licenseBadge});
+      .resolves({badges: {consumer: licenseBadge}});
     vcsHostScaffolder.default
       .withArgs(vcsHosts, {...vcs, projectRoot: projectPath, projectType, description, visibility, homepage: undefined})
       .resolves(vcsOriginDetails);
