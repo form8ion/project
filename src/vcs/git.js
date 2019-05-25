@@ -1,4 +1,4 @@
-import {Remote as gitRemote, Repository as gitRepository, Branch as gitBranch, GIT_BRANCH_LOCAL} from 'nodegit';
+import {Remote as gitRemote, Repository as gitRepository, Branch as gitBranch} from 'nodegit';
 import fs from 'mz/fs';
 import {info, warn} from '@travi/cli-messages';
 import {promptForVcsHostDetails} from '../prompts/questions';
@@ -31,7 +31,7 @@ async function defineRemoteOrigin(projectRoot, origin) {
 
     info('Setting the local `master` branch to track `origin/master`');
 
-    await gitBranch.setUpstream(await gitBranch.lookup(repository, 'master', GIT_BRANCH_LOCAL), 'origin/master');
+    await gitBranch.setUpstream(await gitBranch.lookup(repository, 'master', gitBranch.BRANCH.LOCAL), 'origin/master');
   } else warn('URL not available to configure remote `origin`');
 }
 

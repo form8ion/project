@@ -1,4 +1,4 @@
-import {Remote as gitRemote, Repository as gitRepository, Branch as gitBranch, GIT_BRANCH_LOCAL} from 'nodegit';
+import {Branch as gitBranch, Remote as gitRemote, Repository as gitRepository} from 'nodegit';
 import fs from 'mz/fs';
 import any from '@travi/any';
 import sinon from 'sinon';
@@ -94,7 +94,7 @@ suite('scaffold git', () => {
     test('that the remote origin is defined when an ssl-url is provided for the remote', async () => {
       const sshUrl = any.url();
       const branch = any.simpleObject();
-      gitBranch.lookup.withArgs(repository, 'master', GIT_BRANCH_LOCAL).resolves(branch);
+      gitBranch.lookup.withArgs(repository, 'master', gitBranch.BRANCH.LOCAL).resolves(branch);
       gitRemote.create.resolves();
       gitBranch.setUpstream.resolves();
 
