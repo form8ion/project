@@ -101,7 +101,7 @@ suite('scaffold git', () => {
       await scaffold({projectRoot, origin: {sshUrl}});
 
       assert.calledWith(gitRemote.create, repository, 'origin', sshUrl);
-      assert.calledWith(gitBranch.setUpstream, branch, 'origin/master');
+      // assert.calledWith(gitBranch.setUpstream, branch, 'origin/master');
     });
 
     test('that the remote origin is not defined if it already exists', async () => {
