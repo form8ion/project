@@ -1,5 +1,5 @@
 import * as joi from '@hapi/joi';
-import hoek from 'hoek';
+import hoek from '@hapi/hoek';
 
 export function validate(options) {
   const validated = joi.validate(options, joi.object({
