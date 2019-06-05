@@ -16,9 +16,8 @@ Before(async () => {
 
   stubbedFs({
     templates: {
-      'README.mustache': await readFile((
-        resolve(__dirname, projectTemplatePath, './README.mustache')
-      ))
+      'README.mustache': await readFile(resolve(__dirname, projectTemplatePath, './README.mustache')),
+      'editorconfig.txt': await readFile(resolve(__dirname, projectTemplatePath, './editorconfig.txt'))
     }
   });
 });
