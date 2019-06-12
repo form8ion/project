@@ -1,4 +1,4 @@
-import {writeFile} from 'mz/fs';
+import {promises} from 'fs';
 import wrap from 'word-wrap';
 import mustache from 'mustache';
 import spdxLicenseList from 'spdx-license-list/full';
@@ -10,7 +10,7 @@ export default async function ({projectRoot, license, copyright, vcs}) {
 
     const licenseContent = spdxLicenseList[license].licenseText;
 
-    await writeFile(
+    await promises.writeFile(
       `${projectRoot}/LICENSE`,
       `${wrap(
         mustache.render(licenseContent, {year: copyright.year, 'copyright holders': copyright.holder}, {}, ['<', '>']),

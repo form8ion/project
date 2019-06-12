@@ -1,4 +1,4 @@
-import {readFile, writeFile} from 'mz/fs';
+import {promises} from 'fs';
 import {resolve} from 'path';
 import mustache from 'mustache';
 import {info} from '@travi/cli-messages';
@@ -31,10 +31,10 @@ export default async function ({projectName, projectRoot, description, badges, d
     ...Object.entries(badges.contribution).reduce(buildBadgeReferences, [])
   ].filter(Boolean);
 
-  await writeFile(
+  await promises.writeFile(
     `${projectRoot}/README.md`,
     mustache.render(
-      await readFile(resolve(__dirname, '..', 'templates/README.mustache'), 'utf8'),
+      await promises.readFile(resolve(__dirname, '..', 'templates/README.mustache'), 'utf8'),
       {projectName, description, references, badges: markdownBadges, documentation}
     )
   );

@@ -1,6 +1,6 @@
 import {Given, Then} from 'cucumber';
 import {assert} from 'chai';
-import {readFile} from 'mz/fs';
+import {promises} from 'fs';
 import bddStdIn from 'bdd-stdin';
 import {questionNames} from '../../../../../src/prompts/question-names';
 
@@ -28,7 +28,7 @@ Given('the project language should be JavaScript', async function () {
 });
 
 Then('JavaScript ignores are defined', async function () {
-  const gitIgnore = await readFile(`${process.cwd()}/.gitignore`);
+  const gitIgnore = await promises.readFile(`${process.cwd()}/.gitignore`);
 
   assert.equal(gitIgnore, '* text=auto');
 });

@@ -1,7 +1,7 @@
-import {readFile} from 'mz/fs';
+import stubbedFs from 'mock-fs';
+import {promises} from 'fs';
 import {resolve} from 'path';
 import {Before, After, When, setWorldConstructor} from 'cucumber';
-import stubbedFs from 'mock-fs';
 import {World} from '../support/world';
 import {scaffold} from '../../../../src';
 
@@ -16,8 +16,8 @@ Before(async () => {
 
   stubbedFs({
     templates: {
-      'README.mustache': await readFile(resolve(__dirname, projectTemplatePath, './README.mustache')),
-      'editorconfig.txt': await readFile(resolve(__dirname, projectTemplatePath, './editorconfig.txt'))
+      'README.mustache': await promises.readFile(resolve(__dirname, projectTemplatePath, './README.mustache')),
+      'editorconfig.txt': await promises.readFile(resolve(__dirname, projectTemplatePath, './editorconfig.txt'))
     }
   });
 });

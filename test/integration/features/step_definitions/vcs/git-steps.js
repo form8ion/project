@@ -1,4 +1,5 @@
-import {exists, readFile} from 'mz/fs';
+import {exists} from 'mz/fs';
+import {promises} from 'fs';
 import {Given, Then} from 'cucumber';
 import bddStdIn from 'bdd-stdin';
 import {assert} from 'chai';
@@ -35,7 +36,7 @@ Given(/^the project should not be versioned in git$/, async function () {
 });
 
 Then(/^the base git files should be present$/, async function () {
-  const gitAttributes = await readFile(`${process.cwd()}/.gitattributes`);
+  const gitAttributes = await promises.readFile(`${process.cwd()}/.gitattributes`);
 
   assert.equal(gitAttributes, '* text=auto');
   // assert.isTrue(gitDirectoryStats.isDirectory());

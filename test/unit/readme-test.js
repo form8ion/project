@@ -1,4 +1,4 @@
-import fs from 'mz/fs';
+import {promises} from 'fs';
 import any from '@travi/any';
 import sinon from 'sinon';
 import {assert} from 'chai';
@@ -13,21 +13,21 @@ const buildBadgeGroup = badgeData => Object.entries(badgeData)
 
 const assertBadgeIncludedInMarkdown = (badgeData, projectRoot) => Object.entries(badgeData).forEach(([name, badge]) => {
   assert.calledWith(
-    fs.writeFile,
+    promises.writeFile,
     `${projectRoot}/README.md`,
     sinon.match(`
 [![${badge.text}][${name}-badge]][${name}-link]
 `)
   );
   assert.calledWith(
-    fs.writeFile,
+    promises.writeFile,
     `${projectRoot}/README.md`,
     sinon.match(`
 [${name}-badge]: ${badge.img}
 `)
   );
   assert.calledWith(
-    fs.writeFile,
+    promises.writeFile,
     `${projectRoot}/README.md`,
     sinon.match(`
 [${name}-link]: ${badge.link}
@@ -44,9 +44,9 @@ suite('scaffold readme', () => {
   setup(() => {
     sandbox = sinon.createSandbox();
 
-    sandbox.stub(fs, 'writeFile');
+    sandbox.stub(promises, 'writeFile');
 
-    fs.writeFile.resolves();
+    promises.writeFile.resolves();
   });
 
   teardown(() => sandbox.restore());
@@ -54,7 +54,7 @@ suite('scaffold readme', () => {
   test('that the README has a top-level heading of the project name and includes the description', async () => {
     await scaffoldReadme({projectName, projectRoot, description, badges: {consumer: {}, status: {}, contribution: {}}})
       .then(() => assert.calledWith(
-        fs.writeFile,
+        promises.writeFile,
         `${projectRoot}/README.md`,
         sinon.match(`# ${projectName}
 
@@ -83,7 +83,7 @@ ${description}`)
       });
 
       assert.calledWith(
-        fs.writeFile,
+        promises.writeFile,
         `${projectRoot}/README.md`,
         sinon.match(`
 <!-- status badges -->
@@ -112,7 +112,7 @@ ${buildBadgeGroup(contributionBadges).join('\n')}
       });
 
       assert.calledWith(
-        fs.writeFile,
+        promises.writeFile,
         `${projectRoot}/README.md`,
         sinon.match(`
 <!-- status badges -->
@@ -141,7 +141,7 @@ ${buildBadgeGroup(contributionBadges).join('\n')}
       });
 
       assert.calledWith(
-        fs.writeFile,
+        promises.writeFile,
         `${projectRoot}/README.md`,
         sinon.match(`
 <!-- status badges -->

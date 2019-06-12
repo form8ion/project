@@ -1,5 +1,5 @@
 import {Branch as gitBranch, Remote as gitRemote, Repository as gitRepository} from 'nodegit';
-import fs from 'mz/fs';
+import {promises} from 'fs';
 import any from '@travi/any';
 import sinon from 'sinon';
 import {assert} from 'chai';
@@ -15,7 +15,7 @@ suite('scaffold git', () => {
   setup(() => {
     sandbox = sinon.createSandbox();
 
-    sandbox.stub(fs, 'writeFile');
+    sandbox.stub(promises, 'writeFile');
     sandbox.stub(gitRepository, 'init');
     sandbox.stub(gitRepository, 'open');
     sandbox.stub(gitRemote, 'create');
@@ -70,11 +70,11 @@ suite('scaffold git', () => {
     });
 
     test('that the git repo is initialized', () => {
-      fs.writeFile.resolves();
+      promises.writeFile.resolves();
 
       return scaffold({projectRoot, origin: {}}).then(() => {
-        assert.calledWith(fs.writeFile, `${projectRoot}/.gitattributes`, '* text=auto');
-        assert.neverCalledWith(fs.writeFile, `${projectRoot}/.gitignore`);
+        assert.calledWith(promises.writeFile, `${projectRoot}/.gitattributes`, '* text=auto');
+        assert.neverCalledWith(promises.writeFile, `${projectRoot}/.gitignore`);
         assert.notCalled(gitRemote.create);
       });
     });
@@ -82,10 +82,10 @@ suite('scaffold git', () => {
     test('that ignore file is created when patterns are defined', () => {
       const directories = any.listOf(any.string);
       const files = any.listOf(any.string);
-      fs.writeFile.resolves();
+      promises.writeFile.resolves();
 
       return scaffold({projectRoot, ignore: {directories, files}, origin: {}}).then(() => assert.calledWith(
-        fs.writeFile,
+        promises.writeFile,
         `${projectRoot}/.gitignore`,
         `${directories.join('\n')}\n\n${files.join('\n')}`
       ));

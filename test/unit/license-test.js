@@ -1,4 +1,4 @@
-import fs from 'mz/fs';
+import {promises} from 'fs';
 import spdxLicenseList from 'spdx-license-list/simple';
 import spdxLicenseListWithContent from 'spdx-license-list/full';
 import wrap from 'word-wrap';
@@ -18,9 +18,9 @@ suite('license', () => {
   setup(() => {
     sandbox = sinon.createSandbox();
 
-    sandbox.stub(fs, 'writeFile');
+    sandbox.stub(promises, 'writeFile');
 
-    fs.writeFile.resolves();
+    promises.writeFile.resolves();
   });
 
   teardown(() => sandbox.restore());
@@ -28,14 +28,14 @@ suite('license', () => {
   test('that no license file is created when no license was chosen', async () => {
     await scaffoldLicense({});
 
-    assert.notCalled(fs.writeFile);
+    assert.notCalled(promises.writeFile);
   });
 
   test('that the contents for the chosen license are written to LICENSE', () => assert.becomes(
     scaffoldLicense({projectRoot, license, copyright, vcs: {}}),
     {}
   ).then(() => assert.calledWith(
-    fs.writeFile,
+    promises.writeFile,
     `${projectRoot}/LICENSE`,
     `${wrap(
       `${spdxLicenseListWithContent[license].licenseText}\n`
@@ -50,7 +50,7 @@ suite('license', () => {
     scaffoldLicense({projectRoot, license: 'MIT', copyright, vcs: {}}),
     {}
   ).then(() => assert.calledWith(
-    fs.writeFile,
+    promises.writeFile,
     `${projectRoot}/LICENSE`,
     `${wrap(
       spdxLicenseListWithContent.MIT.licenseText
