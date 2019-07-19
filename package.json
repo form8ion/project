@@ -63,7 +63,7 @@
     "remark": "^10.0.0",
     "remark-cli": "^6.0.0",
     "remark-preset-lint-travi": "1.2.1",
-    "remark-toc": "^5.0.0",
+    "remark-toc": "^6.0.0",
     "rollup": "^1.0.0",
     "sinon": "^7.2.3",
     "travis-lint": "^1.0.0"
