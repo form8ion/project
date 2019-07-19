@@ -72,7 +72,7 @@ suite('prompt conditionals', () => {
       );
     });
 
-    test('that the public hosts are listed for `Public` projects', () => {
+    test('that the private hosts are listed for `Private` projects', () => {
       assert.deepEqual(
         filterChoicesByVisibility(choices, 'Private'),
         [...Object.keys(privateChoices), new Separator(), 'Other']
