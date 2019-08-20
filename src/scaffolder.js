@@ -47,7 +47,7 @@ export async function scaffold(options) {
     projectType,
     description,
     visibility,
-    homepage: language && language.projectDetails.homepage
+    homepage: language && language.projectDetails && language.projectDetails.homepage
   });
 
   await Promise.all([
@@ -57,10 +57,13 @@ export async function scaffold(options) {
       description,
       ...language && {documentation: language.documentation},
       badges: {
-        consumer: {...language && language.badges.consumer, ...license.badges && {license: license.badges.consumer}},
-        status: {...language && language.badges.status},
+        consumer: {
+          ...language && language.badges && language.badges.consumer,
+          ...license.badges && {license: license.badges.consumer}
+        },
+        status: {...language && language.badges && language.badges.status},
         contribution: {
-          ...language && language.badges.contribution,
+          ...language && language.badges && language.badges.contribution,
           ...'Public' === visibility && {
             PRs: {
               text: 'PRs Welcome',

@@ -283,6 +283,45 @@ suite('project scaffolder', () => {
       assert.calledWith(exec.default, verificationCommand, {silent: false});
     });
   });
+  test('that the language details are optional', () => {
+    const visibility = any.boolean();
+    const language = any.word();
+    const ci = any.word();
+    optionsValidator.validate.withArgs(options).returns({languages: scaffolders, vcsHosts});
+    gitScaffolder.initialize.resolves(vcs);
+    prompts.promptForBaseDetails.resolves({
+      [questionNames.PROJECT_NAME]: projectName,
+      [questionNames.VISIBILITY]: visibility,
+      [questionNames.GIT_REPO]: true,
+      [questionNames.LICENSE]: license,
+      [questionNames.CI]: ci,
+      [questionNames.DESCRIPTION]: description
+    });
+    prompts.promptForLanguageDetails.withArgs(scaffolders).resolves({[questionNames.PROJECT_TYPE]: language});
+    prompts.promptForVcsHostDetails.resolves({
+      [questionNames.REPO_HOST]: repoHost,
+      [questionNames.REPO_OWNER]: repoOwner
+    });
+    languageScaffolder.scaffold.resolves({});
+    vcsHostScaffolder.default
+      .withArgs(vcsHosts, {...vcs, projectRoot: projectPath, projectType: language, description, homepage, visibility})
+      .resolves(vcsOriginDetails);
+
+    return scaffold(options).then(() => {
+      assert.calledWith(gitScaffolder.scaffold, {projectRoot: projectPath, ignore: undefined, origin: undefined});
+      assert.calledWith(
+        readmeScaffolder.default,
+        {
+          projectName,
+          projectRoot: projectPath,
+          description,
+          documentation: undefined,
+          badges: {consumer: {}, status: {}, contribution: {}}
+        }
+      );
+      assert.notCalled(exec.default);
+    });
+  });
 
   test('that the license is passed to the language scaffolder as `UNLICENSED` when no license was chosen', () => {
     optionsValidator.validate.withArgs(options).returns({});
