@@ -72,7 +72,7 @@
     "@hapi/hoek": "^8.0.0",
     "@hapi/joi": "^15.0.1",
     "@travi/cli-messages": "1.0.1",
-    "inquirer": "6.5.1",
+    "inquirer": "7.0.0",
     "mustache": "3.0.2",
     "mz": "^2.7.0",
     "nodegit": "0.25.1",
