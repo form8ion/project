@@ -69,7 +69,7 @@
     "travis-lint": "^1.0.0"
   },
   "dependencies": {
-    "@hapi/hoek": "^8.0.0",
+    "@hapi/hoek": "^8.2.4",
     "@hapi/joi": "^16.0.0",
     "@travi/cli-messages": "1.0.1",
     "inquirer": "7.0.0",

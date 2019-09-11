@@ -2,7 +2,7 @@ import * as joi from '@hapi/joi';
 import hoek from '@hapi/hoek';
 
 export function validate(options) {
-  const validated = joi.validate(options, joi.object({
+  const schema = joi.object({
     languages: joi.object().pattern(/^/, joi.func().arity(1)),
     overrides: joi.object({copyrightHolder: joi.string()}),
     vcsHosts: joi.object().pattern(/^/, joi.object({
@@ -11,7 +11,8 @@ export function validate(options) {
       public: joi.boolean(),
       private: joi.boolean()
     }))
-  }));
+  });
+  const validated = schema.validate(options);
 
   hoek.assert(!validated.error, validated.error);
 
