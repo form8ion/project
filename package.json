@@ -70,7 +70,7 @@
   },
   "dependencies": {
     "@hapi/hoek": "^8.0.0",
-    "@hapi/joi": "^15.0.1",
+    "@hapi/joi": "^16.0.0",
     "@travi/cli-messages": "1.0.1",
     "inquirer": "7.0.0",
     "mustache": "3.0.3",
