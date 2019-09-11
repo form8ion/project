@@ -36,7 +36,7 @@ suite('options validator', () => {
 
     assert.throws(
       () => validate({languages: {[key]: any.word()}}),
-      `child "languages" fails because [child "${key}" fails because ["${key}" must be a Function]]`
+      `"languages.${key}" must be of type function`
     );
   });
 
@@ -45,14 +45,14 @@ suite('options validator', () => {
 
     assert.throws(
       () => validate({languages: {[key]: () => undefined}}),
-      `child "languages" fails because [child "${key}" fails because ["${key}" must have an arity of 1]]`
+      `"languages.${key}" must have an arity of 1`
     );
   });
 
   test('that the copyright-holder must be a string, when provided', () => {
     assert.throws(
       () => validate({overrides: {copyrightHolder: any.integer()}}),
-      'child "overrides" fails because [child "copyrightHolder" fails because ["copyrightHolder" must be a string]]'
+      '"overrides.copyrightHolder" must be a string'
     );
   });
 
@@ -61,7 +61,7 @@ suite('options validator', () => {
 
     assert.throws(
       () => validate({vcsHosts: {[key]: []}}),
-      `child "vcsHosts" fails because [child "${key}" fails because ["${key}" must be an object]]`
+      `"vcsHosts.${key}" must be of type object`
     );
   });
 
@@ -70,8 +70,7 @@ suite('options validator', () => {
 
     assert.throws(
       () => validate({vcsHosts: {[key]: {}}}),
-      `child "vcsHosts" fails because [child "${key}" fails because ` +
-      '[child "scaffolder" fails because ["scaffolder" is required]]]'
+      `"vcsHosts.${key}.scaffolder" is required`
     );
   });
 
@@ -80,8 +79,7 @@ suite('options validator', () => {
 
     assert.throws(
       () => validate({vcsHosts: {[key]: {scaffolder: () => undefined}}}),
-      `child "vcsHosts" fails because [child "${key}" fails because ` +
-      '[child "scaffolder" fails because ["scaffolder" must have an arity of 1]]]'
+      `"vcsHosts.${key}.scaffolder" must have an arity of 1`
     );
   });
 
@@ -90,8 +88,7 @@ suite('options validator', () => {
 
     assert.throws(
       () => validate({vcsHosts: {[key]: {scaffolder: foo => foo}}}),
-      `child "vcsHosts" fails because [child "${key}" fails because ` +
-      '[child "prompt" fails because ["prompt" is required]]]'
+      `"vcsHosts.${key}.prompt" is required`
     );
   });
 });
