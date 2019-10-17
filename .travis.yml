@@ -8,7 +8,7 @@ branches:
 after_success: npm run coverage:report
 deploy:
   provider: script
-  skip_cleanup: true
+  edge: true
   script: npx semantic-release@beta
   on:
     all_branches: true
