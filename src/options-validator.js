@@ -10,7 +10,8 @@ export function validate(options) {
       prompt: joi.func().required(),
       public: joi.boolean(),
       private: joi.boolean()
-    }))
+    })),
+    answers: joi.object()
   });
   const validated = schema.validate(options);
 

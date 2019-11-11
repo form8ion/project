@@ -25,7 +25,8 @@ suite('options validator', () => {
             private: any.boolean()
           })
         }
-      )
+      ),
+      answers: any.simpleObject()
     };
 
     assert.deepEqual(validate(options), options);
