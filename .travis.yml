@@ -1,17 +1,10 @@
-dist: xenial
+version: ~> 1.0
 language: node_js
 notifications:
   email: false
-branches:
-  except:
-    - /^v\d+\.\d+\.\d+(-(alpha|beta)\.\d+(@(alpha|beta))?)?$/
+import:
+  - source: travi/.travis-ci:authenticated-semantic-release.yml
 after_success: npm run coverage:report
-deploy:
-  provider: script
-  edge: true
-  script: npx semantic-release@beta
-  on:
-    all_branches: true
 env:
   global:
   - FORCE_COLOR=1
