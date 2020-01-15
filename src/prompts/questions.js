@@ -1,5 +1,6 @@
 import {basename} from 'path';
-import {prompt as promptWithInquirer, Separator} from 'inquirer';
+import {Separator} from 'inquirer';
+import {prompt as promptWithInquirer} from '@form8ion/overridable-prompts';
 import spdxLicenseList from 'spdx-license-list/simple';
 import {
   copyrightInformationShouldBeRequested,

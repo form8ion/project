@@ -1,6 +1,7 @@
 import path from 'path';
-import inquirer from 'inquirer';
+import {Separator} from 'inquirer';
 import spdxLicenseList from 'spdx-license-list/simple';
+import * as prompts from '@form8ion/overridable-prompts';
 import any from '@travi/any';
 import {assert} from 'chai';
 import sinon from 'sinon';
@@ -17,7 +18,7 @@ suite('project scaffolder prompts', () => {
     sandbox = sinon.createSandbox();
 
     sandbox.stub(path, 'basename');
-    sandbox.stub(inquirer, 'prompt');
+    sandbox.stub(prompts, 'prompt');
     sandbox.stub(conditionals, 'filterChoicesByVisibility');
   });
 
@@ -28,7 +29,7 @@ suite('project scaffolder prompts', () => {
       const directoryName = any.string();
       const copyrightHolder = any.string();
       path.basename.withArgs(projectPath).returns(directoryName);
-      inquirer.prompt
+      prompts.prompt
         .withArgs([
           {name: questionNames.PROJECT_NAME, message: 'What is the name of this project?', default: directoryName},
           {
@@ -97,7 +98,7 @@ suite('project scaffolder prompts', () => {
       const hostAnswers = any.simpleObject();
       hostPrompt.returns(hostAnswers);
       conditionals.filterChoicesByVisibility.withArgs(hosts).returns(filteredHostChoices);
-      inquirer.prompt
+      prompts.prompt
         .withArgs([
           {
             name: questionNames.REPO_HOST,
@@ -116,7 +117,7 @@ suite('project scaffolder prompts', () => {
       const visibility = any.word();
       const answersWithHostChoice = {...answers, [questionNames.REPO_HOST]: 'Other'};
       conditionals.filterChoicesByVisibility.withArgs(hosts, visibility).returns(filteredHostChoices);
-      inquirer.prompt
+      prompts.prompt
         .withArgs([
           {
             name: questionNames.REPO_HOST,
@@ -134,13 +135,13 @@ suite('project scaffolder prompts', () => {
   suite('language details', () => {
     test('that the user is prompted for the language details', async () => {
       const languages = any.simpleObject();
-      inquirer.prompt
+      prompts.prompt
         .withArgs([
           {
             name: questionNames.PROJECT_TYPE,
             type: 'list',
             message: 'What type of project is this?',
-            choices: [...Object.keys(languages), new inquirer.Separator(), 'Other']
+            choices: [...Object.keys(languages), new Separator(), 'Other']
           }
         ])
         .resolves(answers);
