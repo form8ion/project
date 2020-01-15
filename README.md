@@ -37,7 +37,7 @@ opinionated scaffolder for new projects
 * scaffolds [CI](https://en.wikipedia.org/wiki/Continuous_integration) server
   config if [Travis](https://travis-ci.com) is chosen
 * scaffolds the project `README.md`
-* scaffolds language specific details be delegating to
+* scaffolds language specific details by delegating to
   [provided scaffolder functions](#languages-optional)
   * Examples:
     * [JavaScript](https://github.com/travi/javascript-scaffolder)
