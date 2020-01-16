@@ -77,7 +77,7 @@
     "@hapi/joi": "^16.1.7",
     "@travi/cli-messages": "1.0.1",
     "inquirer": "7.0.1",
-    "mustache": "3.2.1",
+    "mustache": "4.0.0",
     "mz": "^2.7.0",
     "nodegit": "0.26.4",
     "shelljs": "0.8.3",
