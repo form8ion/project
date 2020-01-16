@@ -1,6 +1,6 @@
 import {basename} from 'path';
 import {Separator} from 'inquirer';
-import {prompt as promptWithInquirer} from '@form8ion/overridable-prompts';
+import {prompt, questionHasDecision} from '@form8ion/overridable-prompts';
 import spdxLicenseList from 'spdx-license-list/simple';
 import {
   copyrightInformationShouldBeRequested,
@@ -42,8 +42,8 @@ function includeLicenseQuestions(copyrightHolder) {
   ];
 }
 
-export function promptForBaseDetails(projectRoot, copyrightHolder) {
-  return promptWithInquirer([
+export function promptForBaseDetails(projectRoot, copyrightHolder, decisions) {
+  return prompt([
     {name: questionNames.PROJECT_NAME, message: 'What is the name of this project?', default: basename(projectRoot)},
     {name: questionNames.DESCRIPTION, message: 'How should this project be described?'},
     {
@@ -53,31 +53,31 @@ export function promptForBaseDetails(projectRoot, copyrightHolder) {
       choices: ['Public', 'Private'],
       default: 'Private'
     },
-    ...includeLicenseQuestions(copyrightHolder),
+    ...!questionHasDecision(questionNames.VISIBILITY, decisions) ? includeLicenseQuestions(copyrightHolder) : [],
     {name: questionNames.GIT_REPO, type: 'confirm', default: true, message: 'Should a git repository be initialized?'}
-  ]);
+  ], decisions);
 }
 
-export function promptForLanguageDetails(languages) {
-  return promptWithInquirer([
+export function promptForLanguageDetails(languages, decisions) {
+  return prompt([
     {
       name: questionNames.PROJECT_TYPE,
       type: 'list',
       message: 'What type of project is this?',
       choices: [...Object.keys(languages), new Separator(), 'Other']
     }
-  ]);
+  ], decisions);
 }
 
-export async function promptForVcsHostDetails(hosts, visibility) {
-  const answers = await promptWithInquirer([
+export async function promptForVcsHostDetails(hosts, visibility, decisions) {
+  const answers = await prompt([
     {
       name: questionNames.REPO_HOST,
       type: 'list',
       message: 'Where will the repository be hosted?',
       choices: filterChoicesByVisibility(hosts, visibility)
     }
-  ]);
+  ], decisions);
   const host = hosts[answers[questionNames.REPO_HOST]];
 
   return {...answers, ...host && await host.prompt()};

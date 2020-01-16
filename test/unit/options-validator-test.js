@@ -26,7 +26,8 @@ suite('options validator', () => {
           })
         }
       ),
-      answers: any.simpleObject()
+      answers: any.simpleObject(),
+      decisions: any.simpleObject()
     };
 
     assert.deepEqual(validate(options), options);

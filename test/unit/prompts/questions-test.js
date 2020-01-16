@@ -13,13 +13,17 @@ suite('project scaffolder prompts', () => {
   let sandbox;
   const projectPath = any.string();
   const answers = any.simpleObject();
+  const decisions = any.simpleObject();
 
   setup(() => {
     sandbox = sinon.createSandbox();
 
     sandbox.stub(path, 'basename');
     sandbox.stub(prompts, 'prompt');
+    sandbox.stub(prompts, 'questionHasDecision');
     sandbox.stub(conditionals, 'filterChoicesByVisibility');
+
+    prompts.questionHasDecision.returns(false);
   });
 
   teardown(() => sandbox.restore());
@@ -76,10 +80,41 @@ suite('project scaffolder prompts', () => {
             default: true,
             message: 'Should a git repository be initialized?'
           }
-        ])
+        ], decisions)
         .resolves(answers);
 
-      assert.equal(await promptForBaseDetails(projectPath, copyrightHolder), answers);
+      assert.equal(await promptForBaseDetails(projectPath, copyrightHolder, decisions), answers);
+    });
+
+    test('that license questions are skipped when a visibility decision is provided', async () => {
+      const directoryName = any.string();
+      const copyrightHolder = any.string();
+      path.basename.withArgs(projectPath).returns(directoryName);
+      prompts.questionHasDecision.withArgs(questionNames.VISIBILITY, decisions).returns(true);
+      prompts.prompt
+        .withArgs([
+          {name: questionNames.PROJECT_NAME, message: 'What is the name of this project?', default: directoryName},
+          {
+            name: questionNames.DESCRIPTION,
+            message: 'How should this project be described?'
+          },
+          {
+            name: questionNames.VISIBILITY,
+            message: 'Should this project be public or private?',
+            type: 'list',
+            choices: ['Public', 'Private'],
+            default: 'Private'
+          },
+          {
+            name: questionNames.GIT_REPO,
+            type: 'confirm',
+            default: true,
+            message: 'Should a git repository be initialized?'
+          }
+        ], decisions)
+        .resolves(answers);
+
+      assert.equal(await promptForBaseDetails(projectPath, copyrightHolder, decisions), answers);
     });
   });
 
@@ -106,10 +141,13 @@ suite('project scaffolder prompts', () => {
             message: 'Where will the repository be hosted?',
             choices: filteredHostChoices
           }
-        ])
+        ], decisions)
         .resolves(answersWithHostChoice);
 
-      assert.deepEqual(await promptForVcsHostDetails(hosts), {...answersWithHostChoice, ...hostAnswers});
+      assert.deepEqual(
+        await promptForVcsHostDetails(hosts, null, decisions),
+        {...answersWithHostChoice, ...hostAnswers}
+      );
     });
 
     test('that choosing `Other` does not error trying to prompt for host details', async () => {
@@ -125,10 +163,10 @@ suite('project scaffolder prompts', () => {
             message: 'Where will the repository be hosted?',
             choices: filteredHostChoices
           }
-        ])
+        ], decisions)
         .resolves(answersWithHostChoice);
 
-      assert.deepEqual(await promptForVcsHostDetails(hosts, visibility), answersWithHostChoice);
+      assert.deepEqual(await promptForVcsHostDetails(hosts, visibility, decisions), answersWithHostChoice);
     });
   });
 
@@ -143,10 +181,10 @@ suite('project scaffolder prompts', () => {
             message: 'What type of project is this?',
             choices: [...Object.keys(languages), new Separator(), 'Other']
           }
-        ])
+        ], decisions)
         .resolves(answers);
 
-      assert.equal(await promptForLanguageDetails(languages), answers);
+      assert.equal(await promptForLanguageDetails(languages, decisions), answers);
     });
   });
 });

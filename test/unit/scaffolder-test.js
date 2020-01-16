@@ -65,9 +65,10 @@ suite('project scaffolder', () => {
     const overrides = {...any.simpleObject(), copyrightHolder: any.string()};
     const vcsIgnore = any.simpleObject();
     const gitRepoShouldBeInitialized = true;
-    optionsValidator.validate.withArgs(options).returns({languages: scaffolders, overrides, vcsHosts});
+    const decisions = any.simpleObject();
+    optionsValidator.validate.withArgs(options).returns({languages: scaffolders, overrides, vcsHosts, decisions});
     prompts.promptForBaseDetails
-      .withArgs(projectPath, overrides.copyrightHolder)
+      .withArgs(projectPath, overrides.copyrightHolder, decisions)
       .resolves({
         [questionNames.PROJECT_NAME]: projectName,
         [questionNames.GIT_REPO]: gitRepoShouldBeInitialized,
@@ -78,10 +79,12 @@ suite('project scaffolder', () => {
         [questionNames.VISIBILITY]: visibility,
         [questionNames.CI]: 'Travis'
       });
-    prompts.promptForLanguageDetails.withArgs(scaffolders).resolves({[questionNames.PROJECT_TYPE]: projectType});
+    prompts.promptForLanguageDetails
+      .withArgs(scaffolders, decisions)
+      .resolves({[questionNames.PROJECT_TYPE]: projectType});
     readmeScaffolder.default.resolves();
     gitScaffolder.initialize
-      .withArgs(gitRepoShouldBeInitialized, projectPath, projectName, vcsHosts, visibility)
+      .withArgs(gitRepoShouldBeInitialized, projectPath, projectName, vcsHosts, visibility, decisions)
       .resolves(vcs);
     gitScaffolder.scaffold.resolves();
     licenseScaffolder.default
@@ -283,6 +286,7 @@ suite('project scaffolder', () => {
       assert.calledWith(exec.default, verificationCommand, {silent: false});
     });
   });
+
   test('that the language details are optional', () => {
     const visibility = any.boolean();
     const language = any.word();

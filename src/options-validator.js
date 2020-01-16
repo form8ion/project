@@ -11,7 +11,8 @@ export function validate(options) {
       public: joi.boolean(),
       private: joi.boolean()
     })),
-    answers: joi.object()
+    answers: joi.object(),
+    decisions: joi.object()
   });
   const validated = schema.validate(options);
 

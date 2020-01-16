@@ -50,11 +50,12 @@ suite('scaffold git', () => {
       const repoOwner = any.word();
       const githubAccount = any.word();
       const projectName = any.word();
+      const decisions = any.simpleObject();
       prompts.promptForVcsHostDetails
-        .withArgs(githubAccount)
+        .withArgs(githubAccount, visibility, decisions)
         .resolves({[questionNames.REPO_HOST]: repoHost, [questionNames.REPO_OWNER]: repoOwner});
 
-      const hostDetails = await initialize(false, projectRoot, projectName, githubAccount);
+      const hostDetails = await initialize(false, projectRoot, projectName, githubAccount, visibility, decisions);
 
       assert.notCalled(gitRepository.init);
       assert.isUndefined(hostDetails);

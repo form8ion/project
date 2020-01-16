@@ -35,12 +35,19 @@ async function defineRemoteOrigin(projectRoot, origin) {
   } else warn('URL not available to configure remote `origin`');
 }
 
-export async function initialize(gitRepoShouldBeInitialized, projectRoot, projectName, vcsHosts, visibility) {
+export async function initialize(
+  gitRepoShouldBeInitialized,
+  projectRoot,
+  projectName,
+  vcsHosts,
+  visibility,
+  decisions
+) {
   if (gitRepoShouldBeInitialized) {
     info('Initializing Git Repository');
 
     const [answers] = await Promise.all([
-      promptForVcsHostDetails(vcsHosts, visibility),
+      promptForVcsHostDetails(vcsHosts, visibility, decisions),
       gitRepository.init(projectRoot, 0)
     ]);
 

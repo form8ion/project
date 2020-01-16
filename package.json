@@ -49,7 +49,6 @@
     "babel-plugin-transform-object-rest-spread": "6.26.0",
     "babel-preset-env": "^1.7.0",
     "babel-register": "6.26.0",
-    "bdd-stdin": "0.2.0",
     "chai": "^4.2.0",
     "chai-as-promised": "7.1.1",
     "codecov": "^3.6.1",
@@ -71,7 +70,7 @@
     "travis-lint": "^1.0.0"
   },
   "dependencies": {
-    "@form8ion/overridable-prompts": "^1.0.0-alpha.1",
+    "@form8ion/overridable-prompts": "^1.0.0-alpha.4",
     "@hapi/hoek": "^9.0.1",
     "@hapi/joi": "^16.1.7",
     "@travi/cli-messages": "1.0.1",
