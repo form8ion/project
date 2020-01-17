@@ -16,6 +16,7 @@
     "lint:travis": "travis-lint .travis.yml",
     "lint:lockfile": "lockfile-lint --path package-lock.json --type npm --validate-https --allowed-hosts npm",
     "lint:engines": "check-engine",
+    "lint:peer": "npm ls >/dev/null",
     "test": "npm-run-all --print-label --parallel lint:* --parallel test:*",
     "test:unit:base": "mocha --recursive test/unit",
     "test:unit": "nyc run-s test:unit:base",
