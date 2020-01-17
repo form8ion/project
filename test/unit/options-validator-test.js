@@ -26,7 +26,6 @@ suite('options validator', () => {
           })
         }
       ),
-      answers: any.simpleObject(),
       decisions: any.simpleObject()
     };
 
