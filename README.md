@@ -47,6 +47,7 @@ opinionated scaffolder for new projects
 <!-- consumer badges -->
 
 [![npm][npm-badge]][npm-link]
+![node][node-badge]
 [![MIT license][license-badge]][license-link]
 
 ### Installation
@@ -196,6 +197,8 @@ $ npm test
 [npm-link]: https://www.npmjs.com/package/@travi/project-scaffolder
 
 [npm-badge]: https://img.shields.io/npm/v/@travi/project-scaffolder.svg
+
+[node-badge]: https://img.shields.io/node/v/@travi/project-scaffolder.svg
 
 [license-link]: LICENSE
 
