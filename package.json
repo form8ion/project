@@ -75,8 +75,8 @@
   },
   "dependencies": {
     "@form8ion/overridable-prompts": "^1.0.0-alpha.5",
-    "@hapi/hoek": "^9.0.1",
-    "@hapi/joi": "^16.1.7",
+    "@hapi/hoek": "^9.0.2",
+    "@hapi/joi": "^17.0.2",
     "@travi/cli-messages": "1.0.1",
     "inquirer": "7.0.1",
     "mustache": "4.0.0",
