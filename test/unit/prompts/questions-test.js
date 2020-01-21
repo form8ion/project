@@ -131,7 +131,7 @@ suite('project scaffolder prompts', () => {
       );
       const answersWithHostChoice = {...answers, [questionNames.REPO_HOST]: host};
       const hostAnswers = any.simpleObject();
-      hostPrompt.returns(hostAnswers);
+      hostPrompt.withArgs({decisions}).returns(hostAnswers);
       conditionals.filterChoicesByVisibility.withArgs(hosts).returns(filteredHostChoices);
       prompts.prompt
         .withArgs([

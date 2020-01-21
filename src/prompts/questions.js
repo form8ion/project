@@ -80,5 +80,5 @@ export async function promptForVcsHostDetails(hosts, visibility, decisions) {
   ], decisions);
   const host = hosts[answers[questionNames.REPO_HOST]];
 
-  return {...answers, ...host && await host.prompt()};
+  return {...answers, ...host && await host.prompt({decisions})};
 }
