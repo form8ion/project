@@ -10,6 +10,7 @@ import exec from '../third-party-wrappers/exec-as-promised';
 import {promptForBaseDetails, promptForLanguageDetails} from './prompts/questions';
 import {validate} from './options-validator';
 import {questionNames} from './prompts/question-names';
+import displayResults from './success-output';
 
 export async function scaffold(options) {
   const projectRoot = process.cwd();
@@ -80,4 +81,6 @@ export async function scaffold(options) {
 
   info('Verifying the generated project');
   if (language && language.verificationCommand) await exec(language.verificationCommand, {silent: false});
+
+  displayResults([{summary: 'Commit scaffolded files'}]);
 }

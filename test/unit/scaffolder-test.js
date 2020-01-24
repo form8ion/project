@@ -11,6 +11,7 @@ import * as languageScaffolder from '../../src/language-scaffolder';
 import * as exec from '../../third-party-wrappers/exec-as-promised';
 import * as prompts from '../../src/prompts/questions';
 import * as optionsValidator from '../../src/options-validator';
+import * as successOutput from '../../src/success-output';
 import {scaffold} from '../../src/scaffolder';
 import {questionNames} from '../../src/prompts/question-names';
 
@@ -48,6 +49,7 @@ suite('project scaffolder', () => {
     sandbox.stub(languageScaffolder, 'scaffold');
     sandbox.stub(fs, 'copyFile');
     sandbox.stub(exec, 'default');
+    sandbox.stub(successOutput, 'default');
 
     process.cwd.returns(projectPath);
     fs.copyFile.resolves();
@@ -116,6 +118,7 @@ suite('project scaffolder', () => {
         path.resolve(__dirname, '../../', 'templates', 'editorconfig.txt'),
         `${projectPath}/.editorconfig`
       );
+      assert.calledWith(successOutput.default, [{summary: 'Commit scaffolded files'}]);
     });
   });
 
