@@ -46,20 +46,22 @@ suite('license', () => {
     )}\n`
   )));
 
-  test('that the contents for the MIT license are written to LICENSE, when chosen', () => assert.becomes(
-    scaffoldLicense({projectRoot, license: 'MIT', copyright, vcs: {}}),
-    {}
-  ).then(() => assert.calledWith(
-    promises.writeFile,
-    `${projectRoot}/LICENSE`,
-    `${wrap(
-      spdxLicenseListWithContent.MIT.licenseText
-        .replace(/<\s*year\s*>/gm, year)
-        .replace(/<copyright holders>/gm, copyrightHolders)
-        .replace(/<(.+?)>/gm, ''),
-      {width: 80, indent: ''}
-    )}\n`
-  )));
+  test('that the contents for the MIT license are written to LICENSE, when chosen', async () => {
+    assert.deepEqual(await scaffoldLicense({projectRoot, license: 'MIT', copyright, vcs: {}}), {});
+
+    assert.calledWith(
+      promises.writeFile,
+      `${projectRoot}/LICENSE`,
+      `${wrap(
+        spdxLicenseListWithContent.MIT.licenseText
+          .replace('(including the next paragraph) ', '')
+          .replace(/<\s*year\s*>/gm, year)
+          .replace(/<copyright holders>/gm, copyrightHolders)
+          .replace(/<(.+?)>/gm, ''),
+        {width: 80, indent: ''}
+      )}\n`
+    );
+  });
 
   test('that badge information is returned if the vcs is hosted at github', () => {
     const vcs = {host: 'GitHub', owner: any.word(), name: any.word()};

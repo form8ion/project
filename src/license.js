@@ -8,7 +8,11 @@ export default async function ({projectRoot, license, copyright, vcs}) {
   if (license) {
     info('Generating License');
 
-    const licenseContent = spdxLicenseList[license].licenseText;
+    let licenseContent = spdxLicenseList[license].licenseText;
+
+    if ('MIT' === license) {
+      licenseContent = licenseContent.replace('(including the next paragraph) ', '');
+    }
 
     await promises.writeFile(
       `${projectRoot}/LICENSE`,
