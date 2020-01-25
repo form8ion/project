@@ -87,5 +87,8 @@ export async function scaffold(options) {
   info('Verifying the generated project');
   if (language && language.verificationCommand) await exec(language.verificationCommand, {silent: false});
 
-  displayResults([...(gitResults && gitResults.nextSteps) ? gitResults.nextSteps : []]);
+  displayResults([
+    ...(gitResults && gitResults.nextSteps) ? gitResults.nextSteps : [],
+    ...(language && language.nextSteps) ? language.nextSteps : []
+  ]);
 }

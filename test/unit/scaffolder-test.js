@@ -228,8 +228,10 @@ suite('project scaffolder', () => {
     const ignore = any.simpleObject();
     const language = any.word();
     const ci = any.word();
+    const gitNextSteps = any.listOf(any.simpleObject);
     optionsValidator.validate.withArgs(options).returns({languages: scaffolders, vcsHosts});
     gitScaffolder.initialize.resolves(vcs);
+    gitScaffolder.scaffold.resolves({nextSteps: gitNextSteps});
     prompts.promptForBaseDetails.resolves({
       [questionNames.PROJECT_NAME]: projectName,
       [questionNames.VISIBILITY]: visibility,
@@ -246,6 +248,7 @@ suite('project scaffolder', () => {
     const languageConsumerBadges = any.simpleObject();
     const languageContributionBadges = any.simpleObject();
     const languageStatusBadges = any.simpleObject();
+    const languageNextSteps = any.listOf(any.simpleObject);
     const verificationCommand = any.string();
     languageScaffolder.scaffold
       .withArgs(scaffolders, language, {
@@ -265,7 +268,8 @@ suite('project scaffolder', () => {
         },
         documentation,
         verificationCommand,
-        projectDetails: {homepage}
+        projectDetails: {homepage},
+        nextSteps: languageNextSteps
       });
     vcsHostScaffolder.default
       .withArgs(vcsHosts, {...vcs, projectRoot: projectPath, projectType: language, description, homepage, visibility})
@@ -288,6 +292,7 @@ suite('project scaffolder', () => {
         }
       );
       assert.calledWith(exec.default, verificationCommand, {silent: false});
+      assert.calledWith(successOutput.default, [...gitNextSteps, ...languageNextSteps]);
     });
   });
 
