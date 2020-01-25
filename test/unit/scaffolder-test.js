@@ -11,6 +11,7 @@ import * as languageScaffolder from '../../src/language-scaffolder';
 import * as exec from '../../third-party-wrappers/exec-as-promised';
 import * as prompts from '../../src/prompts/questions';
 import * as optionsValidator from '../../src/options-validator';
+import * as successOutput from '../../src/success-output';
 import {scaffold} from '../../src/scaffolder';
 import {questionNames} from '../../src/prompts/question-names';
 
@@ -48,6 +49,7 @@ suite('project scaffolder', () => {
     sandbox.stub(languageScaffolder, 'scaffold');
     sandbox.stub(fs, 'copyFile');
     sandbox.stub(exec, 'default');
+    sandbox.stub(successOutput, 'default');
 
     process.cwd.returns(projectPath);
     fs.copyFile.resolves();
@@ -56,7 +58,7 @@ suite('project scaffolder', () => {
 
   teardown(() => sandbox.restore());
 
-  test('that project files are generated', () => {
+  test('that project files are generated', async () => {
     const ciBadge = any.url();
     const year = any.word();
     const holder = any.sentence();
@@ -66,6 +68,7 @@ suite('project scaffolder', () => {
     const vcsIgnore = any.simpleObject();
     const gitRepoShouldBeInitialized = true;
     const decisions = any.simpleObject();
+    const gitNextSteps = any.listOf(any.simpleObject);
     optionsValidator.validate.withArgs(options).returns({languages: scaffolders, overrides, vcsHosts, decisions});
     prompts.promptForBaseDetails
       .withArgs(projectPath, overrides.copyrightHolder, decisions)
@@ -86,7 +89,7 @@ suite('project scaffolder', () => {
     gitScaffolder.initialize
       .withArgs(gitRepoShouldBeInitialized, projectPath, projectName, vcsHosts, visibility, decisions)
       .resolves(vcs);
-    gitScaffolder.scaffold.resolves();
+    gitScaffolder.scaffold.resolves({nextSteps: gitNextSteps});
     licenseScaffolder.default
       .withArgs({projectRoot: projectPath, license, copyright, vcs})
       .resolves({badges: {consumer: licenseBadge}});
@@ -96,27 +99,28 @@ suite('project scaffolder', () => {
     languageScaffolder.scaffold
       .resolves({badges: {status: {ci: ciBadge}}, vcsIgnore, projectDetails: {}, documentation});
 
-    return scaffold(options).then(() => {
-      assert.calledWith(
-        gitScaffolder.scaffold,
-        {projectRoot: projectPath, ignore: vcsIgnore, origin: vcsOriginDetails}
-      );
-      assert.calledWith(
-        readmeScaffolder.default,
-        {
-          projectName,
-          projectRoot: projectPath,
-          description,
-          documentation,
-          badges: {consumer: {license: licenseBadge}, status: {ci: ciBadge}, contribution: {}}
-        }
-      );
-      assert.calledWith(
-        fs.copyFile,
-        path.resolve(__dirname, '../../', 'templates', 'editorconfig.txt'),
-        `${projectPath}/.editorconfig`
-      );
-    });
+    await scaffold(options);
+
+    assert.calledWith(
+      gitScaffolder.scaffold,
+      {projectRoot: projectPath, ignore: vcsIgnore, origin: vcsOriginDetails}
+    );
+    assert.calledWith(
+      readmeScaffolder.default,
+      {
+        projectName,
+        projectRoot: projectPath,
+        description,
+        documentation,
+        badges: {consumer: {license: licenseBadge}, status: {ci: ciBadge}, contribution: {}}
+      }
+    );
+    assert.calledWith(
+      fs.copyFile,
+      path.resolve(__dirname, '../../', 'templates', 'editorconfig.txt'),
+      `${projectPath}/.editorconfig`
+    );
+    assert.calledWith(successOutput.default, [...gitNextSteps]);
   });
 
   test('that the options are optional', async () => {

@@ -23,16 +23,30 @@ async function defineRemoteOrigin(projectRoot, origin) {
   const repository = await gitRepository.open(projectRoot);
   const existingRemotes = await gitRemote.list(repository);
 
-  if (existingRemotes.includes('origin')) warn('The `origin` remote is already defined for this repository');
-  else if (origin.sshUrl) {
+  if (existingRemotes.includes('origin')) {
+    warn('The `origin` remote is already defined for this repository');
+
+    return {nextSteps: []};
+  }
+
+  if (origin.sshUrl) {
     info(`Setting remote origin to ${origin.sshUrl}`, {level: 'secondary'});
 
     await gitRemote.create(repository, 'origin', origin.sshUrl);
 
-  // info('Setting the local `master` branch to track `origin/master`');
-  //
-  // await gitBranch.setUpstream(await gitBranch.lookup(repository, 'master', gitBranch.BRANCH.LOCAL), 'origin/master');
-  } else warn('URL not available to configure remote `origin`');
+    // info('Setting the local `master` branch to track `origin/master`');
+    //
+    // await gitBranch.setUpstream(
+    //   await gitBranch.lookup(repository, 'master', gitBranch.BRANCH.LOCAL),
+    //   'origin/master'
+    // );
+
+    return {nextSteps: [{summary: 'Set local `master` branch to track upstream `origin/master`'}]};
+  }
+
+  warn('URL not available to configure remote `origin`');
+
+  return {nextSteps: []};
 }
 
 export async function initialize(
@@ -60,8 +74,10 @@ export async function initialize(
 export async function scaffold({projectRoot, ignore, origin}) {
   info('Finishing Git Configuration');
 
-  return Promise.all([
-    generateConfigFiles(projectRoot, ignore),
-    defineRemoteOrigin(projectRoot, origin)
+  const [remoteOriginResults] = await Promise.all([
+    defineRemoteOrigin(projectRoot, origin),
+    generateConfigFiles(projectRoot, ignore)
   ]);
+
+  return {nextSteps: [{summary: 'Commit scaffolded files'}, ...remoteOriginResults.nextSteps]};
 }

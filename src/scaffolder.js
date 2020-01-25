@@ -10,6 +10,7 @@ import exec from '../third-party-wrappers/exec-as-promised';
 import {promptForBaseDetails, promptForLanguageDetails} from './prompts/questions';
 import {validate} from './options-validator';
 import {questionNames} from './prompts/question-names';
+import displayResults from './success-output';
 
 export async function scaffold(options) {
   const projectRoot = process.cwd();
@@ -74,10 +75,17 @@ export async function scaffold(options) {
         }
       }
     }),
-    gitRepo && scaffoldGit({projectRoot, ...language && {ignore: language.vcsIgnore}, origin: vcsHostResults}),
     copyFile(resolve(__dirname, '..', 'templates', 'editorconfig.txt'), `${projectRoot}/.editorconfig`)
   ]);
 
+  const gitResults = gitRepo && await scaffoldGit({
+    projectRoot,
+    ...language && {ignore: language.vcsIgnore},
+    origin: vcsHostResults
+  });
+
   info('Verifying the generated project');
   if (language && language.verificationCommand) await exec(language.verificationCommand, {silent: false});
+
+  displayResults([...(gitResults && gitResults.nextSteps) ? gitResults.nextSteps : []]);
 }
