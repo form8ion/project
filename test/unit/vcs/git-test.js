@@ -70,14 +70,16 @@ suite('scaffold git', () => {
       gitRemote.list.withArgs(repository).resolves(any.listOf(any.word));
     });
 
-    test('that the git repo is initialized', () => {
+    test('that the git repo is initialized', async () => {
       promises.writeFile.resolves();
 
-      return scaffold({projectRoot, origin: {}}).then(() => {
-        assert.calledWith(promises.writeFile, `${projectRoot}/.gitattributes`, '* text=auto');
-        assert.neverCalledWith(promises.writeFile, `${projectRoot}/.gitignore`);
-        assert.notCalled(gitRemote.create);
-      });
+      const results = await scaffold({projectRoot, origin: {}});
+
+      assert.calledWith(promises.writeFile, `${projectRoot}/.gitattributes`, '* text=auto');
+      assert.neverCalledWith(promises.writeFile, `${projectRoot}/.gitignore`);
+      assert.notCalled(gitRemote.create);
+
+      assert.deepEqual(results.nextSteps, [{summary: 'Commit scaffolded files'}]);
     });
 
     test('that ignore file is created when patterns are defined', () => {
@@ -99,9 +101,13 @@ suite('scaffold git', () => {
       gitRemote.create.resolves();
       gitBranch.setUpstream.resolves();
 
-      await scaffold({projectRoot, origin: {sshUrl}});
+      const results = await scaffold({projectRoot, origin: {sshUrl}});
 
       assert.calledWith(gitRemote.create, repository, 'origin', sshUrl);
+      assert.deepEqual(
+        results.nextSteps,
+        [{summary: 'Commit scaffolded files'}, {summary: 'Set local `master` branch to track upstream `origin/master`'}]
+      );
       // assert.calledWith(gitBranch.setUpstream, branch, 'origin/master');
     });
 

@@ -75,12 +75,17 @@ export async function scaffold(options) {
         }
       }
     }),
-    gitRepo && scaffoldGit({projectRoot, ...language && {ignore: language.vcsIgnore}, origin: vcsHostResults}),
     copyFile(resolve(__dirname, '..', 'templates', 'editorconfig.txt'), `${projectRoot}/.editorconfig`)
   ]);
+
+  const gitResults = gitRepo && await scaffoldGit({
+    projectRoot,
+    ...language && {ignore: language.vcsIgnore},
+    origin: vcsHostResults
+  });
 
   info('Verifying the generated project');
   if (language && language.verificationCommand) await exec(language.verificationCommand, {silent: false});
 
-  displayResults([{summary: 'Commit scaffolded files'}]);
+  displayResults([...(gitResults && gitResults.nextSteps) ? gitResults.nextSteps : []]);
 }
