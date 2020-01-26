@@ -25,7 +25,7 @@ suite('project scaffolder', () => {
   const description = any.string();
   const homepage = any.url();
   const license = any.string();
-  const projectType = any.word();
+  const projectLanguage = any.word();
   const licenseBadge = any.url();
   const scaffolders = any.simpleObject();
   const vcsHosts = any.simpleObject();
@@ -84,7 +84,7 @@ suite('project scaffolder', () => {
       });
     prompts.promptForLanguageDetails
       .withArgs(scaffolders, decisions)
-      .resolves({[questionNames.PROJECT_TYPE]: projectType});
+      .resolves({[questionNames.PROJECT_TYPE]: projectLanguage});
     readmeScaffolder.default.resolves();
     gitScaffolder.initialize
       .withArgs(gitRepoShouldBeInitialized, projectPath, projectName, vcsHosts, visibility, decisions)
@@ -94,7 +94,10 @@ suite('project scaffolder', () => {
       .withArgs({projectRoot: projectPath, license, copyright, vcs})
       .resolves({badges: {consumer: licenseBadge}});
     vcsHostScaffolder.default
-      .withArgs(vcsHosts, {...vcs, projectRoot: projectPath, projectType, description, visibility, homepage: undefined})
+      .withArgs(
+        vcsHosts,
+        {...vcs, projectRoot: projectPath, projectType: projectLanguage, description, visibility, homepage: undefined}
+      )
       .resolves(vcsOriginDetails);
     languageScaffolder.scaffold
       .resolves({badges: {status: {ci: ciBadge}}, vcsIgnore, projectDetails: {}, documentation});
@@ -226,7 +229,6 @@ suite('project scaffolder', () => {
   test('that the language details get scaffolded', () => {
     const visibility = any.boolean();
     const ignore = any.simpleObject();
-    const language = any.word();
     const ci = any.word();
     const gitNextSteps = any.listOf(any.simpleObject);
     optionsValidator.validate.withArgs(options).returns({languages: scaffolders, vcsHosts});
@@ -240,7 +242,7 @@ suite('project scaffolder', () => {
       [questionNames.CI]: ci,
       [questionNames.DESCRIPTION]: description
     });
-    prompts.promptForLanguageDetails.withArgs(scaffolders).resolves({[questionNames.PROJECT_TYPE]: language});
+    prompts.promptForLanguageDetails.withArgs(scaffolders).resolves({[questionNames.PROJECT_TYPE]: projectLanguage});
     prompts.promptForVcsHostDetails.resolves({
       [questionNames.REPO_HOST]: repoHost,
       [questionNames.REPO_OWNER]: repoOwner
@@ -251,7 +253,7 @@ suite('project scaffolder', () => {
     const languageNextSteps = any.listOf(any.simpleObject);
     const verificationCommand = any.string();
     languageScaffolder.scaffold
-      .withArgs(scaffolders, language, {
+      .withArgs(scaffolders, projectLanguage, {
         projectName,
         projectRoot: projectPath,
         visibility,
@@ -272,7 +274,10 @@ suite('project scaffolder', () => {
         nextSteps: languageNextSteps
       });
     vcsHostScaffolder.default
-      .withArgs(vcsHosts, {...vcs, projectRoot: projectPath, projectType: language, description, homepage, visibility})
+      .withArgs(
+        vcsHosts,
+        {...vcs, projectRoot: projectPath, projectType: projectLanguage, description, homepage, visibility}
+      )
       .resolves(vcsOriginDetails);
 
     return scaffold(options).then(() => {
@@ -298,7 +303,6 @@ suite('project scaffolder', () => {
 
   test('that the language details are optional', () => {
     const visibility = any.boolean();
-    const language = any.word();
     const ci = any.word();
     optionsValidator.validate.withArgs(options).returns({languages: scaffolders, vcsHosts});
     gitScaffolder.initialize.resolves(vcs);
@@ -310,14 +314,17 @@ suite('project scaffolder', () => {
       [questionNames.CI]: ci,
       [questionNames.DESCRIPTION]: description
     });
-    prompts.promptForLanguageDetails.withArgs(scaffolders).resolves({[questionNames.PROJECT_TYPE]: language});
+    prompts.promptForLanguageDetails.withArgs(scaffolders).resolves({[questionNames.PROJECT_TYPE]: projectLanguage});
     prompts.promptForVcsHostDetails.resolves({
       [questionNames.REPO_HOST]: repoHost,
       [questionNames.REPO_OWNER]: repoOwner
     });
     languageScaffolder.scaffold.resolves({});
     vcsHostScaffolder.default
-      .withArgs(vcsHosts, {...vcs, projectRoot: projectPath, projectType: language, description, homepage, visibility})
+      .withArgs(
+        vcsHosts,
+        {...vcs, projectRoot: projectPath, projectType: projectLanguage, description, homepage, visibility}
+      )
       .resolves(vcsOriginDetails);
 
     return scaffold(options).then(() => {
@@ -339,13 +346,13 @@ suite('project scaffolder', () => {
   test('that the license is passed to the language scaffolder as `UNLICENSED` when no license was chosen', () => {
     optionsValidator.validate.withArgs(options).returns({});
     prompts.promptForBaseDetails.resolves({});
-    prompts.promptForLanguageDetails.resolves({[questionNames.PROJECT_TYPE]: projectType});
+    prompts.promptForLanguageDetails.resolves({[questionNames.PROJECT_TYPE]: projectLanguage});
     gitScaffolder.initialize.resolves({});
 
     return scaffold(options).then(() => assert.calledWithMatch(
       languageScaffolder.scaffold,
       {},
-      projectType,
+      projectLanguage,
       {license: 'UNLICENSED'}
     ));
   });

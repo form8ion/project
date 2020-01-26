@@ -4,7 +4,7 @@ import {promises} from 'fs';
 import {questionNames} from '../../../../../src/prompts/question-names';
 
 Given('the project language should be JavaScript', async function () {
-  this.setAnswerFor(questionNames.PROJECT_TYPE, '\n');
+  this.setAnswerFor(questionNames.PROJECT_TYPE, 'JavaScript');
   this.setAnswerFor(questionNames.GIT_REPO, '\n');
 
   // bddStdIn(

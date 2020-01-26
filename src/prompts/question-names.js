@@ -9,6 +9,6 @@ export const questionNames = {
   LICENSE: 'license',
   COPYRIGHT_HOLDER: 'copyrightHolder',
   COPYRIGHT_YEAR: 'copyrightYear',
-  PROJECT_TYPE: 'projectType',
+  PROJECT_TYPE: 'projectLanguage',
   CI: 'ci'
 };
