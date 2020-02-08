@@ -96,7 +96,15 @@ suite('project scaffolder', () => {
     vcsHostScaffolder.default
       .withArgs(
         vcsHosts,
-        {...vcs, projectRoot: projectPath, projectType: projectLanguage, description, visibility, homepage: undefined}
+        {
+          ...vcs,
+          projectRoot: projectPath,
+          projectType: projectLanguage,
+          description,
+          visibility,
+          homepage: undefined,
+          nextSteps: []
+        }
       )
       .resolves(vcsOriginDetails);
     languageScaffolder.scaffold
@@ -276,7 +284,15 @@ suite('project scaffolder', () => {
     vcsHostScaffolder.default
       .withArgs(
         vcsHosts,
-        {...vcs, projectRoot: projectPath, projectType: projectLanguage, description, homepage, visibility}
+        {
+          ...vcs,
+          projectRoot: projectPath,
+          projectType: projectLanguage,
+          description,
+          homepage,
+          visibility,
+          nextSteps: languageNextSteps
+        }
       )
       .resolves(vcsOriginDetails);
 

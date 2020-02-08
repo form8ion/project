@@ -42,13 +42,16 @@ export async function scaffold(options) {
     )
   ]);
 
+  const contributedTasks = (language && language.nextSteps) ? language.nextSteps : [];
+
   const vcsHostResults = vcs && await scaffoldVcsHost(vcsHosts, {
     ...vcs,
     projectRoot,
     projectType: projectLanguage,
     description,
     visibility,
-    homepage: language && language.projectDetails && language.projectDetails.homepage
+    homepage: language && language.projectDetails && language.projectDetails.homepage,
+    nextSteps: contributedTasks
   });
 
   await Promise.all([
@@ -89,6 +92,6 @@ export async function scaffold(options) {
 
   displayResults([
     ...(gitResults && gitResults.nextSteps) ? gitResults.nextSteps : [],
-    ...(language && language.nextSteps) ? language.nextSteps : []
+    ...contributedTasks
   ]);
 }
