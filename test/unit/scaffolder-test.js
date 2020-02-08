@@ -1,5 +1,5 @@
 import path from 'path';
-import fs from 'mz/fs';
+import {promises} from 'fs';
 import sinon from 'sinon';
 import {assert} from 'chai';
 import any from '@travi/any';
@@ -47,12 +47,12 @@ suite('project scaffolder', () => {
     sandbox.stub(vcsHostScaffolder, 'default');
     sandbox.stub(licenseScaffolder, 'default');
     sandbox.stub(languageScaffolder, 'scaffold');
-    sandbox.stub(fs, 'copyFile');
+    sandbox.stub(promises, 'copyFile');
     sandbox.stub(exec, 'default');
     sandbox.stub(successOutput, 'default');
 
     process.cwd.returns(projectPath);
-    fs.copyFile.resolves();
+    promises.copyFile.resolves();
     licenseScaffolder.default.resolves({});
   });
 
@@ -127,7 +127,7 @@ suite('project scaffolder', () => {
       }
     );
     assert.calledWith(
-      fs.copyFile,
+      promises.copyFile,
       path.resolve(__dirname, '../../', 'templates', 'editorconfig.txt'),
       `${projectPath}/.editorconfig`
     );

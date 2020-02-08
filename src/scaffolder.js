@@ -1,5 +1,5 @@
 import {resolve} from 'path';
-import {copyFile} from 'mz/fs';
+import {promises} from 'fs';
 import {info} from '@travi/cli-messages';
 import {scaffold as scaffoldLanguage} from './language-scaffolder';
 import scaffoldReadme from './readme';
@@ -78,7 +78,7 @@ export async function scaffold(options) {
         }
       }
     }),
-    copyFile(resolve(__dirname, '..', 'templates', 'editorconfig.txt'), `${projectRoot}/.editorconfig`)
+    promises.copyFile(resolve(__dirname, '..', 'templates', 'editorconfig.txt'), `${projectRoot}/.editorconfig`)
   ]);
 
   const gitResults = gitRepo && await scaffoldGit({
