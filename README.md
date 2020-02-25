@@ -15,11 +15,11 @@ opinionated scaffolder for new projects
   * [Consumption in a CLI tool](#consumption-in-a-cli-tool)
     * [Example](#example)
     * [Options](#options)
-      * [languages (optional)](#languages-optional)
-      * [vcsHosts (optional)](#vcshosts-optional)
-      * [overrides (optional)](#overrides-optional)
-        * [copyrightHolder](#copyrightholder)
-        * [githubAccount](#githubaccount)
+      * [`languages` (_optional_)](#languages-optional)
+      * [`vcsHosts` (_optional_)](#vcshosts-optional)
+      * [`overrides` (_optional_)](#overrides-optional)
+        * [`copyrightHolder`](#copyrightholder)
+        * [`githubAccount`](#githubaccount)
 * [Contributing](#contributing)
   * [Dependencies](#dependencies)
   * [Verification](#verification)
@@ -66,7 +66,7 @@ a wrapper.
 
 #### Example
 
-```js
+```javascript
 import program from 'commander';
 import {scaffold} from '@travi/project-scaffolder';
 
