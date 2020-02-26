@@ -1,17 +1,13 @@
-// remark-usage-ignore-next 5
 import program from 'commander';
+import {scaffold as scaffoldJavaScript} from '@travi/javascript-scaffolder';
 import {scaffold} from './lib/index.cjs';
-
-function scaffoldJavaScript() {}
-function scaffoldPython() {}
 
 program
   .command('scaffold')
   .description('scaffold a new project')
   .action(() => scaffold({
     languages: {
-      JavaScript: options => scaffoldJavaScript(options),
-      Python: options => scaffoldPython(options)
+      JavaScript: options => scaffoldJavaScript(options)
     },
     overrides: {copyrightHolder: 'John Smith'}
   }).catch(err => {
