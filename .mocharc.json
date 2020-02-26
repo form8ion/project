@@ -1,0 +1,1 @@
+{"ui":"tdd","require":["@babel/register","./test/mocha-setup.js"]}
