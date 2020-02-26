@@ -1,24 +1,17 @@
 import program from 'commander';
-import {scaffold as scaffoldTravisForJavaScript} from '@travi/travis-scaffolder-javascript';
-import {scaffold as scaffoldJavaScript} from '@travi/javascript-scaffolder';
 import {scaffold} from './lib/index.cjs';
+
+// remark-usage-ignore-next 2
+function scaffoldJavaScript() {}
+function scaffoldPython() {}
 
 program
   .command('scaffold')
   .description('scaffold a new project')
   .action(() => scaffold({
     languages: {
-      JavaScript: options => scaffoldJavaScript({
-        ...options,
-        configs: {
-          eslint: {scope: '@form8ion'},
-          remark: '@form8ion/remark-lint-preset',
-          babelPreset: {name: '@form8ion', packageName: '@form8ion/babel-preset'},
-          commitlint: {name: '@form8ion', packageName: '@form8ion/commitlint-config'}
-        },
-        overrides: {npmAccount: 'form8ion'},
-        ciServices: {Travis: {scaffolder: scaffoldTravisForJavaScript, public: true}}
-      })
+      JavaScript: options => scaffoldJavaScript(options),
+      Python: options => scaffoldPython(options)
     },
     overrides: {copyrightHolder: 'John Smith'}
   }).catch(err => {

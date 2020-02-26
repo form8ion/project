@@ -51,8 +51,6 @@
     "@travi/eslint-config": "1.0.32",
     "@travi/eslint-config-cucumber": "1.0.5",
     "@travi/eslint-config-mocha": "1.0.7",
-    "@travi/javascript-scaffolder": "10.9.3",
-    "@travi/travis-scaffolder-javascript": "3.2.0",
     "babel-plugin-transform-object-rest-spread": "6.26.0",
     "babel-preset-env": "^1.7.0",
     "babel-register": "6.26.0",
