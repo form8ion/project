@@ -9,6 +9,9 @@
   "bugs": "https://github.com/travi/project-scaffolder/issues",
   "homepage": "https://npm.im/@travi/project-scaffolder",
   "author": "Matt Travi <npm@travi.org> (https://matt.travi.org/)",
+  "contributors": [
+    "Trevor Richardson <tr@trevorrichardson.me> (https://twitter.com/intelxdesign)"
+  ],
   "scripts": {
     "clean": "rimraf lib/",
     "lint:js": "eslint . --cache",
