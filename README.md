@@ -67,11 +67,6 @@ a wrapper.
 #### Example
 
 ```javascript
-import program from 'commander';
-import {scaffold} from '@travi/project-scaffolder';
-```
-
-```javascript
 program
   .command('scaffold')
   .description('scaffold a new project')

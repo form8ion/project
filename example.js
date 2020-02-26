@@ -1,7 +1,7 @@
+// remark-usage-ignore-next 5
 import program from 'commander';
 import {scaffold} from './lib/index.cjs';
 
-// remark-usage-ignore-next 2
 function scaffoldJavaScript() {}
 function scaffoldPython() {}
 
