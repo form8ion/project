@@ -3,17 +3,17 @@ import {promises} from 'fs';
 import sinon from 'sinon';
 import {assert} from 'chai';
 import any from '@travi/any';
-import * as readmeScaffolder from '../../src/readme';
-import * as gitScaffolder from '../../src/vcs/git';
-import * as vcsHostScaffolder from '../../src/vcs/host';
-import * as licenseScaffolder from '../../src/license';
-import * as languageScaffolder from '../../src/language-scaffolder';
-import * as exec from '../../third-party-wrappers/exec-as-promised';
-import * as prompts from '../../src/prompts/questions';
-import * as optionsValidator from '../../src/options-validator';
-import * as successOutput from '../../src/success-output';
-import {scaffold} from '../../src/scaffolder';
-import {questionNames} from '../../src/prompts/question-names';
+import * as readmeScaffolder from './readme';
+import * as gitScaffolder from './vcs/git';
+import * as vcsHostScaffolder from './vcs/host';
+import * as licenseScaffolder from './license';
+import * as languageScaffolder from './language-scaffolder';
+import * as exec from '../third-party-wrappers/exec-as-promised';
+import * as prompts from './prompts/questions';
+import * as optionsValidator from './options-validator';
+import * as successOutput from './success-output';
+import {scaffold} from './scaffolder';
+import {questionNames} from './prompts/question-names';
 
 suite('project scaffolder', () => {
   let sandbox;
@@ -128,7 +128,7 @@ suite('project scaffolder', () => {
     );
     assert.calledWith(
       promises.copyFile,
-      path.resolve(__dirname, '../../', 'templates', 'editorconfig.txt'),
+      path.resolve(__dirname, '../', 'templates', 'editorconfig.txt'),
       `${projectPath}/.editorconfig`
     );
     assert.calledWith(successOutput.default, [...gitNextSteps]);

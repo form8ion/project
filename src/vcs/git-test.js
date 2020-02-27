@@ -3,9 +3,9 @@ import {promises} from 'fs';
 import any from '@travi/any';
 import sinon from 'sinon';
 import {assert} from 'chai';
-import {initialize, scaffold} from '../../../src/vcs/git';
-import * as prompts from '../../../src/prompts/questions';
-import {questionNames} from '../../../src/prompts/question-names';
+import {initialize, scaffold} from './git';
+import * as prompts from '../prompts/questions';
+import {questionNames} from '../prompts/question-names';
 
 suite('scaffold git', () => {
   let sandbox;

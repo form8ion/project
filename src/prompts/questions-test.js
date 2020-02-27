@@ -5,9 +5,9 @@ import * as prompts from '@form8ion/overridable-prompts';
 import any from '@travi/any';
 import {assert} from 'chai';
 import sinon from 'sinon';
-import * as conditionals from '../../../src/prompts/conditionals';
-import {promptForBaseDetails, promptForLanguageDetails, promptForVcsHostDetails} from '../../../src/prompts/questions';
-import {questionNames} from '../../../src/prompts/question-names';
+import * as conditionals from './conditionals';
+import {promptForBaseDetails, promptForLanguageDetails, promptForVcsHostDetails} from './questions';
+import {questionNames} from './question-names';
 
 suite('project scaffolder prompts', () => {
   let sandbox;

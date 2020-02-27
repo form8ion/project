@@ -1,7 +1,7 @@
 import any from '@travi/any';
 import {assert} from 'chai';
 import sinon from 'sinon';
-import {scaffold} from '../../src/language-scaffolder';
+import {scaffold} from './language-scaffolder';
 
 suite('language scaffolder', () => {
   test('that the language specific scaffolder is called with necessary data', () => {

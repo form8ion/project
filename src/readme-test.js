@@ -2,7 +2,7 @@ import {promises} from 'fs';
 import any from '@travi/any';
 import sinon from 'sinon';
 import {assert} from 'chai';
-import scaffoldReadme from '../../src/readme';
+import scaffoldReadme from './readme';
 
 const badgeFactory = () => ({img: any.url(), link: any.url(), text: any.sentence()});
 const consumerBadges = any.objectWithKeys(any.listOf(any.word), {factory: badgeFactory});

@@ -5,7 +5,7 @@ import wrap from 'word-wrap';
 import sinon from 'sinon';
 import {assert} from 'chai';
 import any from '@travi/any';
-import scaffoldLicense from '../../src/license';
+import scaffoldLicense from './license';
 
 suite('license', () => {
   let sandbox;

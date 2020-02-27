@@ -1,13 +1,13 @@
 import {Separator} from 'inquirer';
 import {assert} from 'chai';
 import any from '@travi/any';
-import {questionNames} from '../../../src/prompts/question-names';
+import {questionNames} from './question-names';
 import {
   unlicensedConfirmationShouldBePresented,
   licenseChoicesShouldBePresented,
   copyrightInformationShouldBeRequested,
   filterChoicesByVisibility
-} from '../../../src/prompts/conditionals';
+} from './conditionals';
 
 suite('prompt conditionals', () => {
   suite('unlicensed confirmation', () => {
