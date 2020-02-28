@@ -94,7 +94,7 @@
     "inquirer": "7.0.4",
     "mustache": "4.0.0",
     "mz": "^2.7.0",
-    "nodegit": "0.26.4",
+    "nodegit": "0.26.5",
     "shelljs": "0.8.3",
     "spdx-license-list": "6.1.0",
     "word-wrap": "^1.2.3",
