@@ -10,7 +10,7 @@
   "homepage": "https://npm.im/@travi/project-scaffolder",
   "author": "Matt Travi <npm@travi.org> (https://matt.travi.org/)",
   "contributors": [
-     "Trevor Richardson <npm@trevorrichardson.me> (https://trevorrichardson.me)"
+    "Trevor Richardson <npm@trevorrichardson.me> (https://trevorrichardson.me)"
   ],
   "funding": {
     "url": "https://github.com/sponsors/travi"
@@ -91,7 +91,7 @@
     "@hapi/hoek": "^9.0.3",
     "@hapi/joi": "^17.0.2",
     "@travi/cli-messages": "1.0.1",
-    "inquirer": "7.0.5",
+    "inquirer": "^7.0.0",
     "mustache": "4.0.0",
     "mz": "^2.7.0",
     "nodegit": "0.26.5",
