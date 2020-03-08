@@ -4,7 +4,9 @@ import mustache from 'mustache';
 import {info} from '@travi/cli-messages';
 
 function buildBadgeMarkdown([name, badge]) {
-  return `[![${badge.text}][${name}-badge]][${name}-link]`;
+  if (badge.link) return `[![${badge.text}][${name}-badge]][${name}-link]`;
+
+  return `![${badge.text}][${name}-badge]`;
 }
 
 function buildBadgeReferences(acc, [name, badge]) {
