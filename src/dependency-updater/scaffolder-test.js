@@ -1,9 +1,10 @@
 import any from '@travi/any';
 import {assert} from 'chai';
 import sinon from 'sinon';
-import * as prompts from './prompts/questions';
-import scaffoldUpdater from './dependency-updater-scaffolder';
-import {questionNames} from './prompts/question-names';
+import * as prompt from './prompt';
+import scaffoldUpdater from './scaffolder';
+import {questionNames} from '../prompts/question-names';
+import {promptForDependencyUpdaterChoice} from './prompt';
 
 suite('dependency-updater scaffolder', () => {
   let sandbox;
@@ -11,7 +12,7 @@ suite('dependency-updater scaffolder', () => {
   setup(() => {
     sandbox = sinon.createSandbox();
 
-    sandbox.stub(prompts, 'promptForDependencyUpdaterChoice');
+    sandbox.stub(prompt, 'promptForDependencyUpdaterChoice');
   });
 
   teardown(() => sandbox.restore());
@@ -23,7 +24,7 @@ suite('dependency-updater scaffolder', () => {
     const chosenUpdaterScaffolder = sinon.stub();
     const scaffolders = {...any.simpleObject(), [chosenUpdater]: chosenUpdaterScaffolder};
     const scaffolderResult = any.simpleObject();
-    prompts.promptForDependencyUpdaterChoice
+    promptForDependencyUpdaterChoice
       .withArgs(scaffolders, decisions)
       .resolves({[questionNames.DEPENDENCY_UPDATER]: chosenUpdater});
     chosenUpdaterScaffolder.withArgs(options).resolves(scaffolderResult);
@@ -33,11 +34,11 @@ suite('dependency-updater scaffolder', () => {
 
   test('that no prompt is presented if no updaters are registered', async () => {
     assert.isUndefined(await scaffoldUpdater({}, any.simpleObject(), any.simpleObject()));
-    assert.notCalled(prompts.promptForDependencyUpdaterChoice);
+    assert.notCalled(promptForDependencyUpdaterChoice);
   });
 
   test('that that choosing an updater without a defined scaffolder does not result in an error', async () => {
-    prompts.promptForDependencyUpdaterChoice.resolves({[questionNames.DEPENDENCY_UPDATER]: any.word()});
+    promptForDependencyUpdaterChoice.resolves({[questionNames.DEPENDENCY_UPDATER]: any.word()});
 
     assert.isUndefined(await scaffoldUpdater(any.simpleObject(), any.simpleObject(), any.simpleObject()));
   });

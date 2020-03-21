@@ -8,7 +8,7 @@ import * as gitScaffolder from './vcs/git';
 import * as vcsHostScaffolder from './vcs/host';
 import * as licenseScaffolder from './license';
 import * as languageScaffolder from './language-scaffolder';
-import * as dependencyUpdaterScaffolder from './dependency-updater-scaffolder';
+import * as dependencyUpdaterScaffolder from './dependency-updater/scaffolder';
 import * as exec from '../third-party-wrappers/exec-as-promised';
 import * as prompts from './prompts/questions';
 import * as optionsValidator from './options-validator';

@@ -6,12 +6,7 @@ import any from '@travi/any';
 import {assert} from 'chai';
 import sinon from 'sinon';
 import * as conditionals from './conditionals';
-import {
-  promptForBaseDetails,
-  promptForDependencyUpdaterChoice,
-  promptForLanguageDetails,
-  promptForVcsHostDetails
-} from './questions';
+import {promptForBaseDetails, promptForLanguageDetails, promptForVcsHostDetails} from './questions';
 import {questionNames} from './question-names';
 
 suite('project scaffolder prompts', () => {
@@ -184,22 +179,6 @@ suite('project scaffolder prompts', () => {
         .resolves(answers);
 
       assert.equal(await promptForLanguageDetails(languages, decisions), answers);
-    });
-  });
-
-  suite('dependency updaters', () => {
-    test('that the preferred updater can be chosen', async () => {
-      const updaters = any.simpleObject();
-      prompts.prompt
-        .withArgs([{
-          name: questionNames.DEPENDENCY_UPDATER,
-          type: 'list',
-          message: 'Which dependency-update service do you want to manage this project?',
-          choices: [...Object.keys(updaters), new Separator(), 'Other']
-        }], decisions)
-        .resolves(answers);
-
-      assert.equal(await promptForDependencyUpdaterChoice(updaters, decisions), answers);
     });
   });
 });

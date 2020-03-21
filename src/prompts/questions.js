@@ -4,9 +4,9 @@ import {prompt, questionHasDecision} from '@form8ion/overridable-prompts';
 import spdxLicenseList from 'spdx-license-list/simple';
 import {
   copyrightInformationShouldBeRequested,
+  filterChoicesByVisibility,
   licenseChoicesShouldBePresented,
-  unlicensedConfirmationShouldBePresented,
-  filterChoicesByVisibility
+  unlicensedConfirmationShouldBePresented
 } from './conditionals';
 import {questionNames} from './question-names';
 
@@ -77,13 +77,4 @@ export async function promptForVcsHostDetails(hosts, visibility, decisions) {
   const host = hosts[answers[questionNames.REPO_HOST]];
 
   return {...answers, ...host && await host.prompt({decisions})};
-}
-
-export async function promptForDependencyUpdaterChoice(updaters, decisions) {
-  return prompt([{
-    name: questionNames.DEPENDENCY_UPDATER,
-    type: 'list',
-    message: 'Which dependency-update service do you want to manage this project?',
-    choices: [...Object.keys(updaters), new Separator(), 'Other']
-  }], decisions);
 }
