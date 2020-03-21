@@ -6,7 +6,12 @@ import any from '@travi/any';
 import {assert} from 'chai';
 import sinon from 'sinon';
 import * as conditionals from './conditionals';
-import {promptForBaseDetails, promptForLanguageDetails, promptForVcsHostDetails} from './questions';
+import {
+  promptForBaseDetails,
+  promptForDependencyUpdaterChoice,
+  promptForLanguageDetails,
+  promptForVcsHostDetails
+} from './questions';
 import {questionNames} from './question-names';
 
 suite('project scaffolder prompts', () => {
@@ -134,14 +139,12 @@ suite('project scaffolder prompts', () => {
       hostPrompt.withArgs({decisions}).returns(hostAnswers);
       conditionals.filterChoicesByVisibility.withArgs(hosts).returns(filteredHostChoices);
       prompts.prompt
-        .withArgs([
-          {
-            name: questionNames.REPO_HOST,
-            type: 'list',
-            message: 'Where will the repository be hosted?',
-            choices: filteredHostChoices
-          }
-        ], decisions)
+        .withArgs([{
+          name: questionNames.REPO_HOST,
+          type: 'list',
+          message: 'Where will the repository be hosted?',
+          choices: filteredHostChoices
+        }], decisions)
         .resolves(answersWithHostChoice);
 
       assert.deepEqual(
@@ -156,14 +159,12 @@ suite('project scaffolder prompts', () => {
       const answersWithHostChoice = {...answers, [questionNames.REPO_HOST]: 'Other'};
       conditionals.filterChoicesByVisibility.withArgs(hosts, visibility).returns(filteredHostChoices);
       prompts.prompt
-        .withArgs([
-          {
-            name: questionNames.REPO_HOST,
-            type: 'list',
-            message: 'Where will the repository be hosted?',
-            choices: filteredHostChoices
-          }
-        ], decisions)
+        .withArgs([{
+          name: questionNames.REPO_HOST,
+          type: 'list',
+          message: 'Where will the repository be hosted?',
+          choices: filteredHostChoices
+        }], decisions)
         .resolves(answersWithHostChoice);
 
       assert.deepEqual(await promptForVcsHostDetails(hosts, visibility, decisions), answersWithHostChoice);
@@ -174,17 +175,31 @@ suite('project scaffolder prompts', () => {
     test('that the user is prompted for the language details', async () => {
       const languages = any.simpleObject();
       prompts.prompt
-        .withArgs([
-          {
-            name: questionNames.PROJECT_TYPE,
-            type: 'list',
-            message: 'What type of project is this?',
-            choices: [...Object.keys(languages), new Separator(), 'Other']
-          }
-        ], decisions)
+        .withArgs([{
+          name: questionNames.PROJECT_TYPE,
+          type: 'list',
+          message: 'What type of project is this?',
+          choices: [...Object.keys(languages), new Separator(), 'Other']
+        }], decisions)
         .resolves(answers);
 
       assert.equal(await promptForLanguageDetails(languages, decisions), answers);
+    });
+  });
+
+  suite('dependency updaters', () => {
+    test('that the preferred updater can be chosen', async () => {
+      const updaters = any.simpleObject();
+      prompts.prompt
+        .withArgs([{
+          name: questionNames.DEPENDENCY_UPDATER,
+          type: 'list',
+          message: 'Which dependency-update service do you want to manage this project?',
+          choices: [...Object.keys(updaters), new Separator(), 'Other']
+        }], decisions)
+        .resolves(answers);
+
+      assert.equal(await promptForDependencyUpdaterChoice(updaters, decisions), answers);
     });
   });
 });

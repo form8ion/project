@@ -59,26 +59,31 @@ export function promptForBaseDetails(projectRoot, copyrightHolder, decisions) {
 }
 
 export function promptForLanguageDetails(languages, decisions) {
-  return prompt([
-    {
-      name: questionNames.PROJECT_TYPE,
-      type: 'list',
-      message: 'What type of project is this?',
-      choices: [...Object.keys(languages), new Separator(), 'Other']
-    }
-  ], decisions);
+  return prompt([{
+    name: questionNames.PROJECT_TYPE,
+    type: 'list',
+    message: 'What type of project is this?',
+    choices: [...Object.keys(languages), new Separator(), 'Other']
+  }], decisions);
 }
 
 export async function promptForVcsHostDetails(hosts, visibility, decisions) {
-  const answers = await prompt([
-    {
-      name: questionNames.REPO_HOST,
-      type: 'list',
-      message: 'Where will the repository be hosted?',
-      choices: filterChoicesByVisibility(hosts, visibility)
-    }
-  ], decisions);
+  const answers = await prompt([{
+    name: questionNames.REPO_HOST,
+    type: 'list',
+    message: 'Where will the repository be hosted?',
+    choices: filterChoicesByVisibility(hosts, visibility)
+  }], decisions);
   const host = hosts[answers[questionNames.REPO_HOST]];
 
   return {...answers, ...host && await host.prompt({decisions})};
+}
+
+export async function promptForDependencyUpdaterChoice(updaters, decisions) {
+  return prompt([{
+    name: questionNames.DEPENDENCY_UPDATER,
+    type: 'list',
+    message: 'Which dependency-update service do you want to manage this project?',
+    choices: [...Object.keys(updaters), new Separator(), 'Other']
+  }], decisions);
 }
