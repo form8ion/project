@@ -4,11 +4,11 @@ import {promptForDependencyUpdaterChoice} from './prompt';
 export default async function (scaffolders, decisions, options) {
   if (!Object.keys(scaffolders).length) return undefined;
 
-  const scaffolder = scaffolders[
+  const scaffolderDetails = scaffolders[
     (await promptForDependencyUpdaterChoice(scaffolders, decisions))[questionNames.DEPENDENCY_UPDATER]
   ];
 
-  if (scaffolder) return scaffolder(options);
+  if (scaffolderDetails) return scaffolderDetails.scaffolder(options);
 
   return undefined;
 }

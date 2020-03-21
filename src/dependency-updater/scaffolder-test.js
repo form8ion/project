@@ -22,7 +22,7 @@ suite('dependency-updater scaffolder', () => {
     const options = any.simpleObject();
     const chosenUpdater = any.word();
     const chosenUpdaterScaffolder = sinon.stub();
-    const scaffolders = {...any.simpleObject(), [chosenUpdater]: chosenUpdaterScaffolder};
+    const scaffolders = {...any.simpleObject(), [chosenUpdater]: {scaffolder: chosenUpdaterScaffolder}};
     const scaffolderResult = any.simpleObject();
     promptForDependencyUpdaterChoice
       .withArgs(scaffolders, decisions)
