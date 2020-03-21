@@ -39,9 +39,10 @@ export async function scaffold(options) {
       languages,
       projectLanguage,
       {projectRoot, projectName, vcs, visibility, license: chosenLicense || 'UNLICENSED', description}
-    ),
-    scaffoldDependencyUpdater(dependencyUpdaters, decisions, {projectRoot, vcs})
+    )
   ]);
+
+  await scaffoldDependencyUpdater(dependencyUpdaters, decisions, {projectRoot, vcs});
 
   const contributedTasks = (language && language.nextSteps) ? language.nextSteps : [];
 
