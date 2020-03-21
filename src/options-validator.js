@@ -14,7 +14,7 @@ export function validate(options) {
     decisions: joi.object(),
     dependencyUpdaters: joi.object().pattern(/^/, joi.object({
       scaffolder: joi.func().arity(1).required()
-    }))
+    })).default({})
   });
   const validated = schema.validate(options);
 

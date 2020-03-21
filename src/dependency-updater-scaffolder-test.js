@@ -31,6 +31,11 @@ suite('dependency-updater scaffolder', () => {
     assert.equal(await scaffoldUpdater(scaffolders, decisions, options), scaffolderResult);
   });
 
+  test('that no prompt is presented if no updaters are registered', async () => {
+    assert.isUndefined(await scaffoldUpdater({}, any.simpleObject(), any.simpleObject()));
+    assert.notCalled(prompts.promptForDependencyUpdaterChoice);
+  });
+
   test('that that choosing an updater without a defined scaffolder does not result in an error', async () => {
     prompts.promptForDependencyUpdaterChoice.resolves({[questionNames.DEPENDENCY_UPDATER]: any.word()});
 

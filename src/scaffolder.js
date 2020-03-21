@@ -6,6 +6,7 @@ import scaffoldReadme from './readme';
 import {initialize as initializeGit, scaffold as scaffoldGit} from './vcs/git';
 import scaffoldLicense from './license';
 import scaffoldVcsHost from './vcs/host';
+import scaffoldDependencyUpdater from './dependency-updater-scaffolder';
 import exec from '../third-party-wrappers/exec-as-promised';
 import {promptForBaseDetails, promptForLanguageDetails} from './prompts/questions';
 import {validate} from './options-validator';
@@ -14,7 +15,7 @@ import displayResults from './success-output';
 
 export async function scaffold(options) {
   const projectRoot = process.cwd();
-  const {languages = {}, overrides = {}, vcsHosts = {}, decisions} = validate(options);
+  const {languages = {}, overrides = {}, vcsHosts = {}, decisions, dependencyUpdaters} = validate(options);
   const {copyrightHolder} = overrides;
 
   const {
@@ -38,7 +39,8 @@ export async function scaffold(options) {
       languages,
       projectLanguage,
       {projectRoot, projectName, vcs, visibility, license: chosenLicense || 'UNLICENSED', description}
-    )
+    ),
+    scaffoldDependencyUpdater(dependencyUpdaters, decisions, {projectRoot, vcs})
   ]);
 
   const contributedTasks = (language && language.nextSteps) ? language.nextSteps : [];

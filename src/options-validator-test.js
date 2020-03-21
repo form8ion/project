@@ -8,7 +8,7 @@ suite('options validator', () => {
   test('that empty options is allowed', () => {
     const emptyOptions = {};
 
-    assert.deepEqual(validate(emptyOptions), emptyOptions);
+    assert.deepEqual(validate(emptyOptions), {dependencyUpdaters: {}});
   });
 
   test('that validated options are returned', () => {
