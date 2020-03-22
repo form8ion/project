@@ -42,7 +42,7 @@ export async function scaffold(options) {
     )
   ]);
 
-  await scaffoldDependencyUpdater(dependencyUpdaters, decisions, {projectRoot, vcs});
+  if (vcs) await scaffoldDependencyUpdater(dependencyUpdaters, decisions, {projectRoot, vcs});
 
   const contributedTasks = (language && language.nextSteps) ? language.nextSteps : [];
 

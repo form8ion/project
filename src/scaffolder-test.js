@@ -243,6 +243,7 @@ suite('project scaffolder', () => {
 
     assert.notCalled(gitScaffolder.scaffold);
     assert.notCalled(vcsHostScaffolder.default);
+    assert.notCalled(dependencyUpdaterScaffolder.default);
   });
 
   test('that the language details get scaffolded', () => {
