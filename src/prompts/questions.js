@@ -4,9 +4,9 @@ import {prompt, questionHasDecision} from '@form8ion/overridable-prompts';
 import spdxLicenseList from 'spdx-license-list/simple';
 import {
   copyrightInformationShouldBeRequested,
+  filterChoicesByVisibility,
   licenseChoicesShouldBePresented,
-  unlicensedConfirmationShouldBePresented,
-  filterChoicesByVisibility
+  unlicensedConfirmationShouldBePresented
 } from './conditionals';
 import {questionNames} from './question-names';
 
@@ -59,25 +59,21 @@ export function promptForBaseDetails(projectRoot, copyrightHolder, decisions) {
 }
 
 export function promptForLanguageDetails(languages, decisions) {
-  return prompt([
-    {
-      name: questionNames.PROJECT_TYPE,
-      type: 'list',
-      message: 'What type of project is this?',
-      choices: [...Object.keys(languages), new Separator(), 'Other']
-    }
-  ], decisions);
+  return prompt([{
+    name: questionNames.PROJECT_TYPE,
+    type: 'list',
+    message: 'What type of project is this?',
+    choices: [...Object.keys(languages), new Separator(), 'Other']
+  }], decisions);
 }
 
 export async function promptForVcsHostDetails(hosts, visibility, decisions) {
-  const answers = await prompt([
-    {
-      name: questionNames.REPO_HOST,
-      type: 'list',
-      message: 'Where will the repository be hosted?',
-      choices: filterChoicesByVisibility(hosts, visibility)
-    }
-  ], decisions);
+  const answers = await prompt([{
+    name: questionNames.REPO_HOST,
+    type: 'list',
+    message: 'Where will the repository be hosted?',
+    choices: filterChoicesByVisibility(hosts, visibility)
+  }], decisions);
   const host = hosts[answers[questionNames.REPO_HOST]];
 
   return {...answers, ...host && await host.prompt({decisions})};

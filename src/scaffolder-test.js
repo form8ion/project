@@ -8,6 +8,7 @@ import * as gitScaffolder from './vcs/git';
 import * as vcsHostScaffolder from './vcs/host';
 import * as licenseScaffolder from './license';
 import * as languageScaffolder from './language-scaffolder';
+import * as dependencyUpdaterScaffolder from './dependency-updater/scaffolder';
 import * as exec from '../third-party-wrappers/exec-as-promised';
 import * as prompts from './prompts/questions';
 import * as optionsValidator from './options-validator';
@@ -47,6 +48,7 @@ suite('project scaffolder', () => {
     sandbox.stub(vcsHostScaffolder, 'default');
     sandbox.stub(licenseScaffolder, 'default');
     sandbox.stub(languageScaffolder, 'scaffold');
+    sandbox.stub(dependencyUpdaterScaffolder, 'default');
     sandbox.stub(promises, 'copyFile');
     sandbox.stub(exec, 'default');
     sandbox.stub(successOutput, 'default');
@@ -67,9 +69,12 @@ suite('project scaffolder', () => {
     const overrides = {...any.simpleObject(), copyrightHolder: any.string()};
     const vcsIgnore = any.simpleObject();
     const gitRepoShouldBeInitialized = true;
+    const dependencyUpdaters = any.simpleObject();
     const decisions = any.simpleObject();
     const gitNextSteps = any.listOf(any.simpleObject);
-    optionsValidator.validate.withArgs(options).returns({languages: scaffolders, overrides, vcsHosts, decisions});
+    optionsValidator.validate
+      .withArgs(options)
+      .returns({languages: scaffolders, overrides, vcsHosts, decisions, dependencyUpdaters});
     prompts.promptForBaseDetails
       .withArgs(projectPath, overrides.copyrightHolder, decisions)
       .resolves({
@@ -127,8 +132,14 @@ suite('project scaffolder', () => {
       }
     );
     assert.calledWith(
+      dependencyUpdaterScaffolder.default,
+      dependencyUpdaters,
+      decisions,
+      {projectRoot: projectPath, vcs}
+    );
+    assert.calledWith(
       promises.copyFile,
-      path.resolve(__dirname, '../', 'templates', 'editorconfig.txt'),
+      path.resolve(__dirname, '..', 'templates', 'editorconfig.txt'),
       `${projectPath}/.editorconfig`
     );
     assert.calledWith(successOutput.default, [...gitNextSteps]);
@@ -232,6 +243,7 @@ suite('project scaffolder', () => {
 
     assert.notCalled(gitScaffolder.scaffold);
     assert.notCalled(vcsHostScaffolder.default);
+    assert.notCalled(dependencyUpdaterScaffolder.default);
   });
 
   test('that the language details get scaffolded', () => {

@@ -17,6 +17,7 @@ opinionated scaffolder for new projects
     * [Options](#options)
       * [`languages` (_optional_)](#languages-optional)
       * [`vcsHosts` (_optional_)](#vcshosts-optional)
+      * [`dependencyUpdaters` (_optional_)](#dependencyupdaters-optional)
       * [`overrides` (_optional_)](#overrides-optional)
         * [`copyrightHolder`](#copyrightholder)
         * [`githubAccount`](#githubaccount)
@@ -128,7 +129,7 @@ scaffolding.
 
 __object__:
 
-* keys: __string__ Name of the language
+* keys: __string__ Name of the vcs host
 * values: __object__
   * `prompt`: __function__ (_required_) prompts for host specific details
     * MUST return an object of the prompt answers, which MUST include the name
@@ -151,6 +152,29 @@ __object__:
     as a public option
   * `private`: __boolean__ (_optional_) whether this host should be presented
     as a private option
+
+##### `dependencyUpdaters` (_optional_)
+
+provides the dependency updaters to choose from and the functions to perform the
+scaffolding for the chosen updater service. if no updater services are provided,
+`Other` will be the only choice presented. Choosing `Other` will perform no
+updater-service-specific scaffolding.
+
+__object__:
+
+* keys: __string__ Name of the dependency update service
+* values: __object__
+  * `scaffolder`: __function__ (_required_) scaffolds the host options
+    * receives an options object as its first argument to pass along answers to
+      the project-level prompts
+      * `projectRoot`: __string__ path of the working directory where the CLI
+        command was executed
+    * `vcs`: __object__ details about the [VCS](https://en.wikipedia.org/wiki/Version_control)
+      host
+      * `host`: __string__ host name. defaults to `GitHub`
+      * `name`: __string__ repository name. equal to `projectName`
+      * `owner`: __string__ account name on the host service for the repository
+        owner. defaults to `$ git config github.user` or the [overridden value](#githubaccount)
 
 ##### `overrides` (_optional_)
 

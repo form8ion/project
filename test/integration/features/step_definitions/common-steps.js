@@ -24,10 +24,12 @@ After(() => stubbedFs.restore());
 When(/^the project is scaffolded$/, async function () {
   const repoShouldBeCreated = this.getAnswerFor(questionNames.GIT_REPO);
   const visibility = any.fromList(['Public', 'Private']);
+  const chosenUpdater = any.word();
 
   await scaffold({
     languages: {},
     overrides: {},
+    ...this.updaterScaffolderDetails && {dependencyUpdaters: {[chosenUpdater]: this.updaterScaffolderDetails}},
     decisions: {
       [questionNames.PROJECT_NAME]: 'project-name',
       [questionNames.DESCRIPTION]: 'some project description',
@@ -40,7 +42,8 @@ When(/^the project is scaffolded$/, async function () {
       ...'Private' === visibility && {[questionNames.UNLICENSED]: true},
       [questionNames.GIT_REPO]: repoShouldBeCreated,
       ...repoShouldBeCreated && {[questionNames.REPO_HOST]: 'Other'},
-      [questionNames.PROJECT_TYPE]: 'Other'
+      [questionNames.PROJECT_TYPE]: 'Other',
+      ...this.updaterScaffolderDetails && {[questionNames.DEPENDENCY_UPDATER]: chosenUpdater}
     }
   });
 });

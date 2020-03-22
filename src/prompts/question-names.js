@@ -10,5 +10,6 @@ export const questionNames = {
   COPYRIGHT_HOLDER: 'copyrightHolder',
   COPYRIGHT_YEAR: 'copyrightYear',
   PROJECT_TYPE: 'projectLanguage',
-  CI: 'ci'
+  CI: 'ci',
+  DEPENDENCY_UPDATER: 'dependencyUpdater'
 };
