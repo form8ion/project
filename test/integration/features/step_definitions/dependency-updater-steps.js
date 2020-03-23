@@ -4,7 +4,7 @@ import sinon from 'sinon';
 let updaterScaffolder;
 
 Before(function () {
-  updaterScaffolder = sinon.spy();
+  updaterScaffolder = sinon.stub();
 });
 
 After(function () {

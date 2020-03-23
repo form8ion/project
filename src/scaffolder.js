@@ -1,5 +1,6 @@
 import {resolve} from 'path';
 import {promises} from 'fs';
+import deepmerge from 'deepmerge';
 import {info} from '@travi/cli-messages';
 import {scaffold as scaffoldLanguage} from './language-scaffolder';
 import scaffoldReadme from './readme';
@@ -69,24 +70,24 @@ export async function scaffold(options) {
       projectRoot,
       description,
       ...language && {documentation: language.documentation},
-      badges: {
-        consumer: {
-          ...language && language.badges && language.badges.consumer,
-          ...license.badges && {license: license.badges.consumer}
-        },
-        status: {...language && language.badges && language.badges.status},
-        contribution: {
-          ...language && language.badges && language.badges.contribution,
-          ...dependencyUpdaterResults && dependencyUpdaterResults.badges.contribution,
-          ...'Public' === visibility && {
-            PRs: {
-              text: 'PRs Welcome',
-              link: 'http://makeapullrequest.com',
-              img: 'https://img.shields.io/badge/PRs-welcome-brightgreen.svg'
+      badges: deepmerge.all([
+        {
+          contribution: {
+            ...'Public' === visibility && {
+              PRs: {
+                text: 'PRs Welcome',
+                link: 'http://makeapullrequest.com',
+                img: 'https://img.shields.io/badge/PRs-welcome-brightgreen.svg'
+              }
             }
-          }
-        }
-      }
+          },
+          status: {},
+          consumer: {}
+        },
+        language && language.badges,
+        license && license.badges,
+        dependencyUpdaterResults && dependencyUpdaterResults.badges
+      ].filter(Boolean))
     }),
     promises.copyFile(resolve(__dirname, '..', 'templates', 'editorconfig.txt'), `${projectRoot}/.editorconfig`)
   ]);
