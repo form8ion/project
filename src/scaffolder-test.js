@@ -72,6 +72,8 @@ suite('project scaffolder', () => {
     const dependencyUpdaters = any.simpleObject();
     const decisions = any.simpleObject();
     const gitNextSteps = any.listOf(any.simpleObject);
+    const dependencyUpdaterNextSteps = any.listOf(any.simpleObject);
+    const dependencyUpdaterContributionBadges = any.simpleObject();
     optionsValidator.validate
       .withArgs(options)
       .returns({languages: scaffolders, overrides, vcsHosts, decisions, dependencyUpdaters});
@@ -108,12 +110,15 @@ suite('project scaffolder', () => {
           description,
           visibility,
           homepage: undefined,
-          nextSteps: []
+          nextSteps: [...dependencyUpdaterNextSteps]
         }
       )
       .resolves(vcsOriginDetails);
     languageScaffolder.scaffold
       .resolves({badges: {status: {ci: ciBadge}}, vcsIgnore, projectDetails: {}, documentation});
+    dependencyUpdaterScaffolder.default
+      .withArgs(dependencyUpdaters, decisions, {projectRoot: projectPath, vcs})
+      .resolves({badges: {contribution: dependencyUpdaterContributionBadges}, nextSteps: dependencyUpdaterNextSteps});
 
     await scaffold(options);
 
@@ -128,7 +133,11 @@ suite('project scaffolder', () => {
         projectRoot: projectPath,
         description,
         documentation,
-        badges: {consumer: {license: licenseBadge}, status: {ci: ciBadge}, contribution: {}}
+        badges: {
+          consumer: {license: licenseBadge},
+          status: {ci: ciBadge},
+          contribution: dependencyUpdaterContributionBadges
+        }
       }
     );
     assert.calledWith(
@@ -142,7 +151,7 @@ suite('project scaffolder', () => {
       path.resolve(__dirname, '..', 'templates', 'editorconfig.txt'),
       `${projectPath}/.editorconfig`
     );
-    assert.calledWith(successOutput.default, [...gitNextSteps]);
+    assert.calledWith(successOutput.default, [...gitNextSteps, ...dependencyUpdaterNextSteps]);
   });
 
   test('that the options are optional', async () => {

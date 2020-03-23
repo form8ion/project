@@ -42,9 +42,16 @@ export async function scaffold(options) {
     )
   ]);
 
-  if (vcs) await scaffoldDependencyUpdater(dependencyUpdaters, decisions, {projectRoot, vcs});
+  const dependencyUpdaterResults = vcs && await scaffoldDependencyUpdater(
+    dependencyUpdaters,
+    decisions,
+    {projectRoot, vcs}
+  );
 
-  const contributedTasks = (language && language.nextSteps) ? language.nextSteps : [];
+  const contributedTasks = [
+    ...(language && language.nextSteps) ? language.nextSteps : [],
+    ...(dependencyUpdaterResults) ? dependencyUpdaterResults.nextSteps : []
+  ];
 
   const vcsHostResults = vcs && await scaffoldVcsHost(vcsHosts, {
     ...vcs,
@@ -70,6 +77,7 @@ export async function scaffold(options) {
         status: {...language && language.badges && language.badges.status},
         contribution: {
           ...language && language.badges && language.badges.contribution,
+          ...dependencyUpdaterResults && dependencyUpdaterResults.badges.contribution,
           ...'Public' === visibility && {
             PRs: {
               text: 'PRs Welcome',
