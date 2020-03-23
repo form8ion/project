@@ -49,10 +49,11 @@ export async function scaffold(options) {
     {projectRoot, vcs}
   );
 
-  const contributedTasks = [
-    ...(language && language.nextSteps) ? language.nextSteps : [],
-    ...(dependencyUpdaterResults) ? dependencyUpdaterResults.nextSteps : []
-  ];
+  const contributors = [license, language, dependencyUpdaterResults].filter(Boolean);
+  const contributedTasks = contributors
+    .map(contributor => contributor.nextSteps)
+    .filter(Boolean)
+    .reduce((acc, contributedNextSteps) => ([...acc, ...contributedNextSteps]), []);
 
   const vcsHostResults = vcs && await scaffoldVcsHost(vcsHosts, {
     ...vcs,
@@ -84,10 +85,8 @@ export async function scaffold(options) {
           status: {},
           consumer: {}
         },
-        language && language.badges,
-        license && license.badges,
-        dependencyUpdaterResults && dependencyUpdaterResults.badges
-      ].filter(Boolean))
+        ...contributors.map(contributor => contributor.badges).filter(Boolean)
+      ])
     }),
     promises.copyFile(resolve(__dirname, '..', 'templates', 'editorconfig.txt'), `${projectRoot}/.editorconfig`)
   ]);
