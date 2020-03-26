@@ -4,20 +4,27 @@ import {assert} from 'chai';
 import unified from 'unified';
 import parseMarkdown from 'remark-parse';
 
+function addBadgeToMostRecentGroup(acc, badge) {
+  acc[acc.length - 1][1][badge.label] = badge;
+}
+
+function defineNextGroup(acc, groupName) {
+  return [...acc, [groupName, {}]];
+}
+
 function groupBadges(nodes) {
   return Object.fromEntries(nodes.reduce((acc, node) => {
     if ('html' === node.type) {
-      const values = node.value.split(' ')[1];
-      return [...acc, [values, {}]];
+      const groupName = node.value.split(' ')[1];
+
+      return defineNextGroup(acc, groupName);
     }
 
     if ('paragraph' === node.type) {
       node.children.forEach(child => {
         if ('linkReference' === child.type) {
-          acc[acc.length - 1][1][child.label] = child;
+          addBadgeToMostRecentGroup(acc, child);
         }
-
-        return acc;
       });
     }
 
@@ -49,13 +56,20 @@ function assertBadgesSectionExists(node, badgeSection) {
   assert.equal(node.value, `<!-- ${badgeSection} badges -->`);
 }
 
-function assertGroupContainsBadge(badgeGroup, badgeDetails) {
+function assertGroupContainsBadge(badgeGroup, references, badgeDetails) {
   const badgeFromGroup = badgeGroup[badgeDetails.label];
   const imageReference = badgeFromGroup.children[0];
 
   assert.equal(imageReference.type, 'imageReference');
   assert.equal(imageReference.label, badgeDetails.imageReferenceLabel);
   assert.equal(imageReference.alt, badgeDetails.imageAltText);
+  assert.equal(references[badgeDetails.label], badgeDetails.link);
+  assert.equal(references[badgeDetails.imageReferenceLabel], badgeDetails.imageSrc);
+}
+
+function assertGroupDoesNotContainBadge(badgeGroup, references, {label}) {
+  assert.isUndefined(badgeGroup[label]);
+  assert.isUndefined(references[label]);
 }
 
 Then('the README includes the core details', async function () {
@@ -68,16 +82,25 @@ Then('the README includes the core details', async function () {
   assertBadgesSectionExists(readmeTree.children[4], 'contribution');
 });
 
-function assertGroupDoesNotContainBadge(badgeGroup, badgeDetails) {
-  assert.isUndefined(badgeGroup[badgeDetails.label]);
+function extractReferences(nodes) {
+  return Object.fromEntries(nodes
+    .filter(node => 'definition' === node.type)
+    .map(node => ([node.label, node.url])));
 }
 
 Then('{string} details are included in the README', async function (visibility) {
   const readmeContent = await fs.readFile(`${process.cwd()}/README.md`, 'utf8');
   const readmeTree = unified().use(parseMarkdown).parse(readmeContent);
   const badgeGroups = groupBadges(readmeTree.children);
-  const PrsWelcomeDetails = {label: 'PRs-link', imageReferenceLabel: 'PRs-badge', imageAltText: 'PRs Welcome'};
+  const references = extractReferences(readmeTree.children);
+  const PrsWelcomeDetails = {
+    label: 'PRs-link',
+    imageReferenceLabel: 'PRs-badge',
+    imageAltText: 'PRs Welcome',
+    imageSrc: 'https://img.shields.io/badge/PRs-welcome-brightgreen.svg',
+    link: 'http://makeapullrequest.com'
+  };
 
-  if ('Public' === visibility) assertGroupContainsBadge(badgeGroups.contribution, PrsWelcomeDetails);
-  else assertGroupDoesNotContainBadge(badgeGroups.contribution, 'PRs-link');
+  if ('Public' === visibility) assertGroupContainsBadge(badgeGroups.contribution, references, PrsWelcomeDetails);
+  else assertGroupDoesNotContainBadge(badgeGroups.contribution, references, 'PRs-link');
 });
