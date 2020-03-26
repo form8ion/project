@@ -1,7 +1,7 @@
 import stubbedFs from 'mock-fs';
 import {promises} from 'fs';
 import {resolve} from 'path';
-import {Before, After, When, setWorldConstructor} from 'cucumber';
+import {Before, After, Given, When, setWorldConstructor} from 'cucumber';
 import any from '@travi/any';
 import {World} from '../support/world';
 import {scaffold, questionNames} from '../../../../src';
@@ -21,9 +21,13 @@ Before(async () => {
 
 After(() => stubbedFs.restore());
 
+Given('the project is {string}', async function (visibility) {
+  this.visibility = visibility;
+});
+
 When(/^the project is scaffolded$/, async function () {
   const repoShouldBeCreated = this.getAnswerFor(questionNames.GIT_REPO);
-  const visibility = any.fromList(['Public', 'Private']);
+  const visibility = this.visibility || any.fromList(['Public', 'Private']);
   const chosenUpdater = any.word();
 
   this.projectName = 'project-name';
