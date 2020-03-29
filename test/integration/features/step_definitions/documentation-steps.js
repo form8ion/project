@@ -2,34 +2,22 @@ import {promises as fs} from 'fs';
 import {Then} from 'cucumber';
 import {assert} from 'chai';
 import unified from 'unified';
+import zone from 'mdast-zone';
 import parseMarkdown from 'remark-parse';
 
-function addBadgeToMostRecentGroup(acc, badge) {
-  acc[acc.length - 1][1][badge.label] = badge;
-}
+function groupBadges(tree) {
+  const groups = {};
 
-function defineNextGroup(acc, groupName) {
-  return [...acc, [groupName, {}]];
-}
+  ['status', 'consumer', 'contribution'].forEach(badgeGroupName => {
+    zone(tree, `${badgeGroupName}-badges`, (start, nodes, end) => {
+      const badges = nodes.map(node => node.children).reduce((acc, badgeList) => ([...acc, ...badgeList]), []);
+      groups[badgeGroupName] = Object.fromEntries(badges.map(badge => ([badge.label, badge])));
 
-function groupBadges(nodes) {
-  return Object.fromEntries(nodes.reduce((acc, node) => {
-    if ('html' === node.type) {
-      const groupName = node.value.split(' ')[1];
+      return [start, nodes, end];
+    });
+  });
 
-      return defineNextGroup(acc, groupName);
-    }
-
-    if ('paragraph' === node.type) {
-      node.children.forEach(child => {
-        if ('linkReference' === child.type) {
-          addBadgeToMostRecentGroup(acc, child);
-        }
-      });
-    }
-
-    return acc;
-  }, []));
+  return groups;
 }
 
 function assertTitleIsIncluded(readmeTree, projectName) {
@@ -53,7 +41,7 @@ function assertDescriptionIsIncluded(readmeTree, projectDescription) {
 
 function assertBadgesSectionExists(node, badgeSection) {
   assert.equal(node.type, 'html');
-  assert.equal(node.value, `<!-- ${badgeSection} badges -->`);
+  assert.equal(node.value, `<!--${badgeSection}-badges start -->`);
 }
 
 function assertGroupContainsBadge(badgeGroup, references, badgeDetails) {
@@ -67,9 +55,10 @@ function assertGroupContainsBadge(badgeGroup, references, badgeDetails) {
   assert.equal(references[badgeDetails.imageReferenceLabel], badgeDetails.imageSrc);
 }
 
-function assertGroupDoesNotContainBadge(badgeGroup, references, {label}) {
+function assertGroupDoesNotContainBadge(badgeGroup, references, {label, imageReferenceLabel}) {
   assert.isUndefined(badgeGroup[label]);
   assert.isUndefined(references[label]);
+  assert.isUndefined(references[imageReferenceLabel]);
 }
 
 Then('the README includes the core details', async function () {
@@ -78,8 +67,8 @@ Then('the README includes the core details', async function () {
   assertTitleIsIncluded(readmeTree, this.projectName);
   assertDescriptionIsIncluded(readmeTree, this.projectDescription);
   assertBadgesSectionExists(readmeTree.children[2], 'status');
-  assertBadgesSectionExists(readmeTree.children[3], 'consumer');
-  assertBadgesSectionExists(readmeTree.children[4], 'contribution');
+  assertBadgesSectionExists(readmeTree.children[4], 'consumer');
+  assertBadgesSectionExists(readmeTree.children[6], 'contribution');
 });
 
 function extractReferences(nodes) {
@@ -91,7 +80,7 @@ function extractReferences(nodes) {
 Then('{string} details are included in the README', async function (visibility) {
   const readmeContent = await fs.readFile(`${process.cwd()}/README.md`, 'utf8');
   const readmeTree = unified().use(parseMarkdown).parse(readmeContent);
-  const badgeGroups = groupBadges(readmeTree.children);
+  const badgeGroups = groupBadges(readmeTree);
   const references = extractReferences(readmeTree.children);
   const PrsWelcomeDetails = {
     label: 'PRs-link',

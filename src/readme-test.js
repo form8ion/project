@@ -127,14 +127,17 @@ ${description}`)
         promises.writeFile,
         `${projectRoot}/README.md`,
         sinon.match(`
-<!-- status badges -->
+<!--status-badges start -->
 ${buildBadgeGroup(statusBadges).join('\n')}
+<!--status-badges end -->
 
-<!-- consumer badges -->
+<!--consumer-badges start -->
 ${buildBadgeGroup(consumerBadges).join('\n')}
+<!--consumer-badges end -->
 
-<!-- contribution badges -->
+<!--contribution-badges start -->
 ${buildBadgeGroup(contributionBadges).join('\n')}
+<!--contribution-badges end -->
 `)
       );
     });
@@ -156,18 +159,21 @@ ${buildBadgeGroup(contributionBadges).join('\n')}
         promises.writeFile,
         `${projectRoot}/README.md`,
         sinon.match(`
-<!-- status badges -->
+<!--status-badges start -->
 ${buildBadgeGroup(statusBadges).join('\n')}
+<!--status-badges end -->
 
 ## Usage
 
-<!-- consumer badges -->
+<!--consumer-badges start -->
 ${buildBadgeGroup(consumerBadges).join('\n')}
+<!--consumer-badges end -->
 
 ${usageDocs}
 
-<!-- contribution badges -->
+<!--contribution-badges start -->
 ${buildBadgeGroup(contributionBadges).join('\n')}
+<!--contribution-badges end -->
 `)
       );
     });
@@ -185,16 +191,19 @@ ${buildBadgeGroup(contributionBadges).join('\n')}
         promises.writeFile,
         `${projectRoot}/README.md`,
         sinon.match(`
-<!-- status badges -->
+<!--status-badges start -->
 ${buildBadgeGroup(statusBadges).join('\n')}
+<!--status-badges end -->
 
-<!-- consumer badges -->
+<!--consumer-badges start -->
 ${buildBadgeGroup(consumerBadges).join('\n')}
+<!--consumer-badges end -->
 
 ## Contributing
 
-<!-- contribution badges -->
+<!--contribution-badges start -->
 ${buildBadgeGroup(contributionBadges).join('\n')}
+<!--contribution-badges end -->
 
 ${contributingDocs}
 `)
