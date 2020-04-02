@@ -1,43 +1,27 @@
-import {promises} from 'fs';
-import {resolve} from 'path';
+import fs, {promises} from 'fs';
+import path from 'path';
 import mustache from 'mustache';
 import {info} from '@travi/cli-messages';
-
-function buildBadgeMarkdown([name, badge]) {
-  if (badge.link) return `[![${badge.text}][${name}-badge]][${name}-link]`;
-
-  return `![${badge.text}][${name}-badge]`;
-}
-
-function buildBadgeReferences(acc, [name, badge]) {
-  return ([
-    ...acc,
-    {key: `${name}-link`, value: badge.link},
-    {key: `${name}-badge`, value: badge.img}
-  ]);
-}
-
+import badgeInjectorPlugin from '@form8ion/remark-inject-badges';
+import remark from '../thirdparty-wrappers/remark';
 
 export default async function ({projectName, projectRoot, description, badges, documentation}) {
   info('Generating README');
 
-  const markdownBadges = {
-    consumer: Object.entries(badges.consumer).map(buildBadgeMarkdown),
-    status: Object.entries(badges.status).map(buildBadgeMarkdown),
-    contribution: Object.entries(badges.contribution).map(buildBadgeMarkdown)
-  };
-
-  const references = [
-    ...Object.entries(badges.consumer).reduce(buildBadgeReferences, []),
-    ...Object.entries(badges.status).reduce(buildBadgeReferences, []),
-    ...Object.entries(badges.contribution).reduce(buildBadgeReferences, [])
-  ].filter(Boolean);
-
-  await promises.writeFile(
-    `${projectRoot}/README.md`,
-    mustache.render(
-      await promises.readFile(resolve(__dirname, '..', 'templates/README.mustache'), 'utf8'),
-      {projectName, description, references, badges: markdownBadges, documentation}
-    )
+  const initialRender = mustache.render(
+    await promises.readFile(path.resolve(__dirname, '..', 'templates/README.mustache'), 'utf8'),
+    {projectName, description, documentation}
   );
+
+  return new Promise((resolve, reject) => {
+    remark()
+      .use(badgeInjectorPlugin, badges)
+      .process(initialRender, (err, file) => {
+        if (err) reject(err);
+        else {
+          fs.writeFileSync(`${projectRoot}/README.md`, file);
+          resolve();
+        }
+      });
+  });
 }

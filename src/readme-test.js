@@ -1,145 +1,80 @@
-import {promises} from 'fs';
+import fs from 'fs';
+import badgeInjectorPlugin from '@form8ion/remark-inject-badges';
 import any from '@travi/any';
 import sinon from 'sinon';
 import {assert} from 'chai';
+import * as remark from '../thirdparty-wrappers/remark';
 import scaffoldReadme from './readme';
 
 const badgeFactory = () => ({img: any.url(), link: any.url(), text: any.sentence()});
-const badgeFactoryWithoutLink = () => ({img: any.url(), text: any.sentence()});
 const consumerBadges = any.objectWithKeys(any.listOf(any.word), {factory: badgeFactory});
-const consumerBadgesWithoutLinks = any.objectWithKeys(any.listOf(any.word), {factory: badgeFactoryWithoutLink});
 const statusBadges = any.objectWithKeys(any.listOf(any.word), {factory: badgeFactory});
-const statusBadgesWithoutLinks = any.objectWithKeys(any.listOf(any.word), {factory: badgeFactoryWithoutLink});
 const contributionBadges = any.objectWithKeys(any.listOf(any.word), {factory: badgeFactory});
-const contributionBadgesWithoutLinks = any.objectWithKeys(any.listOf(any.word), {factory: badgeFactoryWithoutLink});
-
-function buildBadgeGroup(badgeData) {
-  return Object.entries(badgeData).map(([name, badge]) => `[![${badge.text}][${name}-badge]][${name}-link]`);
-}
-
-function assertBadgeIncludedInMarkdown(badgeData, projectRoot) {
-  return Object.entries(badgeData).forEach(([name, badge]) => {
-    assert.calledWith(
-      promises.writeFile,
-      `${projectRoot}/README.md`,
-      sinon.match(`
-[![${badge.text}][${name}-badge]][${name}-link]
-`)
-    );
-    assert.calledWith(
-      promises.writeFile,
-      `${projectRoot}/README.md`,
-      sinon.match(`
-[${name}-badge]: ${badge.img}
-`)
-    );
-    assert.calledWith(
-      promises.writeFile,
-      `${projectRoot}/README.md`,
-      sinon.match(`
-[${name}-link]: ${badge.link}
-`)
-    );
-  });
-}
-
-function assertBadgeIncludedInMarkdownWithoutLink(badgeData, projectRoot) {
-  return Object.entries(badgeData).forEach(([name, badge]) => {
-    assert.calledWith(
-      promises.writeFile,
-      `${projectRoot}/README.md`,
-      sinon.match(`
-![${badge.text}][${name}-badge]
-`)
-    );
-    assert.calledWith(
-      promises.writeFile,
-      `${projectRoot}/README.md`,
-      sinon.match(`
-[${name}-badge]: ${badge.img}
-`)
-    );
-    assert.neverCalledWith(
-      promises.writeFile,
-      `${projectRoot}/README.md`,
-      sinon.match(` [${name}-link]:`)
-    );
-  });
-}
 
 suite('scaffold readme', () => {
-  let sandbox;
+  let sandbox, use, remarkProcess;
   const projectName = any.word();
   const projectRoot = any.word();
   const description = any.word();
+  const remarkResults = any.string();
 
   setup(() => {
     sandbox = sinon.createSandbox();
 
-    sandbox.stub(promises, 'writeFile');
+    sandbox.stub(remark, 'default');
+    sandbox.stub(fs, 'writeFileSync');
 
-    promises.writeFile.resolves();
+    use = sinon.stub();
+    remarkProcess = sinon.stub();
+
+    remark.default.returns({use});
   });
 
   teardown(() => sandbox.restore());
 
   test('that the README has a top-level heading of the project name and includes the description', async () => {
-    await scaffoldReadme({projectName, projectRoot, description, badges: {consumer: {}, status: {}, contribution: {}}})
-      .then(() => assert.calledWith(
-        promises.writeFile,
-        `${projectRoot}/README.md`,
-        sinon.match(`# ${projectName}
+    const badges = {consumer: {}, status: {}, contribution: {}};
+    use.withArgs(badgeInjectorPlugin, badges).returns({process: remarkProcess});
+    remarkProcess
+      .withArgs(sinon.match(`# ${projectName}
 
-${description}`)
-      ));
+${description}`))
+      .yields(null, remarkResults);
+
+    await scaffoldReadme({projectName, projectRoot, description, badges});
+
+    assert.calledWith(fs.writeFileSync, `${projectRoot}/README.md`, remarkResults);
+  });
+
+  test('that the promise is rejected if there is a processing failure', () => {
+    const error = new Error('from test');
+    use.returns({process: remarkProcess});
+    remarkProcess.yields(error);
+
+    return assert.isRejected(scaffoldReadme({projectName, projectRoot, description}), error)
+      .then(() => assert.notCalled(fs.writeFileSync));
   });
 
   suite('badges', () => {
-    test('that the badges and references are generated from the provided data', async () => {
-      await scaffoldReadme({
-        projectRoot,
-        badges: {
-          consumer: {...consumerBadges, ...consumerBadgesWithoutLinks},
-          status: {...statusBadges, ...statusBadgesWithoutLinks},
-          contribution: {...contributionBadges, ...contributionBadgesWithoutLinks}
-        }
-      });
-
-      assertBadgeIncludedInMarkdown(consumerBadges, projectRoot);
-      assertBadgeIncludedInMarkdownWithoutLink(consumerBadgesWithoutLinks, projectRoot);
-
-      assertBadgeIncludedInMarkdown(statusBadges, projectRoot);
-      assertBadgeIncludedInMarkdownWithoutLink(statusBadgesWithoutLinks, projectRoot);
-
-      assertBadgeIncludedInMarkdown(contributionBadges, projectRoot);
-      assertBadgeIncludedInMarkdownWithoutLink(contributionBadgesWithoutLinks, projectRoot);
-    });
-
-    test('that badges are separated into consumer, status, and contribution groups', async () => {
-      await scaffoldReadme({
-        projectName,
-        projectRoot,
-        description,
-        badges: {consumer: consumerBadges, status: statusBadges, contribution: contributionBadges}
-      });
-
-      assert.calledWith(
-        promises.writeFile,
-        `${projectRoot}/README.md`,
-        sinon.match(`
+    test('that badges are separated into consumer, status, and contribution zones', async () => {
+      const badges = {consumer: consumerBadges, status: statusBadges, contribution: contributionBadges};
+      use.withArgs(badgeInjectorPlugin, badges).returns({process: remarkProcess});
+      remarkProcess
+        .withArgs(sinon.match(`
 <!--status-badges start -->
-${buildBadgeGroup(statusBadges).join('\n')}
 <!--status-badges end -->
 
 <!--consumer-badges start -->
-${buildBadgeGroup(consumerBadges).join('\n')}
 <!--consumer-badges end -->
 
 <!--contribution-badges start -->
-${buildBadgeGroup(contributionBadges).join('\n')}
 <!--contribution-badges end -->
-`)
-      );
+`))
+        .yields(null, remarkResults);
+
+      await scaffoldReadme({projectName, projectRoot, description, badges});
+
+      assert.calledWith(fs.writeFileSync, `${projectRoot}/README.md`, remarkResults);
     });
   });
 
@@ -148,66 +83,62 @@ ${buildBadgeGroup(contributionBadges).join('\n')}
 
     test('that usage docs are shown after the contributing badges', async () => {
       const usageDocs = markdownWithBackticksAndForwardSlashes;
-
-      await scaffoldReadme({
-        projectRoot,
-        badges: {consumer: consumerBadges, status: statusBadges, contribution: contributionBadges},
-        documentation: {usage: usageDocs}
-      });
-
-      assert.calledWith(
-        promises.writeFile,
-        `${projectRoot}/README.md`,
-        sinon.match(`
+      const badges = {consumer: consumerBadges, status: statusBadges, contribution: contributionBadges};
+      use.withArgs(badgeInjectorPlugin, badges).returns({process: remarkProcess});
+      remarkProcess
+        .withArgs(sinon.match(`
 <!--status-badges start -->
-${buildBadgeGroup(statusBadges).join('\n')}
 <!--status-badges end -->
 
 ## Usage
 
 <!--consumer-badges start -->
-${buildBadgeGroup(consumerBadges).join('\n')}
 <!--consumer-badges end -->
 
 ${usageDocs}
 
 <!--contribution-badges start -->
-${buildBadgeGroup(contributionBadges).join('\n')}
 <!--contribution-badges end -->
-`)
-      );
+`))
+        .yields(null, remarkResults);
+
+      await scaffoldReadme({
+        projectRoot,
+        badges,
+        documentation: {usage: usageDocs}
+      });
+
+      assert.calledWith(fs.writeFileSync, `${projectRoot}/README.md`, remarkResults);
     });
 
     test('that contribution docs are shown after the contributing badges', async () => {
       const contributingDocs = markdownWithBackticksAndForwardSlashes;
-
-      await scaffoldReadme({
-        projectRoot,
-        badges: {consumer: consumerBadges, status: statusBadges, contribution: contributionBadges},
-        documentation: {contributing: contributingDocs}
-      });
-
-      assert.calledWith(
-        promises.writeFile,
-        `${projectRoot}/README.md`,
-        sinon.match(`
+      const badges = {consumer: consumerBadges, status: statusBadges, contribution: contributionBadges};
+      use.withArgs(badgeInjectorPlugin, badges).returns({process: remarkProcess});
+      remarkProcess
+        .withArgs(sinon.match(`
 <!--status-badges start -->
-${buildBadgeGroup(statusBadges).join('\n')}
 <!--status-badges end -->
 
 <!--consumer-badges start -->
-${buildBadgeGroup(consumerBadges).join('\n')}
 <!--consumer-badges end -->
 
 ## Contributing
 
 <!--contribution-badges start -->
-${buildBadgeGroup(contributionBadges).join('\n')}
 <!--contribution-badges end -->
 
 ${contributingDocs}
-`)
-      );
+`))
+        .yields(null, remarkResults);
+
+      await scaffoldReadme({
+        projectRoot,
+        badges,
+        documentation: {contributing: contributingDocs}
+      });
+
+      assert.calledWith(fs.writeFileSync, `${projectRoot}/README.md`, remarkResults);
     });
   });
 });

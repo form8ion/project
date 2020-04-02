@@ -8,7 +8,7 @@ import {initialize as initializeGit, scaffold as scaffoldGit} from './vcs/git';
 import scaffoldLicense from './license';
 import scaffoldVcsHost from './vcs/host';
 import scaffoldDependencyUpdater from './dependency-updater/scaffolder';
-import exec from '../third-party-wrappers/exec-as-promised';
+import exec from '../thirdparty-wrappers/exec-as-promised';
 import {promptForBaseDetails, promptForLanguageDetails} from './prompts/questions';
 import {validate} from './options-validator';
 import {questionNames} from './prompts/question-names';

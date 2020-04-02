@@ -61,6 +61,12 @@ function assertGroupDoesNotContainBadge(badgeGroup, references, {label, imageRef
   assert.isUndefined(references[imageReferenceLabel]);
 }
 
+function extractReferences(nodes) {
+  return Object.fromEntries(nodes
+    .filter(node => 'definition' === node.type)
+    .map(node => ([node.label, node.url])));
+}
+
 Then('the README includes the core details', async function () {
   const readmeTree = unified().use(parseMarkdown).parse(await fs.readFile(`${process.cwd()}/README.md`, 'utf8'));
 
@@ -70,12 +76,6 @@ Then('the README includes the core details', async function () {
   assertBadgesSectionExists(readmeTree.children[4], 'consumer');
   assertBadgesSectionExists(readmeTree.children[6], 'contribution');
 });
-
-function extractReferences(nodes) {
-  return Object.fromEntries(nodes
-    .filter(node => 'definition' === node.type)
-    .map(node => ([node.label, node.url])));
-}
 
 Then('{string} details are included in the README', async function (visibility) {
   const readmeContent = await fs.readFile(`${process.cwd()}/README.md`, 'utf8');
