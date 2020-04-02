@@ -2,6 +2,7 @@ import {promises as fs} from 'fs';
 import {Then} from 'cucumber';
 import {assert} from 'chai';
 import unified from 'unified';
+import find from 'unist-util-find';
 import zone from 'mdast-zone';
 import parseMarkdown from 'remark-parse';
 
@@ -39,19 +40,18 @@ function assertDescriptionIsIncluded(readmeTree, projectDescription) {
   assert.equal(descriptionText.value, projectDescription);
 }
 
-function assertBadgesSectionExists(node, badgeSection) {
-  assert.equal(node.type, 'html');
-  assert.equal(node.value, `<!--${badgeSection}-badges start -->`);
+function assertBadgesSectionExists(tree, badgeSection) {
+  assert.isDefined(find(tree, {type: 'html', value: `<!--${badgeSection}-badges start -->`}));
 }
 
 function assertGroupContainsBadge(badgeGroup, references, badgeDetails) {
-  const badgeFromGroup = badgeGroup[badgeDetails.label];
-  const imageReference = badgeFromGroup.children[0];
+  const badgeFromGroup = badgeGroup[badgeDetails.link ? badgeDetails.label : badgeDetails.imageReferenceLabel];
+  const imageReference = badgeDetails.link ? badgeFromGroup.children[0] : badgeFromGroup;
 
   assert.equal(imageReference.type, 'imageReference');
   assert.equal(imageReference.label, badgeDetails.imageReferenceLabel);
   assert.equal(imageReference.alt, badgeDetails.imageAltText);
-  assert.equal(references[badgeDetails.label], badgeDetails.link);
+  assert.equal(references[badgeDetails.label], badgeDetails.link ? badgeDetails.link : undefined);
   assert.equal(references[badgeDetails.imageReferenceLabel], badgeDetails.imageSrc);
 }
 
@@ -72,9 +72,9 @@ Then('the README includes the core details', async function () {
 
   assertTitleIsIncluded(readmeTree, this.projectName);
   assertDescriptionIsIncluded(readmeTree, this.projectDescription);
-  assertBadgesSectionExists(readmeTree.children[2], 'status');
-  assertBadgesSectionExists(readmeTree.children[4], 'consumer');
-  assertBadgesSectionExists(readmeTree.children[6], 'contribution');
+  assertBadgesSectionExists(readmeTree, 'status');
+  assertBadgesSectionExists(readmeTree, 'consumer');
+  assertBadgesSectionExists(readmeTree, 'contribution');
 });
 
 Then('{string} details are included in the README', async function (visibility) {
@@ -92,4 +92,25 @@ Then('{string} details are included in the README', async function (visibility) 
 
   if ('Public' === visibility) assertGroupContainsBadge(badgeGroups.contribution, references, PrsWelcomeDetails);
   else assertGroupDoesNotContainBadge(badgeGroups.contribution, references, 'PRs-link');
+});
+
+Then('the README includes the language details', async function () {
+  const readmeContent = await fs.readFile(`${process.cwd()}/README.md`, 'utf8');
+  const readmeTree = unified().use(parseMarkdown).parse(readmeContent);
+  const badgeGroups = groupBadges(readmeTree);
+  const references = extractReferences(readmeTree.children);
+
+  Object.entries(this.languageScaffolderResults.badges).forEach(([badgeType, badges]) => {
+    Object.entries(badges).forEach(([badgeName, badgeDetails]) => {
+      const badgeAstDetails = {
+        label: `${badgeName}-link`,
+        imageReferenceLabel: `${badgeName}-badge`,
+        imageAltText: badgeDetails.text,
+        imageSrc: badgeDetails.img,
+        link: badgeDetails.link
+      };
+
+      assertGroupContainsBadge(badgeGroups[badgeType], references, badgeAstDetails);
+    });
+  });
 });

@@ -87,11 +87,12 @@
     "rollup-plugin-auto-external": "^2.0.0",
     "sinon": "^9.0.0",
     "travis-lint": "^1.0.0",
-    "unified": "^8.4.2"
+    "unified": "^8.4.2",
+    "unist-util-find": "^1.0.1"
   },
   "dependencies": {
     "@form8ion/overridable-prompts": "^1.0.1",
-    "@form8ion/remark-inject-badges": "1.0.1",
+    "@form8ion/remark-inject-badges": "^1.1.0",
     "@hapi/hoek": "^9.0.3",
     "@hapi/joi": "^17.0.2",
     "@travi/cli-messages": "1.0.1",
