@@ -33,6 +33,7 @@ suite('project scaffolder', () => {
   const documentation = any.simpleObject();
   const vcs = any.simpleObject();
   const vcsOriginDetails = any.simpleObject();
+  const tags = any.listOf(any.word);
 
   setup(() => {
     sandbox = sinon.createSandbox();
@@ -110,12 +111,13 @@ suite('project scaffolder', () => {
           description,
           visibility,
           homepage: undefined,
-          nextSteps: [...dependencyUpdaterNextSteps]
+          nextSteps: [...dependencyUpdaterNextSteps],
+          tags
         }
       )
       .resolves(vcsOriginDetails);
     languageScaffolder.scaffold
-      .resolves({badges: {status: {ci: ciBadge}}, vcsIgnore, projectDetails: {}, documentation});
+      .resolves({badges: {status: {ci: ciBadge}}, vcsIgnore, projectDetails: {}, documentation, tags});
     dependencyUpdaterScaffolder.default
       .withArgs(dependencyUpdaters, decisions, {projectRoot: projectPath, vcs})
       .resolves({badges: {contribution: dependencyUpdaterContributionBadges}, nextSteps: dependencyUpdaterNextSteps});
@@ -300,7 +302,8 @@ suite('project scaffolder', () => {
         documentation,
         verificationCommand,
         projectDetails: {homepage},
-        nextSteps: languageNextSteps
+        nextSteps: languageNextSteps,
+        tags
       });
     vcsHostScaffolder.default
       .withArgs(
@@ -312,7 +315,8 @@ suite('project scaffolder', () => {
           description,
           homepage,
           visibility,
-          nextSteps: languageNextSteps
+          nextSteps: languageNextSteps,
+          tags
         }
       )
       .resolves(vcsOriginDetails);

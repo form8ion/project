@@ -61,7 +61,10 @@ export async function scaffold(options) {
     projectType: projectLanguage,
     description,
     visibility,
-    homepage: language && language.projectDetails && language.projectDetails.homepage,
+    ...language && {
+      homepage: language.projectDetails && language.projectDetails.homepage,
+      tags: language.tags
+    },
     nextSteps: contributedTasks
   });
 
