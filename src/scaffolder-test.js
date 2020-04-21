@@ -1,5 +1,6 @@
 import path from 'path';
 import {promises} from 'fs';
+import * as resultsReporter from '@form8ion/results-reporter';
 import sinon from 'sinon';
 import {assert} from 'chai';
 import any from '@travi/any';
@@ -12,7 +13,6 @@ import * as dependencyUpdaterScaffolder from './dependency-updater/scaffolder';
 import * as exec from '../thirdparty-wrappers/exec-as-promised';
 import * as prompts from './prompts/questions';
 import * as optionsValidator from './options-validator';
-import * as successOutput from './success-output';
 import {scaffold} from './scaffolder';
 import {questionNames} from './prompts/question-names';
 
@@ -52,7 +52,7 @@ suite('project scaffolder', () => {
     sandbox.stub(dependencyUpdaterScaffolder, 'default');
     sandbox.stub(promises, 'copyFile');
     sandbox.stub(exec, 'default');
-    sandbox.stub(successOutput, 'default');
+    sandbox.stub(resultsReporter, 'reportResults');
 
     process.cwd.returns(projectPath);
     promises.copyFile.resolves();
@@ -153,7 +153,7 @@ suite('project scaffolder', () => {
       path.resolve(__dirname, '..', 'templates', 'editorconfig.txt'),
       `${projectPath}/.editorconfig`
     );
-    assert.calledWith(successOutput.default, [...gitNextSteps, ...dependencyUpdaterNextSteps]);
+    assert.calledWith(resultsReporter.reportResults, {nextSteps: [...gitNextSteps, ...dependencyUpdaterNextSteps]});
   });
 
   test('that the options are optional', async () => {
@@ -338,7 +338,7 @@ suite('project scaffolder', () => {
         }
       );
       assert.calledWith(exec.default, verificationCommand, {silent: false});
-      assert.calledWith(successOutput.default, [...gitNextSteps, ...languageNextSteps]);
+      assert.calledWith(resultsReporter.reportResults, {nextSteps: [...gitNextSteps, ...languageNextSteps]});
     });
   });
 

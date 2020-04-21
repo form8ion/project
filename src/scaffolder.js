@@ -1,6 +1,7 @@
 import {resolve} from 'path';
 import {promises} from 'fs';
 import deepmerge from 'deepmerge';
+import {reportResults} from '@form8ion/results-reporter';
 import {info} from '@travi/cli-messages';
 import {scaffold as scaffoldLanguage} from './language-scaffolder';
 import scaffoldReadme from './readme';
@@ -12,7 +13,6 @@ import exec from '../thirdparty-wrappers/exec-as-promised';
 import {promptForBaseDetails, promptForLanguageDetails} from './prompts/questions';
 import {validate} from './options-validator';
 import {questionNames} from './prompts/question-names';
-import displayResults from './success-output';
 
 export async function scaffold(options) {
   const projectRoot = process.cwd();
@@ -103,8 +103,10 @@ export async function scaffold(options) {
   info('Verifying the generated project');
   if (language && language.verificationCommand) await exec(language.verificationCommand, {silent: false});
 
-  displayResults([
-    ...(gitResults && gitResults.nextSteps) ? gitResults.nextSteps : [],
-    ...contributedTasks
-  ]);
+  reportResults({
+    nextSteps: [
+      ...(gitResults && gitResults.nextSteps) ? gitResults.nextSteps : [],
+      ...contributedTasks
+    ]
+  });
 }
