@@ -35,7 +35,9 @@
     "build:js": "rollup -c",
     "build": "run-s clean build:*",
     "watch": "run-s 'build:js -- --watch'",
-    "prepublishOnly": "run-s build"
+    "prepublishOnly": "run-s build",
+    "snyk-protect": "snyk protect",
+    "prepare": "npm run snyk-protect"
   },
   "publishConfig": {
     "access": "public"
@@ -106,6 +108,8 @@
     "shelljs": "0.8.4",
     "spdx-license-list": "6.2.0",
     "word-wrap": "^1.2.3",
-    "write-yaml": "1.0.0"
-  }
+    "write-yaml": "1.0.0",
+    "snyk": "^1.316.1"
+  },
+  "snyk": true
 }
