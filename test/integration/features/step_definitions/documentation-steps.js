@@ -1,10 +1,9 @@
 import {promises as fs} from 'fs';
 import {Then} from 'cucumber';
 import {assert} from 'chai';
-import unified from 'unified';
+import remark from 'remark';
 import find from 'unist-util-find';
 import zone from 'mdast-zone';
-import parseMarkdown from 'remark-parse';
 
 function groupBadges(tree) {
   const groups = {};
@@ -68,7 +67,7 @@ function extractReferences(nodes) {
 }
 
 Then('the README includes the core details', async function () {
-  const readmeTree = unified().use(parseMarkdown).parse(await fs.readFile(`${process.cwd()}/README.md`, 'utf8'));
+  const readmeTree = remark().parse(await fs.readFile(`${process.cwd()}/README.md`, 'utf8'));
 
   assertTitleIsIncluded(readmeTree, this.projectName);
   assertDescriptionIsIncluded(readmeTree, this.projectDescription);
@@ -79,7 +78,7 @@ Then('the README includes the core details', async function () {
 
 Then('{string} details are included in the README', async function (visibility) {
   const readmeContent = await fs.readFile(`${process.cwd()}/README.md`, 'utf8');
-  const readmeTree = unified().use(parseMarkdown).parse(readmeContent);
+  const readmeTree = remark().parse(readmeContent);
   const badgeGroups = groupBadges(readmeTree);
   const references = extractReferences(readmeTree.children);
   const PrsWelcomeDetails = {
@@ -96,7 +95,7 @@ Then('{string} details are included in the README', async function (visibility) 
 
 Then('the README includes the language details', async function () {
   const readmeContent = await fs.readFile(`${process.cwd()}/README.md`, 'utf8');
-  const readmeTree = unified().use(parseMarkdown).parse(readmeContent);
+  const readmeTree = remark().parse(readmeContent);
   const badgeGroups = groupBadges(readmeTree);
   const references = extractReferences(readmeTree.children);
 
