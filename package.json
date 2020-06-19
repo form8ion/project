@@ -55,7 +55,7 @@
     }
   },
   "devDependencies": {
-    "@babel/register": "7.10.1",
+    "@babel/register": "7.10.3",
     "@travi/any": "2.0.9",
     "@travi/babel-preset": "3.0.22",
     "@travi/eslint-config": "1.0.39",
