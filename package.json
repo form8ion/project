@@ -74,7 +74,7 @@
     "cz-conventional-changelog": "3.2.0",
     "gherkin-lint": "4.0.1",
     "husky": "4.2.5",
-    "lockfile-lint": "4.3.6",
+    "lockfile-lint": "4.3.7",
     "mdast-zone": "4.0.0",
     "mocha": "8.0.1",
     "mock-fs": "4.12.0",
