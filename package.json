@@ -96,7 +96,7 @@
     "@form8ion/results-reporter": "^1.1.0",
     "@hapi/hoek": "^9.0.3",
     "@hapi/joi": "^17.0.2",
-    "@travi/cli-messages": "1.0.1",
+    "@travi/cli-messages": "1.0.4",
     "deepmerge": "^4.2.2",
     "inquirer": "^7.0.5",
     "mustache": "4.0.1",
