@@ -13,6 +13,7 @@ Before(async () => {
   const projectTemplatePath = '../../../../templates';
 
   stubbedFs({
+    node_modules: stubbedFs.load(resolve(__dirname, '..', '..', '..', '..', 'node_modules')),
     templates: {
       'README.mustache': await promises.readFile(resolve(__dirname, projectTemplatePath, './README.mustache')),
       'editorconfig.txt': await promises.readFile(resolve(__dirname, projectTemplatePath, './editorconfig.txt'))
