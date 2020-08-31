@@ -5,6 +5,11 @@
 <!--status-badges start -->
 <!--status-badges end -->
 
+{{^documentation.usage}}
+<!--consumer-badges start -->
+<!--consumer-badges end -->
+
+{{/documentation.usage}}
 {{#documentation.toc}}
 ## Table of Contents
 
@@ -14,14 +19,12 @@
 {{#documentation.usage}}
 ## Usage
 
-{{/documentation.usage}}
 <!--consumer-badges start -->
 <!--consumer-badges end -->
-{{#documentation.usage}}
 
 {{{documentation.usage}}}
-{{/documentation.usage}}
 
+{{/documentation.usage}}
 {{#documentation.contributing}}
 ## Contributing
 

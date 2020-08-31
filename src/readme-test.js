@@ -111,6 +111,36 @@ ${usageDocs}
       assert.calledWith(fs.writeFileSync, `${projectRoot}/README.md`, remarkResults);
     });
 
+    test('that consumer badges are lifted to top level when toc is present and no usage content', async () => {
+      const toc = any.word();
+      const badges = {consumer: consumerBadges, status: statusBadges, contribution: contributionBadges};
+      use.withArgs(badgeInjectorPlugin, badges).returns({process: remarkProcess});
+      remarkProcess
+        .withArgs(sinon.match(`
+<!--status-badges start -->
+<!--status-badges end -->
+
+<!--consumer-badges start -->
+<!--consumer-badges end -->
+
+## Table of Contents
+
+${toc}
+
+<!--contribution-badges start -->
+<!--contribution-badges end -->
+`))
+        .yields(null, remarkResults);
+
+      await scaffoldReadme({
+        projectRoot,
+        badges,
+        documentation: {toc}
+      });
+
+      assert.calledWith(fs.writeFileSync, `${projectRoot}/README.md`, remarkResults);
+    });
+
     test('that contribution docs are shown after the contributing badges', async () => {
       const contributingDocs = markdownWithBackticksAndForwardSlashes;
       const badges = {consumer: consumerBadges, status: statusBadges, contribution: contributionBadges};
