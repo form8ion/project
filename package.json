@@ -20,7 +20,7 @@
     "lint:js": "eslint . --cache",
     "lint:gherkin": "gherkin-lint",
     "lint:md": "remark --quiet . --frail",
-    "lint:travis": "travis-lint .travis.yml",
+    "disabled:lint:travis": "travis-lint .travis.yml",
     "lint:lockfile": "lockfile-lint --path package-lock.json --type npm --validate-https --allowed-hosts npm",
     "lint:engines": "check-engine",
     "lint:peer": "npm ls >/dev/null",
