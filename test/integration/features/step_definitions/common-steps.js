@@ -1,5 +1,5 @@
 import stubbedFs from 'mock-fs';
-import {promises} from 'fs';
+import {promises as fs} from 'fs';
 import {resolve} from 'path';
 import {info} from '@travi/cli-messages';
 import {Before, After, Given, When, setWorldConstructor} from 'cucumber';
@@ -11,16 +11,33 @@ setWorldConstructor(World);
 let scaffold, questionNames;
 const projectPath = [__dirname, '..', '..', '..', '..'];
 const projectTemplatePath = [...projectPath, 'templates'];
+const packagePreviewDirectory = '../__package_previews__/project-scaffolder';
 const stubbedNodeModules = stubbedFs.load(resolve(...projectPath, 'node_modules'));
 
 Before(async () => {
-  ({scaffold, questionNames} = require('../../../../src'));
+  // eslint-disable-next-line import/no-extraneous-dependencies,import/no-unresolved
+  ({scaffold, questionNames} = require('@travi/project-scaffolder'));
 
   stubbedFs({
     node_modules: stubbedNodeModules,
-    templates: {
-      'README.mustache': await promises.readFile(resolve(...projectTemplatePath, './README.mustache')),
-      'editorconfig.txt': await promises.readFile(resolve(...projectTemplatePath, './editorconfig.txt'))
+    [packagePreviewDirectory]: {
+      '@travi': {
+        'project-scaffolder': {
+          templates: {
+            'README.mustache': await fs.readFile(resolve(...projectTemplatePath, 'README.mustache')),
+            'editorconfig.txt': await fs.readFile(resolve(...projectTemplatePath, 'editorconfig.txt'))
+          },
+          node_modules: {
+            ...stubbedNodeModules,
+            '.pnpm': {
+              node_modules: stubbedNodeModules,
+              'ansi-styles@4.3.0': {
+                node_modules: stubbedNodeModules
+              }
+            }
+          }
+        }
+      }
     }
   });
 });
