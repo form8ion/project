@@ -1,5 +1,9 @@
 version: ~> 1.0
 language: node_js
+node_js:
+  - 14
+  - 12
+  - 12.0.0
 notifications:
   email: false
 import:
