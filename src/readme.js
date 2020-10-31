@@ -19,7 +19,7 @@ export default async function ({projectName, projectRoot, description, badges, d
       .process(initialRender, (err, file) => {
         if (err) reject(err);
         else {
-          fs.writeFileSync(`${projectRoot}/README.md`, `${file}`);
+          fs.writeFileSync(`${projectRoot}/README.md`, file);
           resolve();
         }
       });
