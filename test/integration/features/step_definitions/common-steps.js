@@ -5,18 +5,22 @@ import {info} from '@travi/cli-messages';
 import {Before, After, Given, When, setWorldConstructor} from 'cucumber';
 import any from '@travi/any';
 import {World} from '../support/world';
-import {scaffold, questionNames} from '../../../../src';
 
 setWorldConstructor(World);
 
+let scaffold, questionNames;
+const projectPath = [__dirname, '..', '..', '..', '..'];
+const projectTemplatePath = [...projectPath, 'templates'];
+const stubbedNodeModules = stubbedFs.load(resolve(...projectPath, 'node_modules'));
+
 Before(async () => {
-  const projectTemplatePath = '../../../../templates';
+  ({scaffold, questionNames} = require('../../../../src'));
 
   stubbedFs({
-    node_modules: stubbedFs.load(resolve(__dirname, '..', '..', '..', '..', 'node_modules')),
+    node_modules: stubbedNodeModules,
     templates: {
-      'README.mustache': await promises.readFile(resolve(__dirname, projectTemplatePath, './README.mustache')),
-      'editorconfig.txt': await promises.readFile(resolve(__dirname, projectTemplatePath, './editorconfig.txt'))
+      'README.mustache': await promises.readFile(resolve(...projectTemplatePath, './README.mustache')),
+      'editorconfig.txt': await promises.readFile(resolve(...projectTemplatePath, './editorconfig.txt'))
     }
   });
 });
