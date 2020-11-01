@@ -112,7 +112,7 @@ ${usageDocs}
     });
 
     test('that consumer badges are lifted to top level when toc is present and no usage content', async () => {
-      const toc = any.word();
+      const toc = `${any.word()} \`${any.word()}\` ${any.word()}`;
       const badges = {consumer: consumerBadges, status: statusBadges, contribution: contributionBadges};
       use.withArgs(badgeInjectorPlugin, badges).returns({process: remarkProcess});
       remarkProcess
