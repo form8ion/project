@@ -20,7 +20,6 @@
     "lint:js": "eslint . --cache",
     "lint:gherkin": "gherkin-lint",
     "lint:md": "remark --quiet . --frail",
-    "disabled:lint:travis": "travis-lint .travis.yml",
     "lint:lockfile": "lockfile-lint --path package-lock.json --type npm --validate-https --allowed-hosts npm",
     "lint:engines": "check-engine",
     "lint:peer": "npm ls >/dev/null",
@@ -89,7 +88,6 @@
     "rollup": "2.33.1",
     "rollup-plugin-auto-external": "2.0.0",
     "sinon": "9.2.1",
-    "travis-lint": "1.0.0",
     "unist-util-find": "1.0.1"
   },
   "dependencies": {
@@ -106,10 +104,10 @@
     "nodegit": "0.27.0",
     "remark": "^13.0.0",
     "shelljs": "0.8.4",
+    "snyk": "^1.316.1",
     "spdx-license-list": "6.3.0",
     "word-wrap": "^1.2.3",
-    "write-yaml": "1.0.0",
-    "snyk": "^1.316.1"
+    "write-yaml": "1.0.0"
   },
   "snyk": true
 }
