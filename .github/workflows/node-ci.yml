@@ -14,7 +14,23 @@ env:
   FORCE_COLOR: 1
   NPM_CONFIG_COLOR: always
 jobs:
-  build:
+  verify:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node: ['12.0.0', 14]
+    steps:
+      - uses: actions/checkout@v2
+      - name: 'Setup node ${{ matrix.node_version }}'
+        uses: actions/setup-node@v1
+        with:
+          node-version: '${{ matrix.node }}'
+      - uses: bahmutov/npm-install@v1
+      - run: npm test
+      - name: Upload coverage data to Codecov
+        run: 'npm run coverage:report'
+  release:
+    needs: verify
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -26,11 +42,8 @@ jobs:
         with:
           node-version: '${{ steps.nvm.outputs.NVMRC }}'
       - uses: bahmutov/npm-install@v1
-      - run: npm test
       - name: semantic-release
         uses: cycjimmy/semantic-release-action@v2
         env:
           GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
           NPM_TOKEN: '${{ secrets.NPM_PUBLISH_TOKEN }}'
-      - name: Upload coverage data to Codecov
-        run: 'npm run coverage:report'
