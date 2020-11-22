@@ -1,5 +1,6 @@
 import path from 'path';
 import {promises} from 'fs';
+import {questionNames as coreQuestionNames} from '@form8ion/core';
 import * as resultsReporter from '@form8ion/results-reporter';
 import sinon from 'sinon';
 import {assert} from 'chai';
@@ -81,14 +82,13 @@ suite('project scaffolder', () => {
     prompts.promptForBaseDetails
       .withArgs(projectPath, overrides.copyrightHolder, decisions)
       .resolves({
-        [questionNames.PROJECT_NAME]: projectName,
+        [coreQuestionNames.PROJECT_NAME]: projectName,
         [questionNames.GIT_REPO]: gitRepoShouldBeInitialized,
-        [questionNames.LICENSE]: license,
-        [questionNames.DESCRIPTION]: description,
-        [questionNames.COPYRIGHT_HOLDER]: holder,
-        [questionNames.COPYRIGHT_YEAR]: year,
-        [questionNames.VISIBILITY]: visibility,
-        [questionNames.CI]: 'Travis'
+        [coreQuestionNames.LICENSE]: license,
+        [coreQuestionNames.DESCRIPTION]: description,
+        [coreQuestionNames.COPYRIGHT_HOLDER]: holder,
+        [coreQuestionNames.COPYRIGHT_YEAR]: year,
+        [coreQuestionNames.VISIBILITY]: visibility
       });
     prompts.promptForLanguageDetails
       .withArgs(scaffolders, decisions)
@@ -161,7 +161,7 @@ suite('project scaffolder', () => {
     optionsValidator.validate.returns({});
     prompts.promptForBaseDetails
       .withArgs(projectPath, undefined)
-      .resolves({[questionNames.PROJECT_NAME]: projectName, [questionNames.GIT_REPO]: gitRepoShouldBeInitialized});
+      .resolves({[coreQuestionNames.PROJECT_NAME]: projectName, [questionNames.GIT_REPO]: gitRepoShouldBeInitialized});
     prompts.promptForLanguageDetails.resolves({});
 
     await scaffold();
@@ -182,11 +182,11 @@ suite('project scaffolder', () => {
   test('that the PRs-welcome badge is included for public projects', () => {
     optionsValidator.validate.withArgs(options).returns({});
     prompts.promptForBaseDetails.resolves({
-      [questionNames.PROJECT_NAME]: projectName,
-      [questionNames.LICENSE]: license,
+      [coreQuestionNames.PROJECT_NAME]: projectName,
+      [coreQuestionNames.LICENSE]: license,
       [questionNames.GIT_REPO]: true,
-      [questionNames.DESCRIPTION]: description,
-      [questionNames.VISIBILITY]: 'Public'
+      [coreQuestionNames.DESCRIPTION]: description,
+      [coreQuestionNames.VISIBILITY]: 'Public'
     });
     prompts.promptForLanguageDetails.resolves({});
     gitScaffolder.initialize.resolves({});
@@ -220,9 +220,9 @@ suite('project scaffolder', () => {
     optionsValidator.validate.withArgs(options).returns({});
     licenseScaffolder.default.resolves({});
     prompts.promptForBaseDetails.resolves({
-      [questionNames.PROJECT_NAME]: projectName,
-      [questionNames.LICENSE]: license,
-      [questionNames.DESCRIPTION]: description,
+      [coreQuestionNames.PROJECT_NAME]: projectName,
+      [coreQuestionNames.LICENSE]: license,
+      [coreQuestionNames.DESCRIPTION]: description,
       [questionNames.GIT_REPO]: false
     });
     prompts.promptForLanguageDetails.resolves({});
@@ -260,18 +260,16 @@ suite('project scaffolder', () => {
   test('that the language details get scaffolded', () => {
     const visibility = any.boolean();
     const ignore = any.simpleObject();
-    const ci = any.word();
     const gitNextSteps = any.listOf(any.simpleObject);
     optionsValidator.validate.withArgs(options).returns({languages: scaffolders, vcsHosts});
     gitScaffolder.initialize.resolves(vcs);
     gitScaffolder.scaffold.resolves({nextSteps: gitNextSteps});
     prompts.promptForBaseDetails.resolves({
-      [questionNames.PROJECT_NAME]: projectName,
-      [questionNames.VISIBILITY]: visibility,
+      [coreQuestionNames.PROJECT_NAME]: projectName,
+      [coreQuestionNames.VISIBILITY]: visibility,
       [questionNames.GIT_REPO]: true,
-      [questionNames.LICENSE]: license,
-      [questionNames.CI]: ci,
-      [questionNames.DESCRIPTION]: description
+      [coreQuestionNames.LICENSE]: license,
+      [coreQuestionNames.DESCRIPTION]: description
     });
     prompts.promptForLanguageDetails.withArgs(scaffolders).resolves({[questionNames.PROJECT_TYPE]: projectLanguage});
     prompts.promptForVcsHostDetails.resolves({
@@ -344,16 +342,14 @@ suite('project scaffolder', () => {
 
   test('that the language details are optional', () => {
     const visibility = any.boolean();
-    const ci = any.word();
     optionsValidator.validate.withArgs(options).returns({languages: scaffolders, vcsHosts});
     gitScaffolder.initialize.resolves(vcs);
     prompts.promptForBaseDetails.resolves({
-      [questionNames.PROJECT_NAME]: projectName,
-      [questionNames.VISIBILITY]: visibility,
+      [coreQuestionNames.PROJECT_NAME]: projectName,
+      [coreQuestionNames.VISIBILITY]: visibility,
       [questionNames.GIT_REPO]: true,
-      [questionNames.LICENSE]: license,
-      [questionNames.CI]: ci,
-      [questionNames.DESCRIPTION]: description
+      [coreQuestionNames.LICENSE]: license,
+      [coreQuestionNames.DESCRIPTION]: description
     });
     prompts.promptForLanguageDetails.withArgs(scaffolders).resolves({[questionNames.PROJECT_TYPE]: projectLanguage});
     prompts.promptForVcsHostDetails.resolves({

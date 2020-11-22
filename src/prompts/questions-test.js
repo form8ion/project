@@ -1,6 +1,7 @@
 import path from 'path';
 import {Separator} from 'inquirer';
 import spdxLicenseList from 'spdx-license-list/simple';
+import {questionNames as coreQuestionNames} from '@form8ion/core';
 import * as prompts from '@form8ion/overridable-prompts';
 import any from '@travi/any';
 import {assert} from 'chai';
@@ -35,27 +36,27 @@ suite('project scaffolder prompts', () => {
       path.basename.withArgs(projectPath).returns(directoryName);
       prompts.prompt
         .withArgs([
-          {name: questionNames.PROJECT_NAME, message: 'What is the name of this project?', default: directoryName},
+          {name: coreQuestionNames.PROJECT_NAME, message: 'What is the name of this project?', default: directoryName},
           {
-            name: questionNames.DESCRIPTION,
+            name: coreQuestionNames.DESCRIPTION,
             message: 'How should this project be described?'
           },
           {
-            name: questionNames.VISIBILITY,
+            name: coreQuestionNames.VISIBILITY,
             message: 'Should this project be public or private?',
             type: 'list',
             choices: ['Public', 'Private'],
             default: 'Private'
           },
           {
-            name: questionNames.UNLICENSED,
+            name: coreQuestionNames.UNLICENSED,
             message: 'Since this is a private project, should it be unlicensed?',
             type: 'confirm',
             when: conditionals.unlicensedConfirmationShouldBePresented,
             default: true
           },
           {
-            name: questionNames.LICENSE,
+            name: coreQuestionNames.LICENSE,
             message: 'How should this this project be licensed (https://choosealicense.com/)?',
             type: 'list',
             when: conditionals.licenseChoicesShouldBePresented,
@@ -63,13 +64,13 @@ suite('project scaffolder prompts', () => {
             default: 'MIT'
           },
           {
-            name: questionNames.COPYRIGHT_HOLDER,
+            name: coreQuestionNames.COPYRIGHT_HOLDER,
             message: 'Who is the copyright holder of this project?',
             when: conditionals.copyrightInformationShouldBeRequested,
             default: copyrightHolder
           },
           {
-            name: questionNames.COPYRIGHT_YEAR,
+            name: coreQuestionNames.COPYRIGHT_YEAR,
             message: 'What is the copyright year?',
             when: conditionals.copyrightInformationShouldBeRequested,
             default: new Date().getFullYear()
@@ -90,16 +91,16 @@ suite('project scaffolder prompts', () => {
       const directoryName = any.string();
       const copyrightHolder = any.string();
       path.basename.withArgs(projectPath).returns(directoryName);
-      prompts.questionHasDecision.withArgs(questionNames.VISIBILITY, decisions).returns(true);
+      prompts.questionHasDecision.withArgs(coreQuestionNames.VISIBILITY, decisions).returns(true);
       prompts.prompt
         .withArgs([
-          {name: questionNames.PROJECT_NAME, message: 'What is the name of this project?', default: directoryName},
+          {name: coreQuestionNames.PROJECT_NAME, message: 'What is the name of this project?', default: directoryName},
           {
-            name: questionNames.DESCRIPTION,
+            name: coreQuestionNames.DESCRIPTION,
             message: 'How should this project be described?'
           },
           {
-            name: questionNames.VISIBILITY,
+            name: coreQuestionNames.VISIBILITY,
             message: 'Should this project be public or private?',
             type: 'list',
             choices: ['Public', 'Private'],

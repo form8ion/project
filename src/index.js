@@ -1,2 +1,8 @@
+import {questionNames as coreQuestionNames} from '@form8ion/core';
+import {questionNames as projectScaffolderQuestionNames} from './prompts/question-names';
+
 export * from './scaffolder';
-export {questionNames} from './prompts/question-names';
+export const questionNames = {
+  ...coreQuestionNames,
+  ...projectScaffolderQuestionNames
+};

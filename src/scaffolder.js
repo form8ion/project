@@ -1,6 +1,7 @@
 import {resolve} from 'path';
 import {promises} from 'fs';
 import deepmerge from 'deepmerge';
+import {questionNames as coreQuestionNames} from '@form8ion/core';
 import {reportResults} from '@form8ion/results-reporter';
 import {info} from '@travi/cli-messages';
 import {scaffold as scaffoldLanguage} from './language-scaffolder';
@@ -20,13 +21,13 @@ export async function scaffold(options) {
   const {copyrightHolder} = overrides;
 
   const {
-    [questionNames.PROJECT_NAME]: projectName,
-    [questionNames.LICENSE]: chosenLicense,
-    [questionNames.VISIBILITY]: visibility,
-    [questionNames.DESCRIPTION]: description,
+    [coreQuestionNames.PROJECT_NAME]: projectName,
+    [coreQuestionNames.LICENSE]: chosenLicense,
+    [coreQuestionNames.VISIBILITY]: visibility,
+    [coreQuestionNames.DESCRIPTION]: description,
     [questionNames.GIT_REPO]: gitRepo,
-    [questionNames.COPYRIGHT_YEAR]: copyrightYear,
-    [questionNames.COPYRIGHT_HOLDER]: copyHolder
+    [coreQuestionNames.COPYRIGHT_YEAR]: copyrightYear,
+    [coreQuestionNames.COPYRIGHT_HOLDER]: copyHolder
   } = await promptForBaseDetails(projectRoot, copyrightHolder, decisions);
   const copyright = {year: copyrightYear, holder: copyHolder};
 
