@@ -1,7 +1,6 @@
 import path from 'path';
 import {Separator} from 'inquirer';
-import spdxLicenseList from 'spdx-license-list/simple';
-import {questionNames as coreQuestionNames} from '@form8ion/core';
+import * as core from '@form8ion/core';
 import * as prompts from '@form8ion/overridable-prompts';
 import any from '@travi/any';
 import {assert} from 'chai';
@@ -15,6 +14,7 @@ suite('project scaffolder prompts', () => {
   const projectPath = any.string();
   const answers = any.simpleObject();
   const decisions = any.simpleObject();
+  const questions = any.listOf(any.simpleObject);
 
   setup(() => {
     sandbox = sinon.createSandbox();
@@ -23,6 +23,7 @@ suite('project scaffolder prompts', () => {
     sandbox.stub(prompts, 'prompt');
     sandbox.stub(prompts, 'questionHasDecision');
     sandbox.stub(conditionals, 'filterChoicesByVisibility');
+    sandbox.stub(core, 'questionsForBaseDetails');
 
     prompts.questionHasDecision.returns(false);
   });
@@ -34,78 +35,10 @@ suite('project scaffolder prompts', () => {
       const directoryName = any.string();
       const copyrightHolder = any.string();
       path.basename.withArgs(projectPath).returns(directoryName);
+      core.questionsForBaseDetails.withArgs(decisions, projectPath, copyrightHolder).returns(questions);
       prompts.prompt
         .withArgs([
-          {name: coreQuestionNames.PROJECT_NAME, message: 'What is the name of this project?', default: directoryName},
-          {
-            name: coreQuestionNames.DESCRIPTION,
-            message: 'How should this project be described?'
-          },
-          {
-            name: coreQuestionNames.VISIBILITY,
-            message: 'Should this project be public or private?',
-            type: 'list',
-            choices: ['Public', 'Private'],
-            default: 'Private'
-          },
-          {
-            name: coreQuestionNames.UNLICENSED,
-            message: 'Since this is a private project, should it be unlicensed?',
-            type: 'confirm',
-            when: conditionals.unlicensedConfirmationShouldBePresented,
-            default: true
-          },
-          {
-            name: coreQuestionNames.LICENSE,
-            message: 'How should this this project be licensed (https://choosealicense.com/)?',
-            type: 'list',
-            when: conditionals.licenseChoicesShouldBePresented,
-            choices: Array.from(spdxLicenseList),
-            default: 'MIT'
-          },
-          {
-            name: coreQuestionNames.COPYRIGHT_HOLDER,
-            message: 'Who is the copyright holder of this project?',
-            when: conditionals.copyrightInformationShouldBeRequested,
-            default: copyrightHolder
-          },
-          {
-            name: coreQuestionNames.COPYRIGHT_YEAR,
-            message: 'What is the copyright year?',
-            when: conditionals.copyrightInformationShouldBeRequested,
-            default: new Date().getFullYear()
-          },
-          {
-            name: questionNames.GIT_REPO,
-            type: 'confirm',
-            default: true,
-            message: 'Should a git repository be initialized?'
-          }
-        ], decisions)
-        .resolves(answers);
-
-      assert.equal(await promptForBaseDetails(projectPath, copyrightHolder, decisions), answers);
-    });
-
-    test('that license questions are skipped when a visibility decision is provided', async () => {
-      const directoryName = any.string();
-      const copyrightHolder = any.string();
-      path.basename.withArgs(projectPath).returns(directoryName);
-      prompts.questionHasDecision.withArgs(coreQuestionNames.VISIBILITY, decisions).returns(true);
-      prompts.prompt
-        .withArgs([
-          {name: coreQuestionNames.PROJECT_NAME, message: 'What is the name of this project?', default: directoryName},
-          {
-            name: coreQuestionNames.DESCRIPTION,
-            message: 'How should this project be described?'
-          },
-          {
-            name: coreQuestionNames.VISIBILITY,
-            message: 'Should this project be public or private?',
-            type: 'list',
-            choices: ['Public', 'Private'],
-            default: 'Private'
-          },
+          ...questions,
           {
             name: questionNames.GIT_REPO,
             type: 'confirm',
