@@ -1,28 +1,34 @@
 import {Branch as gitBranch, Remote as gitRemote, Repository as gitRepository} from 'nodegit';
+import * as core from '@form8ion/core';
 import {promises} from 'fs';
 import any from '@travi/any';
 import sinon from 'sinon';
 import {assert} from 'chai';
-import {initialize, scaffold} from './git';
+import * as hostedGitInfo from '../../thirdparty-wrappers/hosted-git-info';
 import * as prompts from '../prompts/questions';
 import {questionNames} from '../prompts/question-names';
+import {initialize, scaffold} from './git';
 
 suite('scaffold git', () => {
   let sandbox;
   const projectRoot = any.string();
   const visibility = any.word();
+  const repository = any.simpleObject();
 
   setup(() => {
     sandbox = sinon.createSandbox();
 
+    sandbox.stub(core, 'directoryExists');
     sandbox.stub(promises, 'writeFile');
     sandbox.stub(gitRepository, 'init');
     sandbox.stub(gitRepository, 'open');
     sandbox.stub(gitRemote, 'create');
     sandbox.stub(gitRemote, 'list');
+    sandbox.stub(gitRemote, 'lookup');
     sandbox.stub(gitBranch, 'lookup');
     sandbox.stub(gitBranch, 'setUpstream');
     sandbox.stub(prompts, 'promptForVcsHostDetails');
+    sandbox.stub(hostedGitInfo, 'fromUrl');
 
     gitRepository.init.resolves();
   });
@@ -30,10 +36,12 @@ suite('scaffold git', () => {
   teardown(() => sandbox.restore());
 
   suite('initialization', () => {
+    const repoHost = any.word();
+    const repoOwner = any.word();
+    const githubAccount = any.word();
+    const projectName = any.word();
+
     test('that the git repo is initialized', async () => {
-      const repoHost = any.word();
-      const repoOwner = any.word();
-      const projectName = any.word();
       const vcsHosts = any.simpleObject();
       prompts.promptForVcsHostDetails
         .withArgs(vcsHosts, visibility)
@@ -45,12 +53,9 @@ suite('scaffold git', () => {
       assert.deepEqual(hostDetails, {host: repoHost, owner: repoOwner, name: projectName});
     });
 
-    test('that the git repo is not initialized if it shouldnt be', async () => {
-      const repoHost = any.word();
-      const repoOwner = any.word();
-      const githubAccount = any.word();
-      const projectName = any.word();
+    test('that the git repo is not initialized if the project will not be versioned', async () => {
       const decisions = any.simpleObject();
+      core.directoryExists.resolves(false);
       prompts.promptForVcsHostDetails
         .withArgs(githubAccount, visibility, decisions)
         .resolves({[questionNames.REPO_HOST]: repoHost, [questionNames.REPO_OWNER]: repoOwner});
@@ -60,11 +65,23 @@ suite('scaffold git', () => {
       assert.notCalled(gitRepository.init);
       assert.isUndefined(hostDetails);
     });
+
+    test('that the git details are returned from an existing repository', async () => {
+      core.directoryExists.withArgs(`${projectRoot}/.git`).resolves(true);
+      const repoName = any.word();
+      const remoteOrigin = any.url();
+      gitRepository.open.withArgs(projectRoot).resolves(repository);
+      gitRemote.lookup.withArgs(repository, 'origin').resolves({url: () => remoteOrigin});
+      hostedGitInfo.fromUrl.withArgs(remoteOrigin).returns({owner: repoOwner, name: repoName, type: repoHost});
+
+      const hostDetails = await initialize(true, projectRoot, projectName, githubAccount, visibility);
+
+      assert.notCalled(gitRepository.init);
+      assert.deepEqual(hostDetails, {host: repoHost, owner: repoOwner, name: repoName});
+    });
   });
 
   suite('scaffold', () => {
-    const repository = any.simpleObject();
-
     setup(() => {
       gitRepository.open.withArgs(projectRoot).resolves(repository);
       gitRemote.list.withArgs(repository).resolves(any.listOf(any.word));

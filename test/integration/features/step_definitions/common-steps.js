@@ -86,7 +86,7 @@ When(/^the project is scaffolded$/, async function () {
       },
       ...'Private' === visibility && {[questionNames.UNLICENSED]: true},
       [questionNames.GIT_REPO]: repoShouldBeCreated ?? false,
-      ...repoShouldBeCreated && {[questionNames.REPO_HOST]: 'Other'},
+      ...repoShouldBeCreated && {[questionNames.REPO_HOST]: this.getAnswerFor(questionNames.REPO_HOST)},
       [questionNames.PROJECT_TYPE]: chosenLanguage,
       ...this.updaterScaffolderDetails && {[questionNames.DEPENDENCY_UPDATER]: chosenUpdater}
     }

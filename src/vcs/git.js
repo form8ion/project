@@ -1,6 +1,8 @@
 import {Remote as gitRemote, Repository as gitRepository} from 'nodegit';
 import {promises} from 'fs';
+import {directoryExists} from '@form8ion/core';
 import {info, warn} from '@travi/cli-messages';
+import {fromUrl} from '../../thirdparty-wrappers/hosted-git-info';
 import {promptForVcsHostDetails} from '../prompts/questions';
 import {questionNames} from '../prompts/question-names';
 
@@ -58,6 +60,16 @@ export async function initialize(
   decisions
 ) {
   if (gitRepoShouldBeInitialized) {
+    if (await directoryExists(`${projectRoot}/.git`)) {
+      info('Git repository already exists');
+
+      const repository = await gitRepository.open(projectRoot);
+      const remoteOrigin = await gitRemote.lookup(repository, 'origin');
+      const {owner, name, type} = fromUrl(remoteOrigin.url());
+
+      return {owner, name, host: type};
+    }
+
     info('Initializing Git Repository');
 
     const [answers] = await Promise.all([
