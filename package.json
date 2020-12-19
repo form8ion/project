@@ -29,7 +29,7 @@
     "test:integration:base": "cucumber-js test/integration --require-module @babel/register --format-options '{\"snippetInterface\": \"async-await\"}'",
     "test:integration:wip": "run-s 'test:integration:base -- --tags \"@wip and not @skip\"'",
     "pretest:integration": "preview",
-    "test:integration": "NODE_OPTIONS=--enable-source-maps run-s 'test:integration:base -- --tags \"not @skip and not @wip\"'",
+    "test:integration": "run-s 'test:integration:base -- --tags \"not @skip and not @wip\"'",
     "coverage:report": "nyc report --reporter=text-lcov > coverage.lcov && codecov",
     "generate:md": "remark . --output",
     "build:js": "rollup -c",
