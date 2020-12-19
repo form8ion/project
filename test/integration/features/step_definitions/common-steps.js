@@ -4,6 +4,7 @@ import {resolve} from 'path';
 import {info} from '@travi/cli-messages';
 import {Before, After, Given, When, setWorldConstructor} from 'cucumber';
 import any from '@travi/any';
+import td from 'testdouble';
 import {World} from '../support/world';
 
 setWorldConstructor(World);
@@ -14,7 +15,9 @@ const projectTemplatePath = [...projectPath, 'templates'];
 const packagePreviewDirectory = '../__package_previews__/project-scaffolder';
 const stubbedNodeModules = stubbedFs.load(resolve(...projectPath, 'node_modules'));
 
-Before(async () => {
+Before(async function () {
+  this.nodegit = td.replace('nodegit');
+
   // eslint-disable-next-line import/no-extraneous-dependencies,import/no-unresolved
   ({scaffold, questionNames} = require('@travi/project-scaffolder'));
 
@@ -42,7 +45,10 @@ Before(async () => {
   });
 });
 
-After(() => stubbedFs.restore());
+After(() => {
+  stubbedFs.restore();
+  td.reset();
+});
 
 Given('the project is {string}', async function (visibility) {
   this.visibility = visibility;
