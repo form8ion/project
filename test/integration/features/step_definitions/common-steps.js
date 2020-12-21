@@ -58,7 +58,7 @@ When(/^the project is scaffolded$/, async function () {
   const repoShouldBeCreated = this.getAnswerFor(questionNames.GIT_REPO);
   const visibility = this.visibility || any.fromList(['Public', 'Private']);
   const chosenUpdater = any.word();
-  const chosenLanguage = this.getAnswerFor(questionNames.PROJECT_TYPE) || 'Other';
+  const chosenLanguage = this.getAnswerFor(questionNames.PROJECT_LANGUAGE) || 'Other';
 
   this.projectName = 'project-name';
   this.projectDescription = any.sentence();
@@ -87,7 +87,7 @@ When(/^the project is scaffolded$/, async function () {
       ...'Private' === visibility && {[questionNames.UNLICENSED]: true},
       [questionNames.GIT_REPO]: repoShouldBeCreated ?? false,
       ...repoShouldBeCreated && {[questionNames.REPO_HOST]: this.getAnswerFor(questionNames.REPO_HOST)},
-      [questionNames.PROJECT_TYPE]: chosenLanguage,
+      [questionNames.PROJECT_LANGUAGE]: chosenLanguage,
       ...this.updaterScaffolderDetails && {[questionNames.DEPENDENCY_UPDATER]: chosenUpdater}
     }
   });

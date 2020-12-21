@@ -36,7 +36,7 @@ suite('scaffold git', () => {
   teardown(() => sandbox.restore());
 
   suite('initialization', () => {
-    const repoHost = any.word();
+    const repoHost = `F${any.word()})O${any.word()}O`;
     const repoOwner = any.word();
     const githubAccount = any.word();
     const projectName = any.word();
@@ -50,7 +50,7 @@ suite('scaffold git', () => {
       const hostDetails = await initialize(true, projectRoot, projectName, vcsHosts, visibility);
 
       assert.calledWith(gitRepository.init, projectRoot, 0);
-      assert.deepEqual(hostDetails, {host: repoHost, owner: repoOwner, name: projectName});
+      assert.deepEqual(hostDetails, {host: repoHost.toLowerCase(), owner: repoOwner, name: projectName});
     });
 
     test('that the git repo is not initialized if the project will not be versioned', async () => {
@@ -72,12 +72,14 @@ suite('scaffold git', () => {
       const remoteOrigin = any.url();
       gitRepository.open.withArgs(projectRoot).resolves(repository);
       gitRemote.lookup.withArgs(repository, 'origin').resolves({url: () => remoteOrigin});
-      hostedGitInfo.fromUrl.withArgs(remoteOrigin).returns({owner: repoOwner, name: repoName, type: repoHost});
+      hostedGitInfo.fromUrl
+        .withArgs(remoteOrigin)
+        .returns({owner: repoOwner, name: repoName, type: repoHost.toLowerCase()});
 
       const hostDetails = await initialize(true, projectRoot, projectName, githubAccount, visibility);
 
       assert.notCalled(gitRepository.init);
-      assert.deepEqual(hostDetails, {host: repoHost, owner: repoOwner, name: repoName});
+      assert.deepEqual(hostDetails, {host: repoHost.toLowerCase(), owner: repoOwner, name: repoName});
     });
   });
 

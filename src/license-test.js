@@ -64,7 +64,7 @@ suite('license', () => {
   });
 
   test('that badge information is returned if the vcs is hosted at github', () => {
-    const vcs = {host: 'GitHub', owner: any.word(), name: any.word()};
+    const vcs = {host: 'github', owner: any.word(), name: any.word()};
 
     return assert.becomes(scaffoldLicense({projectRoot, license, copyright, vcs}), {
       badges: {
@@ -80,7 +80,7 @@ suite('license', () => {
   });
 
   test('that badge information is not returned when no license was chosen', () => assert.becomes(
-    scaffoldLicense({projectRoot, copyright, vcs: {host: 'GitHub'}}),
+    scaffoldLicense({projectRoot, copyright, vcs: {host: 'github'}}),
     {}
   ));
 

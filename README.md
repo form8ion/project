@@ -114,7 +114,7 @@ __object__:
       directory name.
     * `vcs`: __object__ details about the [VCS](https://en.wikipedia.org/wiki/Version_control)
       host
-      * `host`: __string__ host name. defaults to `GitHub`
+      * `host`: __string__ host name
       * `name`: __string__ repository name. equal to `projectName`
       * `owner`: __string__ account name on the host service for the repository
         owner. defaults to `$ git config github.user` or the [overridden value](#githubaccount)
@@ -175,7 +175,7 @@ __object__:
         command was executed
     * `vcs`: __object__ details about the [VCS](https://en.wikipedia.org/wiki/Version_control)
       host
-      * `host`: __string__ host name. defaults to `GitHub`
+      * `host`: __string__ host name
       * `name`: __string__ repository name. equal to `projectName`
       * `owner`: __string__ account name on the host service for the repository
         owner. defaults to `$ git config github.user` or the [overridden value](#githubaccount)
@@ -189,7 +189,7 @@ holder. if not provided, the default will be empty.
 
 ###### `githubAccount`
 
-__string__ enables setting the GitHub account for the prompt default to define
+__string__ enables setting the  GitHub account for the prompt default to define
 the owner of scaffolded repositories. if not provided, the default will use the
 result of `$ git config github.user`
 

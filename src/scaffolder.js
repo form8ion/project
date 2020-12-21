@@ -33,7 +33,7 @@ export async function scaffold(options) {
 
   const vcs = await initializeGit(gitRepo, projectRoot, projectName, vcsHosts, visibility, decisions);
 
-  const {[questionNames.PROJECT_TYPE]: projectLanguage} = await promptForLanguageDetails(languages, decisions);
+  const {[questionNames.PROJECT_LANGUAGE]: projectLanguage} = await promptForLanguageDetails(languages, decisions);
 
   const [license, language] = await Promise.all([
     scaffoldLicense({projectRoot, license: chosenLicense, copyright, vcs}),

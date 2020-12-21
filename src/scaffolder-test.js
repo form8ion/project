@@ -92,7 +92,7 @@ suite('project scaffolder', () => {
       });
     prompts.promptForLanguageDetails
       .withArgs(scaffolders, decisions)
-      .resolves({[questionNames.PROJECT_TYPE]: projectLanguage});
+      .resolves({[questionNames.PROJECT_LANGUAGE]: projectLanguage});
     readmeScaffolder.default.resolves();
     gitScaffolder.initialize
       .withArgs(gitRepoShouldBeInitialized, projectPath, projectName, vcsHosts, visibility, decisions)
@@ -271,7 +271,9 @@ suite('project scaffolder', () => {
       [coreQuestionNames.LICENSE]: license,
       [coreQuestionNames.DESCRIPTION]: description
     });
-    prompts.promptForLanguageDetails.withArgs(scaffolders).resolves({[questionNames.PROJECT_TYPE]: projectLanguage});
+    prompts.promptForLanguageDetails
+      .withArgs(scaffolders)
+      .resolves({[questionNames.PROJECT_LANGUAGE]: projectLanguage});
     prompts.promptForVcsHostDetails.resolves({
       [questionNames.REPO_HOST]: repoHost,
       [questionNames.REPO_OWNER]: repoOwner
@@ -351,18 +353,14 @@ suite('project scaffolder', () => {
       [coreQuestionNames.LICENSE]: license,
       [coreQuestionNames.DESCRIPTION]: description
     });
-    prompts.promptForLanguageDetails.withArgs(scaffolders).resolves({[questionNames.PROJECT_TYPE]: projectLanguage});
+    prompts.promptForLanguageDetails
+      .withArgs(scaffolders)
+      .resolves({[questionNames.PROJECT_LANGUAGE]: projectLanguage});
     prompts.promptForVcsHostDetails.resolves({
       [questionNames.REPO_HOST]: repoHost,
       [questionNames.REPO_OWNER]: repoOwner
     });
     languageScaffolder.scaffold.resolves({});
-    vcsHostScaffolder.default
-      .withArgs(
-        vcsHosts,
-        {...vcs, projectRoot: projectPath, projectType: projectLanguage, description, homepage, visibility}
-      )
-      .resolves(vcsOriginDetails);
 
     return scaffold(options).then(() => {
       assert.calledWith(gitScaffolder.scaffold, {projectRoot: projectPath, ignore: undefined, origin: undefined});
@@ -383,7 +381,7 @@ suite('project scaffolder', () => {
   test('that the license is passed to the language scaffolder as `UNLICENSED` when no license was chosen', () => {
     optionsValidator.validate.withArgs(options).returns({});
     prompts.promptForBaseDetails.resolves({});
-    prompts.promptForLanguageDetails.resolves({[questionNames.PROJECT_TYPE]: projectLanguage});
+    prompts.promptForLanguageDetails.resolves({[questionNames.PROJECT_LANGUAGE]: projectLanguage});
     gitScaffolder.initialize.resolves({});
 
     return scaffold(options).then(() => assert.calledWithMatch(

@@ -23,7 +23,7 @@ export default async function ({projectRoot, license, copyright, vcs}) {
     );
 
     return {
-      ...vcs && 'GitHub' === vcs.host && {
+      ...vcs && 'github' === vcs.host && {
         badges: {
           consumer: {
             license: {

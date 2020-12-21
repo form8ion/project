@@ -77,7 +77,11 @@ export async function initialize(
       gitRepository.init(projectRoot, 0)
     ]);
 
-    return {host: answers[questionNames.REPO_HOST], owner: answers[questionNames.REPO_OWNER], name: projectName};
+    return {
+      host: answers[questionNames.REPO_HOST].toLowerCase(),
+      owner: answers[questionNames.REPO_OWNER],
+      name: projectName
+    };
   }
 
   return undefined;
