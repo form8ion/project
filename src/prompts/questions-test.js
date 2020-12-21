@@ -105,7 +105,7 @@ suite('project scaffolder prompts', () => {
       const languages = any.simpleObject();
       prompts.prompt
         .withArgs([{
-          name: questionNames.PROJECT_TYPE,
+          name: questionNames.PROJECT_LANGUAGE,
           type: 'list',
           message: 'What type of project is this?',
           choices: [...Object.keys(languages), new Separator(), 'Other']

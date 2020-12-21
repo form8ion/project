@@ -18,7 +18,7 @@ function generateBadgeWithNoLink() {
 }
 
 Given('a language scaffolder is chosen', async function () {
-  this.setAnswerFor(questionNames.PROJECT_TYPE, any.word());
+  this.setAnswerFor(questionNames.PROJECT_LANGUAGE, any.word());
 
   this.languageScaffolderResults = {
     badges: {

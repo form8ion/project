@@ -13,7 +13,7 @@ export function promptForBaseDetails(projectRoot, copyrightHolder, decisions) {
 
 export function promptForLanguageDetails(languages, decisions) {
   return prompt([{
-    name: questionNames.PROJECT_TYPE,
+    name: questionNames.PROJECT_LANGUAGE,
     type: 'list',
     message: 'What type of project is this?',
     choices: [...Object.keys(languages), new Separator(), 'Other']
