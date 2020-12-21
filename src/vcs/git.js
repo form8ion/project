@@ -65,9 +65,9 @@ export async function initialize(
 
       const repository = await gitRepository.open(projectRoot);
       const remoteOrigin = await gitRemote.lookup(repository, 'origin');
-      const {owner, name, type} = fromUrl(remoteOrigin.url());
+      const {user, project, type} = fromUrl(remoteOrigin.url());
 
-      return {owner, name, host: type};
+      return {owner: user, name: project, host: type};
     }
 
     info('Initializing Git Repository');

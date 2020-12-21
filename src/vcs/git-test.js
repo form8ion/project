@@ -74,7 +74,7 @@ suite('scaffold git', () => {
       gitRemote.lookup.withArgs(repository, 'origin').resolves({url: () => remoteOrigin});
       hostedGitInfo.fromUrl
         .withArgs(remoteOrigin)
-        .returns({owner: repoOwner, name: repoName, type: repoHost.toLowerCase()});
+        .returns({user: repoOwner, project: repoName, type: repoHost.toLowerCase()});
 
       const hostDetails = await initialize(true, projectRoot, projectName, githubAccount, visibility);
 
