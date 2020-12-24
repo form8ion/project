@@ -1,5 +1,5 @@
-import {exists} from 'mz/fs';
-import {promises} from 'fs';
+import {promises as fs} from 'fs';
+import {fileExists} from '@form8ion/core';
 import {Given, Then} from 'cucumber';
 import {assert} from 'chai';
 import td from 'testdouble';
@@ -41,13 +41,13 @@ Then('the directory is initialized as a git repository', async function () {
 });
 
 Then(/^the base git files should be present$/, async function () {
-  const gitAttributes = await promises.readFile(`${process.cwd()}/.gitattributes`, 'utf-8');
+  const gitAttributes = await fs.readFile(`${process.cwd()}/.gitattributes`, 'utf-8');
 
   assert.equal(gitAttributes, '* text=auto');
 });
 
 Then(/^the base git files should not be present$/, async function () {
-  assert.isFalse(await exists(`${process.cwd()}/.git`));
-  assert.isFalse(await exists(`${process.cwd()}/.gitattributes`));
-  assert.isFalse(await exists(`${process.cwd()}/.gitignore`));
+  assert.isFalse(await fileExists(`${process.cwd()}/.git`));
+  assert.isFalse(await fileExists(`${process.cwd()}/.gitattributes`));
+  assert.isFalse(await fileExists(`${process.cwd()}/.gitignore`));
 });
