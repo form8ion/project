@@ -11,7 +11,7 @@ import * as vcsHostScaffolder from './vcs/host';
 import * as licenseScaffolder from './license';
 import * as languageScaffolder from './language-scaffolder';
 import * as dependencyUpdaterScaffolder from './dependency-updater/scaffolder';
-import * as exec from '../thirdparty-wrappers/exec-as-promised';
+import * as execa from '../thirdparty-wrappers/execa';
 import * as prompts from './prompts/questions';
 import * as optionsValidator from './options-validator';
 import {scaffold} from './scaffolder';
@@ -52,7 +52,7 @@ suite('project scaffolder', () => {
     sandbox.stub(languageScaffolder, 'scaffold');
     sandbox.stub(dependencyUpdaterScaffolder, 'default');
     sandbox.stub(promises, 'copyFile');
-    sandbox.stub(exec, 'default');
+    sandbox.stub(execa, 'default');
     sandbox.stub(resultsReporter, 'reportResults');
 
     process.cwd.returns(projectPath);
@@ -320,6 +320,8 @@ suite('project scaffolder', () => {
         }
       )
       .resolves(vcsOriginDetails);
+    const execaPipe = sinon.spy();
+    execa.default.withArgs(verificationCommand, {shell: true}).returns({stdout: {pipe: execaPipe}});
 
     return scaffold(options).then(() => {
       assert.calledWith(gitScaffolder.scaffold, {projectRoot: projectPath, ignore, origin: vcsOriginDetails});
@@ -337,7 +339,7 @@ suite('project scaffolder', () => {
           }
         }
       );
-      assert.calledWith(exec.default, verificationCommand, {silent: false});
+      assert.calledWith(execaPipe, process.stdout);
       assert.calledWith(resultsReporter.reportResults, {nextSteps: [...gitNextSteps, ...languageNextSteps]});
     });
   });
@@ -374,7 +376,7 @@ suite('project scaffolder', () => {
           badges: {consumer: {}, status: {}, contribution: {}}
         }
       );
-      assert.notCalled(exec.default);
+      assert.notCalled(execa.default);
     });
   });
 
@@ -399,6 +401,6 @@ suite('project scaffolder', () => {
     gitScaffolder.initialize.resolves({});
     languageScaffolder.scaffold.resolves({badges: {}, projectDetails: {}});
 
-    return scaffold(options).then(() => assert.notCalled(exec.default));
+    return scaffold(options).then(() => assert.notCalled(execa.default));
   });
 });

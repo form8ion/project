@@ -4,13 +4,13 @@ import deepmerge from 'deepmerge';
 import {questionNames as coreQuestionNames} from '@form8ion/core';
 import {reportResults} from '@form8ion/results-reporter';
 import {info} from '@travi/cli-messages';
+import execa from '../thirdparty-wrappers/execa';
 import {scaffold as scaffoldLanguage} from './language-scaffolder';
 import scaffoldReadme from './readme';
 import {initialize as initializeGit, scaffold as scaffoldGit} from './vcs/git';
 import scaffoldLicense from './license';
 import scaffoldVcsHost from './vcs/host';
 import scaffoldDependencyUpdater from './dependency-updater/scaffolder';
-import exec from '../thirdparty-wrappers/exec-as-promised';
 import {promptForBaseDetails, promptForLanguageDetails} from './prompts/questions';
 import {validate} from './options-validator';
 import {questionNames} from './prompts/question-names';
@@ -101,8 +101,13 @@ export async function scaffold(options) {
     origin: vcsHostResults
   });
 
-  info('Verifying the generated project');
-  if (language && language.verificationCommand) await exec(language.verificationCommand, {silent: false});
+  if (language && language.verificationCommand) {
+    info('Verifying the generated project');
+
+    const subprocess = execa(language.verificationCommand, {shell: true});
+    subprocess.stdout.pipe(process.stdout);
+    await subprocess;
+  }
 
   reportResults({
     nextSteps: [
