@@ -35,15 +35,12 @@ opinionated scaffolder for new projects
 * scaffolds [license](https://spdx.org/licenses/) details
 * scaffolds [VCS](https://en.wikipedia.org/wiki/VCS) details if [git](https://git-scm.com/)
   is chosen
-* scaffolds the [VCS](https://en.wikipedia.org/wiki/VCS) Host details if
-  [GitHub](https://github.com) is chosen
-* scaffolds [CI](https://en.wikipedia.org/wiki/Continuous_integration) server
-  config if [Travis](https://travis-ci.com) is chosen
+* scaffolds the chosen [VCS](https://en.wikipedia.org/wiki/VCS) Host details
+* scaffolds the chosen [CI](https://en.wikipedia.org/wiki/Continuous_integration) service
+  config
 * scaffolds the project `README.md`
 * scaffolds language specific details by delegating to
   [provided scaffolder functions](#languages-optional)
-  * Examples:
-    * [JavaScript](https://github.com/travi/javascript-scaffolder)
 
 ## Usage
 
@@ -121,7 +118,7 @@ configurable in order to support multiple contexts.
 provides the languages to choose from and the functions to perform the
 scaffolding for the chosen language. if no languages are provided, `Other` will
 be the only choice presented. Choosing `Other` will perform no language-specific
-scaffolding.
+scaffolding. Official options are provided [in the awesome list](https://github.com/form8ion/awesome#languages).
 
 __object__:
 
@@ -150,7 +147,7 @@ __object__:
 provides the vcs hosts to choose from and the functions to perform the
 scaffolding for the chosen host. if no hosts are provided, `Other` will be the
 only choice presented. Choosing `Other` will perform no host-specific
-scaffolding.
+scaffolding. Official options are provided [in the awesome list](https://github.com/form8ion/awesome#version-control-services).
 
 __object__:
 
@@ -183,7 +180,7 @@ __object__:
 provides the dependency updaters to choose from and the functions to perform the
 scaffolding for the chosen updater service. if no updater services are provided,
 `Other` will be the only choice presented. Choosing `Other` will perform no
-updater-service-specific scaffolding.
+updater-service-specific scaffolding. Official options are provided [in the awesome list](https://github.com/form8ion/awesome#dependency-update-services).
 
 __object__:
 
