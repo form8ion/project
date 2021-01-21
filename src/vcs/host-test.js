@@ -5,14 +5,14 @@ import scaffoldVcsHost from './host';
 
 suite('vcs host scaffolder', () => {
   test('that the chosen vcs host is scaffolded', async () => {
-    const chosenHost = any.word();
+    const chosenHost = `${any.word()}CAPITAL${any.word()}`;
     const otherOptions = any.simpleObject();
     const results = any.simpleObject();
     const chosenHostScaffolder = sinon.stub();
     const hostScaffolders = {...any.simpleObject(), [chosenHost]: {scaffolder: chosenHostScaffolder}};
     chosenHostScaffolder.withArgs(otherOptions).resolves(results);
 
-    assert.equal(await scaffoldVcsHost(hostScaffolders, {...otherOptions, host: chosenHost}), results);
+    assert.equal(await scaffoldVcsHost(hostScaffolders, {...otherOptions, host: chosenHost.toLowerCase()}), results);
   });
 
   test('that that choosing a host without a defined scaffolder does not result in an error', async () => {
