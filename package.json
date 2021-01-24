@@ -107,7 +107,7 @@
     "nodegit": "0.27.0",
     "remark": "^13.0.0",
     "snyk": "^1.316.1",
-    "spdx-license-list": "6.3.0",
+    "spdx-license-list": "6.4.0",
     "word-wrap": "^1.2.3",
     "write-yaml": "1.0.0"
   },
