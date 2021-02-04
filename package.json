@@ -63,7 +63,7 @@
     "@travi/eslint-config-mocha": "1.0.8",
     "babel-eslint": "10.1.0",
     "babel-plugin-transform-object-rest-spread": "6.26.0",
-    "chai": "4.2.0",
+    "chai": "4.3.0",
     "chai-as-promised": "7.1.1",
     "check-engine": "1.10.0",
     "codecov": "3.8.1",
