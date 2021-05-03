@@ -43,7 +43,7 @@
     "access": "public"
   },
   "engines": {
-    "node": ">=12"
+    "node": ">=12.17"
   },
   "files": [
     "lib/",
