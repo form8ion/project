@@ -87,7 +87,7 @@
     "remark-usage": "9.0.0",
     "rollup": "2.50.0",
     "rollup-plugin-auto-external": "2.0.0",
-    "sinon": "11.0.0",
+    "sinon": "11.1.0",
     "testdouble": "3.16.1",
     "unist-util-find": "1.0.2"
   },
