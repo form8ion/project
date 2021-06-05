@@ -58,7 +58,7 @@
     "@babel/register": "7.13.16",
     "@travi/any": "2.0.16",
     "@travi/babel-preset": "3.0.57",
-    "@travi/eslint-config": "1.0.73",
+    "@travi/eslint-config": "1.0.74",
     "@travi/eslint-config-cucumber": "1.0.5",
     "@travi/eslint-config-mocha": "1.0.12",
     "babel-eslint": "10.1.0",
