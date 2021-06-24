@@ -26,7 +26,7 @@
     "test": "npm-run-all --print-label build --parallel lint:* --parallel test:*",
     "test:unit:base": "mocha 'src/**/*-test.js'",
     "test:unit": "nyc run-s test:unit:base",
-    "test:integration:base": "cucumber-js test/integration --require-module @babel/register --format-options '{\"snippetInterface\": \"async-await\"}'",
+    "test:integration:base": "NODE_OPTIONS=--enable-source-maps cucumber-js test/integration --require-module @babel/register --format-options '{\"snippetInterface\": \"async-await\"}'",
     "test:integration:wip": "run-s 'test:integration:base -- --tags \"@wip and not @skip\"'",
     "pretest:integration": "preview",
     "test:integration": "run-s 'test:integration:base -- --tags \"not @skip and not @wip\"'",
