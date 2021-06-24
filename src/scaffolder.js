@@ -4,16 +4,16 @@ import deepmerge from 'deepmerge';
 import {questionNames as coreQuestionNames} from '@form8ion/core';
 import {reportResults} from '@form8ion/results-reporter';
 import {info} from '@travi/cli-messages';
-import execa from '../thirdparty-wrappers/execa';
-import {scaffold as scaffoldLanguage} from './language-scaffolder';
-import scaffoldReadme from './readme';
-import {initialize as initializeGit, scaffold as scaffoldGit} from './vcs/git';
-import scaffoldLicense from './license';
-import scaffoldVcsHost from './vcs/host';
-import scaffoldDependencyUpdater from './dependency-updater/scaffolder';
-import {promptForBaseDetails, promptForLanguageDetails} from './prompts/questions';
-import {validate} from './options-validator';
-import {questionNames} from './prompts/question-names';
+import execa from '../thirdparty-wrappers/execa.js';
+import {scaffold as scaffoldLanguage} from './language-scaffolder.js';
+import scaffoldReadme from './readme.js';
+import {initialize as initializeGit, scaffold as scaffoldGit} from './vcs/git.js';
+import scaffoldLicense from './license.js';
+import scaffoldVcsHost from './vcs/host.js';
+import scaffoldDependencyUpdater from './dependency-updater/scaffolder.js';
+import {promptForBaseDetails, promptForLanguageDetails} from './prompts/questions.js';
+import {validate} from './options-validator.js';
+import {questionNames} from './prompts/question-names.js';
 
 export async function scaffold(options) {
   const projectRoot = process.cwd();

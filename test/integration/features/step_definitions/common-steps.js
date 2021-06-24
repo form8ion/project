@@ -2,7 +2,7 @@ import stubbedFs from 'mock-fs';
 import {promises as fs} from 'fs';
 import {resolve} from 'path';
 import {info} from '@travi/cli-messages';
-import {Before, After, Given, When, setWorldConstructor} from 'cucumber';
+import {Before, After, Given, When, setWorldConstructor} from '@cucumber/cucumber';
 import any from '@travi/any';
 import td from 'testdouble';
 import {World} from '../support/world';
@@ -16,10 +16,10 @@ const packagePreviewDirectory = '../__package_previews__/project-scaffolder';
 const stubbedNodeModules = stubbedFs.load(resolve(...projectPath, 'node_modules'));
 
 Before(async function () {
-  this.nodegit = td.replace('nodegit');
+  this.nodegit = td.replaceEsm('nodegit');
 
   // eslint-disable-next-line import/no-extraneous-dependencies,import/no-unresolved
-  ({scaffold, questionNames} = require('@travi/project-scaffolder'));
+  ({scaffold, questionNames} = await import('@travi/project-scaffolder');
 
   stubbedFs({
     node_modules: stubbedNodeModules,

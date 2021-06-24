@@ -1,5 +1,5 @@
 import {promises as fs} from 'fs';
-import {Then} from 'cucumber';
+import {Then} from '@cucumber/cucumber';
 import {assert} from 'chai';
 import remark from 'remark';
 import find from 'unist-util-find';

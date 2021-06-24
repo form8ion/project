@@ -1,13 +1,15 @@
-import {Separator} from 'inquirer';
+import inquirer from 'inquirer';
 import {assert} from 'chai';
 import any from '@travi/any';
-import {questionNames} from './question-names';
+import {questionNames} from './question-names.js';
 import {
   unlicensedConfirmationShouldBePresented,
   licenseChoicesShouldBePresented,
   copyrightInformationShouldBeRequested,
   filterChoicesByVisibility
-} from './conditionals';
+} from './conditionals.js';
+
+const {Separator} = inquirer;
 
 suite('prompt conditionals', () => {
   suite('unlicensed confirmation', () => {

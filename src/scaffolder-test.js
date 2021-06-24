@@ -5,17 +5,17 @@ import * as resultsReporter from '@form8ion/results-reporter';
 import sinon from 'sinon';
 import {assert} from 'chai';
 import any from '@travi/any';
-import * as readmeScaffolder from './readme';
-import * as gitScaffolder from './vcs/git';
-import * as vcsHostScaffolder from './vcs/host';
-import * as licenseScaffolder from './license';
-import * as languageScaffolder from './language-scaffolder';
-import * as dependencyUpdaterScaffolder from './dependency-updater/scaffolder';
-import * as execa from '../thirdparty-wrappers/execa';
-import * as prompts from './prompts/questions';
-import * as optionsValidator from './options-validator';
-import {scaffold} from './scaffolder';
-import {questionNames} from './prompts/question-names';
+import * as readmeScaffolder from './readme.js';
+import * as gitScaffolder from './vcs/git.js';
+import * as vcsHostScaffolder from './vcs/host.js';
+import * as licenseScaffolder from './license.js';
+import * as languageScaffolder from './language-scaffolder.js';
+import * as dependencyUpdaterScaffolder from './dependency-updater/scaffolder.js';
+import * as execa from '../thirdparty-wrappers/execa.js';
+import * as prompts from './prompts/questions.js';
+import * as optionsValidator from './options-validator.js';
+import {scaffold} from './scaffolder.js';
+import {questionNames} from './prompts/question-names.js';
 
 suite('project scaffolder', () => {
   let sandbox;

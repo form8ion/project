@@ -1,7 +1,7 @@
 import {assert} from 'chai';
 import any from '@travi/any';
 import sinon from 'sinon';
-import scaffoldVcsHost from './host';
+import scaffoldVcsHost from './host.js';
 
 suite('vcs host scaffolder', () => {
   test('that the chosen vcs host is scaffolded', async () => {

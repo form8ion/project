@@ -1,13 +1,15 @@
 import path from 'path';
-import {Separator} from 'inquirer';
+import inquirer from 'inquirer';
 import * as core from '@form8ion/core';
 import * as prompts from '@form8ion/overridable-prompts';
 import any from '@travi/any';
 import {assert} from 'chai';
 import sinon from 'sinon';
-import * as conditionals from './conditionals';
-import {promptForBaseDetails, promptForLanguageDetails, promptForVcsHostDetails} from './questions';
-import {questionNames} from './question-names';
+import * as conditionals from './conditionals.js';
+import {promptForBaseDetails, promptForLanguageDetails, promptForVcsHostDetails} from './questions.js';
+import {questionNames} from './question-names.js';
+
+const {Separator} = inquirer;
 
 suite('project scaffolder prompts', () => {
   let sandbox;

@@ -1,10 +1,12 @@
 import * as prompts from '@form8ion/overridable-prompts';
 import any from '@travi/any';
-import {Separator} from 'inquirer';
+import inquirer from 'inquirer';
 import {assert} from 'chai';
 import sinon from 'sinon';
-import {questionNames} from '..';
-import {promptForDependencyUpdaterChoice} from './prompt';
+import {questionNames} from '../index.js';
+import {promptForDependencyUpdaterChoice} from './prompt.js';
+
+const {Separator} = inquirer;
 
 suite('dependency updater prompt', () => {
   let sandbox;

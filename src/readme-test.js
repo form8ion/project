@@ -3,7 +3,7 @@ import any from '@travi/any';
 import * as readme from '@form8ion/readme';
 import sinon from 'sinon';
 import {assert} from 'chai';
-import scaffoldReadme from './readme';
+import scaffoldReadme from './readme.js';
 
 const badgeFactory = () => ({img: any.url(), link: any.url(), text: any.sentence()});
 const consumerBadges = any.objectWithKeys(any.listOf(any.word), {factory: badgeFactory});

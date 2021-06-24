@@ -1,5 +1,5 @@
 import program from 'commander';
-import {scaffold} from './lib/index.cjs';
+import {scaffold} from './lib/index.esm.js';
 
 program
   .command('scaffold')

@@ -1,6 +1,6 @@
 import any from '@travi/any';
 import {assert} from 'chai';
-import {validate} from './options-validator';
+import {validate} from './options-validator.js';
 
 suite('options validator', () => {
   test('that undefined options is allowed', () => assert.deepEqual(validate(), {}));

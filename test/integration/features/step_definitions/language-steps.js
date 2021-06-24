@@ -1,4 +1,4 @@
-import {Given} from 'cucumber';
+import {Given} from '@cucumber/cucumber';
 import any from '@travi/any';
 import {questionNames} from '../../../../src/prompts/question-names';
 

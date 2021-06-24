@@ -1,6 +1,8 @@
-import {Separator} from 'inquirer';
+import inquirer from 'inquirer';
 import {prompt} from '@form8ion/overridable-prompts';
-import {questionNames} from '../prompts/question-names';
+import {questionNames} from '../prompts/question-names.js';
+
+const {Separator} = inquirer;
 
 export async function promptForDependencyUpdaterChoice(updaters, decisions) {
   return prompt([{

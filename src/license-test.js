@@ -1,11 +1,11 @@
 import {promises} from 'fs';
-import spdxLicenseList from 'spdx-license-list/simple';
-import spdxLicenseListWithContent from 'spdx-license-list/full';
+import spdxLicenseList from 'spdx-license-list/simple.js';
+import spdxLicenseListWithContent from 'spdx-license-list/full.js';
 import wrap from 'word-wrap';
 import sinon from 'sinon';
 import {assert} from 'chai';
 import any from '@travi/any';
-import scaffoldLicense from './license';
+import scaffoldLicense from './license.js';
 
 suite('license', () => {
   let sandbox;

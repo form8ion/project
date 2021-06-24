@@ -1,10 +1,10 @@
 import any from '@travi/any';
 import {assert} from 'chai';
 import sinon from 'sinon';
-import * as prompt from './prompt';
-import scaffoldUpdater from './scaffolder';
-import {questionNames} from '../prompts/question-names';
-import {promptForDependencyUpdaterChoice} from './prompt';
+import * as prompt from './prompt.js';
+import scaffoldUpdater from './scaffolder.js';
+import {questionNames} from '../prompts/question-names.js';
+import {promptForDependencyUpdaterChoice} from './prompt.js';
 
 suite('dependency-updater scaffolder', () => {
   let sandbox;

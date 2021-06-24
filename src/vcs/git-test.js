@@ -1,13 +1,15 @@
-import {Branch as gitBranch, Remote as gitRemote, Repository as gitRepository} from 'nodegit';
+import nodegit from 'nodegit';
 import * as core from '@form8ion/core';
 import {promises} from 'fs';
 import any from '@travi/any';
 import sinon from 'sinon';
 import {assert} from 'chai';
-import * as hostedGitInfo from '../../thirdparty-wrappers/hosted-git-info';
-import * as prompts from '../prompts/questions';
-import {questionNames} from '../prompts/question-names';
-import {initialize, scaffold} from './git';
+import * as hostedGitInfo from '../../thirdparty-wrappers/hosted-git-info.js';
+import * as prompts from '../prompts/questions.js';
+import {questionNames} from '../prompts/question-names.js';
+import {initialize, scaffold} from './git.js';
+
+const {Branch: gitBranch, Remote: gitRemote, Repository: gitRepository} = nodegit;
 
 suite('scaffold git', () => {
   let sandbox;
