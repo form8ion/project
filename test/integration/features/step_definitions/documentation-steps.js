@@ -85,25 +85,66 @@ function assertResultingBadgesInBadgeGroup(resultingSectionBadges, badgeGroup, r
   });
 }
 
-function assertContributingContentExists(readmeTree, resultingBadges, references, resultingDocumentation) {
-  assert.isDefined(find(readmeTree, {type: 'heading', depth: 2, children: [{value: 'Contributing'}]}));
-  headingRange(readmeTree, {test: 'Contributing', ignoreFinalDefinitions: true}, (start, nodes, end) => {
+function assertSectionContentIsCorrect(
+  readmeTree,
+  headingValue,
+  badgeGroupName,
+  resultingBadges,
+  references,
+  resultingDocumentation,
+  contentName
+) {
+  headingRange(readmeTree, {test: headingValue, ignoreFinalDefinitions: true}, (start, nodes, end) => {
     const sectionContent = {type: 'root', children: nodes};
-    const badges = getBadgesFromZone(sectionContent, 'contribution');
+    const badges = getBadgesFromZone(sectionContent, badgeGroupName);
 
     assertResultingBadgesInBadgeGroup(
-      resultingBadges.contribution,
+      resultingBadges[badgeGroupName],
       Object.fromEntries(badges.map(badge => ([badge.label, badge]))),
       references
     );
 
     assert.isDefined(find(
       sectionContent,
-      {type: 'paragraph', children: [{type: 'text', value: resultingDocumentation.contributing}]}
+      {type: 'paragraph', children: [{type: 'text', value: resultingDocumentation[contentName]}]}
     ));
 
     return [start, sectionContent, end];
   });
+}
+
+function assertContributingContentExists(readmeTree, resultingBadges, references, resultingDocumentation) {
+  const CONTRIBUTING_HEADING_VALUE = 'Contributing';
+  const CONTRIBUTING_BADGE_GROUP_NAME = 'contribution';
+  const CONTRIBUTING_CONTENT_NAME = 'contributing';
+
+  assert.isDefined(find(readmeTree, {type: 'heading', depth: 2, children: [{value: CONTRIBUTING_HEADING_VALUE}]}));
+  assertSectionContentIsCorrect(
+    readmeTree,
+    CONTRIBUTING_HEADING_VALUE,
+    CONTRIBUTING_BADGE_GROUP_NAME,
+    resultingBadges,
+    references,
+    resultingDocumentation,
+    CONTRIBUTING_CONTENT_NAME
+  );
+}
+
+function assertUsageContentExists(readmeTree, resultingBadges, references, resultingDocumentation) {
+  const USAGE_HEADING_VALUE = 'Usage';
+  const USAGE_BADGE_GROUP_NAME = 'consumer';
+  const USAGE_CONTENT_NAME = 'usage';
+
+  assert.isDefined(find(readmeTree, {type: 'heading', depth: 2, children: [{value: USAGE_HEADING_VALUE}]}));
+  assertSectionContentIsCorrect(
+    readmeTree,
+    USAGE_HEADING_VALUE,
+    USAGE_BADGE_GROUP_NAME,
+    resultingBadges,
+    references,
+    resultingDocumentation,
+    USAGE_CONTENT_NAME
+  );
 }
 
 function extractReferences(nodes) {
@@ -118,7 +159,8 @@ Given('the language scaffolder defines documentation content', function () {
   this.languageScaffolderResults = {
     ...this.languageScaffolderResults,
     documentation: {
-      contributing: any.sentence()
+      contributing: any.sentence(),
+      usage: any.sentence()
     }
   };
 });
@@ -167,4 +209,5 @@ Then('the language content is included in the README', async function () {
   const {badges: resultingBadges, documentation: resultingDocumentation} = this.languageScaffolderResults;
 
   assertContributingContentExists(readmeTree, resultingBadges, references, resultingDocumentation);
+  assertUsageContentExists(readmeTree, resultingBadges, references, resultingDocumentation);
 });
