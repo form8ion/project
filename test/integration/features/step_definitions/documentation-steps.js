@@ -88,21 +88,24 @@ function assertResultingBadgesInBadgeGroup(resultingSectionBadges, badgeGroup, r
 function assertSectionContentIsCorrect(
   readmeTree,
   headingValue,
-  badgeGroupName,
   resultingBadges,
   references,
   resultingDocumentation,
-  contentName
+  contentName,
+  badgeGroupName
 ) {
   headingRange(readmeTree, {test: headingValue, ignoreFinalDefinitions: true}, (start, nodes, end) => {
     const sectionContent = {type: 'root', children: nodes};
-    const badges = getBadgesFromZone(sectionContent, badgeGroupName);
 
-    assertResultingBadgesInBadgeGroup(
-      resultingBadges[badgeGroupName],
-      Object.fromEntries(badges.map(badge => ([badge.label, badge]))),
-      references
-    );
+    if (badgeGroupName) {
+      const badges = getBadgesFromZone(sectionContent, badgeGroupName);
+
+      assertResultingBadgesInBadgeGroup(
+        resultingBadges[badgeGroupName],
+        Object.fromEntries(badges.map(badge => ([badge.label, badge]))),
+        references
+      );
+    }
 
     assert.isDefined(find(
       sectionContent,
@@ -113,20 +116,18 @@ function assertSectionContentIsCorrect(
   });
 }
 
-function assertContributingContentExists(readmeTree, resultingBadges, references, resultingDocumentation) {
-  const CONTRIBUTING_HEADING_VALUE = 'Contributing';
-  const CONTRIBUTING_BADGE_GROUP_NAME = 'contribution';
-  const CONTRIBUTING_CONTENT_NAME = 'contributing';
+function assertTableOfContentsExists(readmeTree, resultingBadges, references, resultingDocumentation) {
+  const TOC_HEADING_VALUE = 'Table of Contents';
+  const TOC_CONTENT_NAME = 'toc';
 
-  assert.isDefined(find(readmeTree, {type: 'heading', depth: 2, children: [{value: CONTRIBUTING_HEADING_VALUE}]}));
+  assert.isDefined(find(readmeTree, {type: 'heading', depth: 2, children: [{value: TOC_HEADING_VALUE}]}));
   assertSectionContentIsCorrect(
     readmeTree,
-    CONTRIBUTING_HEADING_VALUE,
-    CONTRIBUTING_BADGE_GROUP_NAME,
+    TOC_HEADING_VALUE,
     resultingBadges,
     references,
     resultingDocumentation,
-    CONTRIBUTING_CONTENT_NAME
+    TOC_CONTENT_NAME
   );
 }
 
@@ -139,11 +140,28 @@ function assertUsageContentExists(readmeTree, resultingBadges, references, resul
   assertSectionContentIsCorrect(
     readmeTree,
     USAGE_HEADING_VALUE,
-    USAGE_BADGE_GROUP_NAME,
     resultingBadges,
     references,
     resultingDocumentation,
-    USAGE_CONTENT_NAME
+    USAGE_CONTENT_NAME,
+    USAGE_BADGE_GROUP_NAME
+  );
+}
+
+function assertContributingContentExists(readmeTree, resultingBadges, references, resultingDocumentation) {
+  const CONTRIBUTING_HEADING_VALUE = 'Contributing';
+  const CONTRIBUTING_BADGE_GROUP_NAME = 'contribution';
+  const CONTRIBUTING_CONTENT_NAME = 'contributing';
+
+  assert.isDefined(find(readmeTree, {type: 'heading', depth: 2, children: [{value: CONTRIBUTING_HEADING_VALUE}]}));
+  assertSectionContentIsCorrect(
+    readmeTree,
+    CONTRIBUTING_HEADING_VALUE,
+    resultingBadges,
+    references,
+    resultingDocumentation,
+    CONTRIBUTING_CONTENT_NAME,
+    CONTRIBUTING_BADGE_GROUP_NAME
   );
 }
 
@@ -159,8 +177,9 @@ Given('the language scaffolder defines documentation content', function () {
   this.languageScaffolderResults = {
     ...this.languageScaffolderResults,
     documentation: {
-      contributing: any.sentence(),
-      usage: any.sentence()
+      toc: any.sentence(),
+      usage: any.sentence(),
+      contributing: any.sentence()
     }
   };
 });
@@ -208,6 +227,7 @@ Then('the language content is included in the README', async function () {
   const references = extractReferences(readmeTree.children);
   const {badges: resultingBadges, documentation: resultingDocumentation} = this.languageScaffolderResults;
 
-  assertContributingContentExists(readmeTree, resultingBadges, references, resultingDocumentation);
+  assertTableOfContentsExists(readmeTree, resultingBadges, references, resultingDocumentation);
   assertUsageContentExists(readmeTree, resultingBadges, references, resultingDocumentation);
+  assertContributingContentExists(readmeTree, resultingBadges, references, resultingDocumentation);
 });
