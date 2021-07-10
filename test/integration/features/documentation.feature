@@ -15,3 +15,11 @@ Feature: Documentation
     When the project is scaffolded
     Then the README includes the core details
     And "Private" details are included in the README
+
+  Scenario: Language Content in README
+    Given the project is "Public"
+    And a language scaffolder is chosen
+    And the language scaffolder defines documentation content
+    When the project is scaffolded
+    Then the README includes the core details
+    And the language content is included in the README

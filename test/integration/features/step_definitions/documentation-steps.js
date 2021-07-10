@@ -1,20 +1,31 @@
 import {promises as fs} from 'fs';
-import {Then} from 'cucumber';
-import {assert} from 'chai';
-import remark from 'remark';
+import parse from 'mdast-util-from-markdown';
 import find from 'unist-util-find';
 import zone from 'mdast-zone';
+import headingRange from 'mdast-util-heading-range';
+import {Given, Then} from 'cucumber';
+import {assert} from 'chai';
+import any from '@travi/any';
+import {questionNames} from '../../../../src/prompts/question-names';
+
+function getBadgesFromZone(tree, badgeGroupName) {
+  let badges;
+
+  zone(tree, `${badgeGroupName}-badges`, (start, nodes, end) => {
+    badges = nodes.map(node => node.children).reduce((acc, badgeList) => ([...acc, ...badgeList]), []);
+
+    return [start, nodes, end];
+  });
+  return badges;
+}
 
 function groupBadges(tree) {
   const groups = {};
 
   ['status', 'consumer', 'contribution'].forEach(badgeGroupName => {
-    zone(tree, `${badgeGroupName}-badges`, (start, nodes, end) => {
-      const badges = nodes.map(node => node.children).reduce((acc, badgeList) => ([...acc, ...badgeList]), []);
-      groups[badgeGroupName] = Object.fromEntries(badges.map(badge => ([badge.label, badge])));
+    const badges = getBadgesFromZone(tree, badgeGroupName);
 
-      return [start, nodes, end];
-    });
+    groups[badgeGroupName] = Object.fromEntries(badges.map(badge => ([badge.label, badge])));
   });
 
   return groups;
@@ -60,14 +71,60 @@ function assertGroupDoesNotContainBadge(badgeGroup, references, {label, imageRef
   assert.isUndefined(references[imageReferenceLabel]);
 }
 
+function assertResultingBadgesInBadgeGroup(resultingSectionBadges, badgeGroup, references) {
+  Object.entries(resultingSectionBadges).forEach(([badgeName, badgeDetails]) => {
+    const badgeAstDetails = {
+      label: `${badgeName}-link`,
+      imageReferenceLabel: `${badgeName}-badge`,
+      imageAltText: badgeDetails.text,
+      imageSrc: badgeDetails.img,
+      link: badgeDetails.link
+    };
+
+    assertGroupContainsBadge(badgeGroup, references, badgeAstDetails);
+  });
+}
+
+function assertContributingContentExists(readmeTree, resultingBadges, references, resultingDocumentation) {
+  assert.isDefined(find(readmeTree, {type: 'heading', depth: 2, children: [{value: 'Contributing'}]}));
+  headingRange(readmeTree, {test: 'Contributing', ignoreFinalDefinitions: true}, (start, nodes, end) => {
+    const sectionContent = {type: 'root', children: nodes};
+    const badges = getBadgesFromZone(sectionContent, 'contribution');
+
+    assertResultingBadgesInBadgeGroup(
+      resultingBadges.contribution,
+      Object.fromEntries(badges.map(badge => ([badge.label, badge]))),
+      references
+    );
+
+    assert.isDefined(find(
+      sectionContent,
+      {type: 'paragraph', children: [{type: 'text', value: resultingDocumentation.contributing}]}
+    ));
+
+    return [start, sectionContent, end];
+  });
+}
+
 function extractReferences(nodes) {
   return Object.fromEntries(nodes
     .filter(node => 'definition' === node.type)
     .map(node => ([node.label, node.url])));
 }
 
+Given('the language scaffolder defines documentation content', function () {
+  this.setAnswerFor(questionNames.PROJECT_LANGUAGE, this.getAnswerFor(questionNames.PROJECT_LANGUAGE) || any.word());
+
+  this.languageScaffolderResults = {
+    ...this.languageScaffolderResults,
+    documentation: {
+      contributing: any.sentence()
+    }
+  };
+});
+
 Then('the README includes the core details', async function () {
-  const readmeTree = remark().parse(await fs.readFile(`${process.cwd()}/README.md`, 'utf8'));
+  const readmeTree = parse(await fs.readFile(`${process.cwd()}/README.md`, 'utf8'));
 
   assertTitleIsIncluded(readmeTree, this.projectName);
   assertDescriptionIsIncluded(readmeTree, this.projectDescription);
@@ -78,7 +135,7 @@ Then('the README includes the core details', async function () {
 
 Then('{string} details are included in the README', async function (visibility) {
   const readmeContent = await fs.readFile(`${process.cwd()}/README.md`, 'utf8');
-  const readmeTree = remark().parse(readmeContent);
+  const readmeTree = parse(readmeContent);
   const badgeGroups = groupBadges(readmeTree);
   const references = extractReferences(readmeTree.children);
   const PrsWelcomeDetails = {
@@ -95,21 +152,19 @@ Then('{string} details are included in the README', async function (visibility) 
 
 Then('the README includes the language details', async function () {
   const readmeContent = await fs.readFile(`${process.cwd()}/README.md`, 'utf8');
-  const readmeTree = remark().parse(readmeContent);
+  const readmeTree = parse(readmeContent);
   const badgeGroups = groupBadges(readmeTree);
   const references = extractReferences(readmeTree.children);
 
   Object.entries(this.languageScaffolderResults.badges).forEach(([badgeType, badges]) => {
-    Object.entries(badges).forEach(([badgeName, badgeDetails]) => {
-      const badgeAstDetails = {
-        label: `${badgeName}-link`,
-        imageReferenceLabel: `${badgeName}-badge`,
-        imageAltText: badgeDetails.text,
-        imageSrc: badgeDetails.img,
-        link: badgeDetails.link
-      };
-
-      assertGroupContainsBadge(badgeGroups[badgeType], references, badgeAstDetails);
-    });
+    assertResultingBadgesInBadgeGroup(badges, badgeGroups[badgeType], references);
   });
+});
+
+Then('the language content is included in the README', async function () {
+  const readmeTree = parse(await fs.readFile(`${process.cwd()}/README.md`, 'utf8'));
+  const references = extractReferences(readmeTree.children);
+  const {badges: resultingBadges, documentation: resultingDocumentation} = this.languageScaffolderResults;
+
+  assertContributingContentExists(readmeTree, resultingBadges, references, resultingDocumentation);
 });
