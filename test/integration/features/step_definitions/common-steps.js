@@ -12,20 +12,20 @@ setWorldConstructor(World);
 let scaffold, questionNames;
 const projectPath = [__dirname, '..', '..', '..', '..'];
 const projectTemplatePath = [...projectPath, 'templates'];
-const packagePreviewDirectory = '../__package_previews__/project-scaffolder';
+const packagePreviewDirectory = '../__package_previews__/project';
 const stubbedNodeModules = stubbedFs.load(resolve(...projectPath, 'node_modules'));
 
 Before(async function () {
   this.nodegit = td.replace('nodegit');
 
   // eslint-disable-next-line import/no-extraneous-dependencies,import/no-unresolved
-  ({scaffold, questionNames} = require('@travi/project-scaffolder'));
+  ({scaffold, questionNames} = require('@form8ion/project'));
 
   stubbedFs({
     node_modules: stubbedNodeModules,
     [packagePreviewDirectory]: {
-      '@travi': {
-        'project-scaffolder': {
+      '@form8ion': {
+        project: {
           templates: {
             'README.mustache': await fs.readFile(resolve(...projectTemplatePath, 'README.mustache')),
             'editorconfig.txt': await fs.readFile(resolve(...projectTemplatePath, 'editorconfig.txt'))
