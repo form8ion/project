@@ -36,7 +36,6 @@
     "build": "run-s clean build:*",
     "watch": "run-s 'build:js -- --watch'",
     "prepublishOnly": "run-s build",
-    "snyk-protect": "snyk protect",
     "prepare": "husky install"
   },
   "publishConfig": {
@@ -107,10 +106,8 @@
     "inquirer": "^8.0.0",
     "mustache": "4.2.0",
     "nodegit": "0.27.0",
-    "snyk": "^1.530.0",
     "spdx-license-list": "6.4.0",
     "word-wrap": "^1.2.3",
     "write-yaml": "1.0.0"
-  },
-  "snyk": true
+  }
 }
