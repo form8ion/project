@@ -67,7 +67,7 @@
     "codecov": "3.8.2",
     "commander": "8.3.0",
     "commitlint-config-travi": "1.4.3",
-    "cucumber": "6.0.5",
+    "@cucumber/cucumber": "7.0.0",
     "cz-conventional-changelog": "3.3.0",
     "gherkin-lint": "4.2.2",
     "husky": "7.0.4",
