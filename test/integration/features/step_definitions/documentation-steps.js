@@ -3,7 +3,7 @@ import parse from 'mdast-util-from-markdown';
 import find from 'unist-util-find';
 import zone from 'mdast-zone';
 import headingRange from 'mdast-util-heading-range';
-import {Given, Then} from 'cucumber';
+import {Given, Then} from '@cucumber/cucumber';
 import {assert} from 'chai';
 import any from '@travi/any';
 import {questionNames} from '../../../../src/prompts/question-names';
