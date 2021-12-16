@@ -1,4 +1,4 @@
-import {After, Before, Given, Then} from 'cucumber';
+import {After, Before, Given, Then} from '@cucumber/cucumber';
 import sinon from 'sinon';
 
 let updaterScaffolder;

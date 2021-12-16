@@ -2,7 +2,7 @@ import stubbedFs from 'mock-fs';
 import {promises as fs} from 'fs';
 import {resolve} from 'path';
 import {info} from '@travi/cli-messages';
-import {Before, After, Given, When, setWorldConstructor} from 'cucumber';
+import {Before, After, Given, When, setWorldConstructor} from '@cucumber/cucumber';
 import any from '@travi/any';
 import td from 'testdouble';
 import {World} from '../support/world';
