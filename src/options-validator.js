@@ -1,4 +1,4 @@
-import * as joi from '@hapi/joi';
+import * as joi from 'joi';
 import hoek from '@hapi/hoek';
 
 export function validate(options) {
