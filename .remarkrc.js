@@ -7,7 +7,7 @@ exports.settings = {
 };
 
 exports.plugins = [
-  'remark-preset-lint-travi',
+  '@form8ion/remark-lint-preset',
   [require('remark-toc'), {tight: true}],
   ['remark-usage', {heading: 'example'}]
 ];
