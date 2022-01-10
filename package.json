@@ -55,7 +55,7 @@
   },
   "devDependencies": {
     "@babel/register": "7.16.7",
-    "@cucumber/cucumber": "8.0.0-rc.1",
+    "@cucumber/cucumber": "8.0.0-rc.2",
     "@form8ion/remark-lint-preset": "1.0.13",
     "@travi/any": "2.0.19",
     "@travi/babel-preset": "3.0.71",
