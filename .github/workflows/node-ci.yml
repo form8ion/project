@@ -3,9 +3,8 @@ name: Node.js CI
   push:
     branches:
       - master
-      - alpha
       - beta
-      - 'renovate/**'
+      - renovate/**
   pull_request:
     types:
       - opened
@@ -18,31 +17,31 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node: ['12.17', 12, 14]
+        node:
+          - '12.17'
+          - 12
+          - 14
     steps:
       - uses: actions/checkout@v2
-      - name: 'Setup node ${{ matrix.node_version }}'
+      - name: Setup node ${{ matrix.node_version }}
         uses: actions/setup-node@v2
         with:
-          node-version: '${{ matrix.node }}'
+          node-version: ${{ matrix.node }}
       - uses: bahmutov/npm-install@v1
       - run: npm test
       - uses: codecov/codecov-action@v2
-  release:
-    needs: verify
+  trigger-release:
     runs-on: ubuntu-latest
+    if: github.event_name == 'push'
     steps:
-      - uses: actions/checkout@v2
-      - name: Read .nvmrc
-        run: 'echo ::set-output name=NVMRC::$(cat .nvmrc)'
-        id: nvm
-      - name: Setup node
-        uses: actions/setup-node@v2
+      - uses: octokit/request-action@v2.x
         with:
-          node-version: '${{ steps.nvm.outputs.NVMRC }}'
-      - uses: bahmutov/npm-install@v1
-      - name: semantic-release
-        uses: cycjimmy/semantic-release-action@v2
+          route: >-
+            POST
+            /repos/{owner}/{repo}/actions/workflows/{workflow_id}/dispatches
+          owner: form8ion
+          repo: project
+          ref: ${{ github.ref }}
+          workflow_id: release.yml
         env:
-          GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
-          NPM_TOKEN: '${{ secrets.NPM_PUBLISH_TOKEN }}'
+          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
