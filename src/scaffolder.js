@@ -1,5 +1,5 @@
 import {resolve} from 'path';
-import {promises} from 'fs';
+import {promises as fs} from 'fs';
 import deepmerge from 'deepmerge';
 import {questionNames as coreQuestionNames} from '@form8ion/core';
 import {reportResults} from '@form8ion/results-reporter';
@@ -92,7 +92,7 @@ export async function scaffold(options) {
         ...contributors.map(contributor => contributor.badges).filter(Boolean)
       ])
     }),
-    promises.copyFile(resolve(__dirname, '..', 'templates', 'editorconfig.txt'), `${projectRoot}/.editorconfig`)
+    fs.copyFile(resolve(__dirname, '..', 'templates', 'editorconfig.txt'), `${projectRoot}/.editorconfig`)
   ]);
 
   const gitResults = gitRepo && await scaffoldGit({

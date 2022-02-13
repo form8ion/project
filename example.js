@@ -1,37 +1,27 @@
-import program from 'commander';
-import {scaffold} from './lib/index.cjs';
+// #### Import
+// remark-usage-ignore-next
+import stubbedFs from 'mock-fs';
+import {scaffold, questionNames} from './lib/index.cjs';
 
-program
-  .command('scaffold')
-  .description('scaffold a new project')
-  .action(() => scaffold({
-    languages: {
-      foo: options => (opts => ({
-        projectDetails: {homepage: 'https://website.com'},
-        tags: ['foo', 'bar', 'baz'],
-        badges: {
-          contribution: {
-            badgeName: {
-              text: 'Hover text for the badge',
-              link: 'http://link-to-related-service.com',
-              img: 'image to render as badge'
-            }
-          },
-          status: {},
-          consumer: {}
-        },
-        ...opts.vcs && {
-          vcsIgnore: {
-            files: ['foo.txt', 'bar.txt'],
-            directories: ['build/', 'dependencies/']
-          }
-        },
-        nextSteps: [{summary: 'something extra to do manually'}],
-        verificationCommand: 'terminal command to run after scaffolding is complete'
-      }))(options)
+// remark-usage-ignore-next 2
+stubbedFs();
+
+// #### Execute
+
+(async () => {
+  await scaffold({
+    decisions: {
+      [questionNames.PROJECT_NAME]: 'my-project',
+      [questionNames.LICENSE]: 'MIT',
+      [questionNames.VISIBILITY]: 'Public',
+      [questionNames.DESCRIPTION]: 'My project',
+      [questionNames.GIT_REPO]: false,
+      [questionNames.COPYRIGHT_HOLDER]: 'John Smith',
+      [questionNames.COPYRIGHT_YEAR]: '2022',
+      [questionNames.PROJECT_LANGUAGE]: 'foo'
     },
-    overrides: {copyrightHolder: 'John Smith'}
-  }).catch(err => {
-    console.error(err);
-    process.exitCode = 1;
-  }));
+    languages: {
+      foo: options => options
+    }
+  });
+})();

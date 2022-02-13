@@ -15,14 +15,16 @@ opinionated scaffolder for new projects
 * [Usage](#usage)
   * [Installation](#installation)
   * [Consumption in a CLI tool](#consumption-in-a-cli-tool)
-    * [Example](#example)
-    * [Options](#options)
-      * [`languages` (_optional_)](#languages-optional)
-      * [`vcsHosts` (_optional_)](#vcshosts-optional)
-      * [`dependencyUpdaters` (_optional_)](#dependencyupdaters-optional)
-      * [`overrides` (_optional_)](#overrides-optional)
-        * [`copyrightHolder`](#copyrightholder)
-        * [`githubAccount`](#githubaccount)
+  * [Example](#example)
+    * [Import](#import)
+    * [Execute](#execute)
+  * [API](#api)
+    * [`languages` (_optional_)](#languages-optional)
+    * [`vcsHosts` (_optional_)](#vcshosts-optional)
+    * [`dependencyUpdaters` (_optional_)](#dependencyupdaters-optional)
+    * [`overrides` (_optional_)](#overrides-optional)
+      * [`copyrightHolder`](#copyrightholder)
+      * [`githubAccount`](#githubaccount)
 * [Contributing](#contributing)
   * [Dependencies](#dependencies)
   * [Verification](#verification)
@@ -66,54 +68,44 @@ consumer to provide the actual CLI wrapper. My [sub-command](https://github.com/
 for [commander](https://www.npmjs.com/package/commander) is an example of such
 a wrapper.
 
-#### Example
+### Example
+
+#### Import
 
 ```javascript
-import program from 'commander';
-import {scaffold} from '@form8ion/project';
-
-program
-  .command('scaffold')
-  .description('scaffold a new project')
-  .action(() => scaffold({
-    languages: {
-      foo: options => (opts => ({
-        projectDetails: {homepage: 'https://website.com'},
-        tags: ['foo', 'bar', 'baz'],
-        badges: {
-          contribution: {
-            badgeName: {
-              text: 'Hover text for the badge',
-              link: 'http://link-to-related-service.com',
-              img: 'image to render as badge'
-            }
-          },
-          status: {},
-          consumer: {}
-        },
-        ...opts.vcs && {
-          vcsIgnore: {
-            files: ['foo.txt', 'bar.txt'],
-            directories: ['build/', 'dependencies/']
-          }
-        },
-        nextSteps: [{summary: 'something extra to do manually'}],
-        verificationCommand: 'terminal command to run after scaffolding is complete'
-      }))(options)
-    },
-    overrides: {copyrightHolder: 'John Smith'}
-  }).catch(err => {
-    console.error(err);
-    process.exitCode = 1;
-  }));
+import {scaffold, questionNames} from '@form8ion/project';
 ```
 
-#### Options
+#### Execute
+
+```javascript
+(async () => {
+  await scaffold({
+    decisions: {
+      [questionNames.PROJECT_NAME]: 'my-project',
+      [questionNames.LICENSE]: 'MIT',
+      [questionNames.VISIBILITY]: 'Public',
+      [questionNames.DESCRIPTION]: 'My project',
+      [questionNames.GIT_REPO]: false,
+      [questionNames.COPYRIGHT_HOLDER]: 'John Smith',
+      [questionNames.COPYRIGHT_YEAR]: '2022',
+      [questionNames.PROJECT_LANGUAGE]: 'foo'
+    },
+    languages: {
+      foo: options => options
+    }
+  });
+})();
+```
+
+### API
 
 This is an opinionated scaffolder, but there are some aspects that are
 configurable in order to support multiple contexts.
 
-##### `languages` (_optional_)
+Takes a single options object as an argument, containing:
+
+#### `languages` (_optional_)
 
 provides the languages to choose from and the functions to perform the
 scaffolding for the chosen language. if no languages are provided, `Other` will
@@ -142,7 +134,7 @@ __object__:
     * `ci`: __string__ name of the chosen CI service. defaults to `Travis`
     * `description`: __string__ short summary of the project
 
-##### `vcsHosts` (_optional_)
+#### `vcsHosts` (_optional_)
 
 provides the vcs hosts to choose from and the functions to perform the
 scaffolding for the chosen host. if no hosts are provided, `Other` will be the
@@ -175,7 +167,7 @@ __object__:
   * `private`: __boolean__ (_optional_) whether this host should be presented
     as a private option
 
-##### `dependencyUpdaters` (_optional_)
+#### `dependencyUpdaters` (_optional_)
 
 provides the dependency updaters to choose from and the functions to perform the
 scaffolding for the chosen updater service. if no updater services are provided,
@@ -198,14 +190,14 @@ __object__:
       * `owner`: __string__ account name on the host service for the repository
         owner. defaults to `$ git config github.user` or the [overridden value](#githubaccount)
 
-##### `overrides` (_optional_)
+#### `overrides` (_optional_)
 
-###### `copyrightHolder`
+##### `copyrightHolder`
 
 __string__ enables setting the value of the prompt default for the copyright
 holder. if not provided, the default will be empty.
 
-###### `githubAccount`
+##### `githubAccount`
 
 __string__ enables setting the  GitHub account for the prompt default to define
 the owner of scaffolded repositories. if not provided, the default will use the
