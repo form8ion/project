@@ -58,7 +58,7 @@
     "@cucumber/cucumber": "8.0.0-rc.2",
     "@form8ion/remark-lint-preset": "1.0.13",
     "@travi/any": "2.0.19",
-    "@travi/babel-preset": "3.0.77",
+    "@travi/babel-preset": "3.0.78",
     "@travi/eslint-config": "1.0.94",
     "@travi/eslint-config-cucumber": "1.0.5",
     "@travi/eslint-config-mocha": "1.0.16",
