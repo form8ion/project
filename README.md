@@ -73,7 +73,7 @@ a wrapper.
 #### Import
 
 ```javascript
-import {scaffold, questionNames} from '@form8ion/project';
+import {lift, scaffold, questionNames} from '@form8ion/project';
 ```
 
 #### Execute
@@ -95,6 +95,8 @@ import {scaffold, questionNames} from '@form8ion/project';
       foo: options => options
     }
   });
+
+  await lift();
 })();
 ```
 
