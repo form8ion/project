@@ -3,7 +3,7 @@ import parse from 'mdast-util-from-markdown';
 import find from 'unist-util-find';
 import zone from 'mdast-zone';
 import headingRange from 'mdast-util-heading-range';
-import {Given, Then} from '@cucumber/cucumber';
+import {Before, Given, Then} from '@cucumber/cucumber';
 import {assert} from 'chai';
 import any from '@travi/any';
 import {questionNames} from '../../../../src/prompts/question-names';
@@ -171,6 +171,10 @@ function extractReferences(nodes) {
     .map(node => ([node.label, node.url])));
 }
 
+Before(function () {
+  this.badgeDefinitions = [];
+});
+
 Given('the language scaffolder defines documentation content', function () {
   this.setAnswerFor(questionNames.PROJECT_LANGUAGE, this.getAnswerFor(questionNames.PROJECT_LANGUAGE) || any.word());
 
@@ -180,6 +184,49 @@ Given('the language scaffolder defines documentation content', function () {
       toc: any.sentence(),
       usage: any.sentence(),
       contributing: any.sentence()
+    }
+  };
+});
+
+Given('the existing README has no section heading', async function () {
+  return undefined;
+});
+
+Given('the existing README has no badges', async function () {
+  this.existingContributingBadges = '';
+});
+
+Given('the existing README uses modern badge zones', async function () {
+  this.existingReadmeContent = `# project-name
+
+<!--status-badges start -->
+<!--status-badges end -->
+
+1. item 1
+1. item 2
+
+<!--consumer-badges start -->
+<!--consumer-badges end -->
+
+<!--contribution-badges start -->
+${this.existingContributingBadges}
+<!--contribution-badges end -->
+
+${this.badgeDefinitions.join('\n\n')}`;
+});
+
+Given('the provided results include badges', async function () {
+  this.badgesFromResults = {
+    contribution: {
+      [any.word()]: {
+        text: any.word(),
+        link: any.url(),
+        img: any.url()
+      },
+      [any.word()]: {
+        text: any.word(),
+        img: any.url()
+      }
     }
   };
 });
@@ -230,4 +277,78 @@ Then('the language content is included in the README', async function () {
   assertTableOfContentsExists(readmeTree, resultingBadges, references, resultingDocumentation);
   assertUsageContentExists(readmeTree, resultingBadges, references, resultingDocumentation);
   assertContributingContentExists(readmeTree, resultingBadges, references, resultingDocumentation);
+});
+
+Then('the badges from the provided results are added to the README', async function () {
+  const actual = await fs.readFile(`${process.cwd()}/README.md`, 'utf-8');
+
+  assert.equal(
+    actual,
+    `# project-name
+
+<!--status-badges start -->
+
+<!--status-badges end -->
+
+1. item 1
+1. item 2
+
+<!--consumer-badges start -->
+
+<!--consumer-badges end -->
+
+<!--contribution-badges start -->
+
+${this.existingContributingBadges}${
+  this.scaffolderBadges
+    ? Object.entries(this.scaffolderBadges.contribution)
+      .map(([name, details]) => (
+        details.link
+          ? `[![${details.text}][${name}-badge]][${name}-link]`
+          : `![${details.text}][${name}-badge]`
+      ))
+      .join('\n')
+    : ''
+}${
+  this.enhancerBadges
+    ? Object.entries(this.enhancerBadges.contribution)
+      .map(([name, details]) => (
+        details.link
+          ? `[![${details.text}][${name}-badge]][${name}-link]`
+          : `![${details.text}][${name}-badge]`
+      ))
+      .join('\n')
+    : ''
+}
+
+<!--contribution-badges end -->${this.badgeDefinitions.length ? `
+
+${this.badgeDefinitions.join('\n\n')}
+` : `
+`}
+${
+  this.scaffolderBadges
+    ? Object.entries(this.scaffolderBadges.contribution)
+      .map(([name, details]) => (`${details.link
+        ? `[${name}-link]: ${details.link}
+
+`
+        : ''
+      }[${name}-badge]: ${details.img}`))
+      .join('\n\n')
+    : ''
+}${
+  this.enhancerBadges
+    ? Object.entries(this.enhancerBadges.contribution)
+      .map(([name, details]) => (`${details.link
+        ? `[${name}-link]: ${details.link}
+
+`
+        : ''
+      }[${name}-badge]: ${details.img}`))
+      .join('\n\n')
+    : ''
+}
+`
+  );
 });
