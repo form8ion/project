@@ -40,7 +40,6 @@ Feature: Base Functionality
     When the project is lifted
     Then the badges from the provided results are added to the README
 
-  @wip
   Scenario: Badges produced by enhancers
     Given the existing README has existing badges
     And the existing README uses modern badge zones

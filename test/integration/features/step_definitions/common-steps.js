@@ -96,5 +96,15 @@ When(/^the project is scaffolded$/, async function () {
 When('the project is lifted', async function () {
   await fs.writeFile(`${process.cwd()}/README.md`, this.existingReadmeContent || '');
 
-  await lift({projectRoot: process.cwd(), results: {badges: this.badgesFromResults}});
+  await lift({
+    projectRoot: process.cwd(),
+    vcs: {},
+    results: {badges: this.badgesFromResults},
+    enhancers: {
+      [any.word()]: {
+        test: () => true,
+        lift: () => ({...this.enhancerBadges && {badges: this.enhancerBadges}})
+      }
+    }
+  });
 });

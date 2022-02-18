@@ -265,7 +265,23 @@ Given('the provided results include badges', async function () {
 });
 
 Given('the provided results do not include badges', async function () {
-  this.scaffolderBadges = null;
+  this.badgesFromResults = null;
+});
+
+Given('the enhancers produce badges', async function () {
+  this.enhancerBadges = {
+    contribution: {
+      [any.word()]: {
+        text: any.word(),
+        link: any.url(),
+        img: any.url()
+      },
+      [any.word()]: {
+        text: any.word(),
+        img: any.url()
+      }
+    }
+  };
 });
 
 Then('the README includes the core details', async function () {
@@ -414,5 +430,79 @@ ${this.existingContributingBadges}
 ${this.badgeDefinitions.join('\n\n')}
 ` : `
 `}`
+  );
+});
+
+Then('the badges from the enhancers are added to the README', async function () {
+  const actual = await fs.readFile(`${process.cwd()}/README.md`, 'utf-8');
+
+  assert.equal(
+    actual,
+    `# project-name
+
+<!--status-badges start -->
+
+<!--status-badges end -->
+
+1. item 1
+1. item 2
+
+<!--consumer-badges start -->
+
+<!--consumer-badges end -->
+
+<!--contribution-badges start -->
+
+${this.existingContributingBadges}${
+  this.scaffolderBadges
+    ? Object.entries(this.scaffolderBadges.contribution)
+      .map(([name, details]) => (
+        details.link
+          ? `[![${details.text}][${name}-badge]][${name}-link]`
+          : `![${details.text}][${name}-badge]`
+      ))
+      .join('\n')
+    : ''
+}${
+  this.enhancerBadges
+    ? Object.entries(this.enhancerBadges.contribution)
+      .map(([name, details]) => (
+        details.link
+          ? `[![${details.text}][${name}-badge]][${name}-link]`
+          : `![${details.text}][${name}-badge]`
+      ))
+      .join('\n')
+    : ''
+}
+
+<!--contribution-badges end -->${this.badgeDefinitions.length ? `
+
+${this.badgeDefinitions.join('\n\n')}
+` : `
+`}
+${
+  this.scaffolderBadges
+    ? Object.entries(this.scaffolderBadges.contribution)
+      .map(([name, details]) => (`${details.link
+        ? `[${name}-link]: ${details.link}
+
+`
+        : ''
+      }[${name}-badge]: ${details.img}`))
+      .join('\n\n')
+    : ''
+}${
+  this.enhancerBadges
+    ? Object.entries(this.enhancerBadges.contribution)
+      .map(([name, details]) => (`${details.link
+        ? `[${name}-link]: ${details.link}
+
+`
+        : ''
+      }[${name}-badge]: ${details.img}`))
+      .join('\n\n')
+    : ''
+}
+`
   );
 });

@@ -25,5 +25,10 @@ stubbedFs();
     }
   });
 
-  await lift({projectRoot: process.cwd(), results: {}});
+  await lift({
+    projectRoot: process.cwd(),
+    results: {},
+    enhancers: {foo: {test: () => true, lift: () => undefined}},
+    vcs: {}
+  });
 })();
