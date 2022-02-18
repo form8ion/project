@@ -264,6 +264,10 @@ Given('the provided results include badges', async function () {
   };
 });
 
+Given('the provided results do not include badges', async function () {
+  this.scaffolderBadges = null;
+});
+
 Then('the README includes the core details', async function () {
   const readmeTree = parse(await fs.readFile(`${process.cwd()}/README.md`, 'utf8'));
 
@@ -383,5 +387,32 @@ ${
     : ''
 }
 `
+  );
+});
+
+Then('the badges remain as they were in the README', async function () {
+  assert.equal(
+    await fs.readFile(`${process.cwd()}/README.md`, 'utf-8'),
+    `# project-name
+
+<!--status-badges start -->
+
+<!--status-badges end -->
+
+1. item 1
+1. item 2
+
+<!--consumer-badges start -->
+
+<!--consumer-badges end -->
+
+<!--contribution-badges start -->
+
+${this.existingContributingBadges}
+<!--contribution-badges end -->${this.badgeDefinitions.length ? `
+
+${this.badgeDefinitions.join('\n\n')}
+` : `
+`}`
   );
 });

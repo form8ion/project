@@ -16,12 +16,11 @@ Feature: Base Functionality
     When the project is lifted
     Then the badges from the provided results are added to the README
 
-  @wip
   Scenario: No Badges Produced
     Given the existing README has no section heading
     And the existing README has existing badges
     And the existing README uses modern badge zones
-    And the provided results include badges
+    And the provided results do not include badges
     When the project is lifted
     Then the badges remain as they were in the README
 
