@@ -232,6 +232,22 @@ Given('the existing README has existing badges', async function () {
 [${otherLinkReference}]: ${any.url()}`);
 });
 
+Given('the existing README uses legacy badge section markers', async function () {
+  this.existingReadmeContent = `# project-name
+
+<!-- status badges -->
+
+1. item 1
+1. item 2
+
+<!-- consumer badges -->
+
+<!-- contribution badges -->
+${this.existingContributingBadges}
+
+${this.badgeDefinitions.join('\n\n')}`;
+});
+
 Given('the provided results include badges', async function () {
   this.badgesFromResults = {
     contribution: {
