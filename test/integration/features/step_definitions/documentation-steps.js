@@ -215,6 +215,23 @@ ${this.existingContributingBadges}
 ${this.badgeDefinitions.join('\n\n')}`;
 });
 
+Given('the existing README has existing badges', async function () {
+  const imageReference = `${any.word()}-badge`;
+  const linkReference = `${any.word()}-link`;
+  const otherImageReference = `${any.word()}-badge`;
+  const otherLinkReference = `${any.word()}-link`;
+
+  this.existingContributingBadges = `[![${any.word()}][${imageReference}]][${linkReference}]
+[![${any.word()}][${otherImageReference}]][${otherLinkReference}]
+`;
+  this.badgeDefinitions.push(`[${imageReference}]: ${any.url()}
+
+[${linkReference}]: ${any.url()}`);
+  this.badgeDefinitions.push(`[${otherImageReference}]: ${any.url()}
+
+[${otherLinkReference}]: ${any.url()}`);
+});
+
 Given('the provided results include badges', async function () {
   this.badgesFromResults = {
     contribution: {
