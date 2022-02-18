@@ -96,7 +96,7 @@ import {lift, scaffold, questionNames} from '@form8ion/project';
     }
   });
 
-  await lift();
+  await lift({projectRoot: process.cwd(), results: {}});
 })();
 ```
 

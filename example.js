@@ -25,5 +25,5 @@ stubbedFs();
     }
   });
 
-  await lift();
+  await lift({projectRoot: process.cwd(), results: {}});
 })();
