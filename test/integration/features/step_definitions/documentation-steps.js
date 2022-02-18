@@ -300,8 +300,8 @@ Then('the badges from the provided results are added to the README', async funct
 <!--contribution-badges start -->
 
 ${this.existingContributingBadges}${
-  this.scaffolderBadges
-    ? Object.entries(this.scaffolderBadges.contribution)
+  this.badgesFromResults
+    ? Object.entries(this.badgesFromResults.contribution)
       .map(([name, details]) => (
         details.link
           ? `[![${details.text}][${name}-badge]][${name}-link]`
@@ -327,8 +327,8 @@ ${this.badgeDefinitions.join('\n\n')}
 ` : `
 `}
 ${
-  this.scaffolderBadges
-    ? Object.entries(this.scaffolderBadges.contribution)
+  this.badgesFromResults
+    ? Object.entries(this.badgesFromResults.contribution)
       .map(([name, details]) => (`${details.link
         ? `[${name}-link]: ${details.link}
 

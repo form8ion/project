@@ -29,7 +29,7 @@
     "test:integration:base": "NODE_OPTIONS=--enable-source-maps cucumber-js test/integration --require-module @babel/register --publish-quiet --format-options '{\"snippetInterface\": \"async-await\"}'",
     "test:integration:wip": "run-s 'test:integration:base -- --tags \"@wip and not @skip\"'",
     "test:integration:focus": "run-s 'test:integration:base -- --tags @focus'",
-    "pretest:integration": "preview",
+    "pretest:integration:base": "preview",
     "test:integration": "run-s 'test:integration:base -- --tags \"not @skip and not @wip\"'",
     "pregenerate:md": "run-s build",
     "generate:md": "remark . --output",

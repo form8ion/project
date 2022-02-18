@@ -1,6 +1,5 @@
 Feature: Base Functionality
 
-  @wip
   Scenario: Blank Documentation
     Given the existing README has no section heading
     And the existing README has no badges
