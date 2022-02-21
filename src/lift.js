@@ -6,4 +6,6 @@ export default async function ({projectRoot, results, enhancers, vcs}) {
   const enhancerResults = await applyEnhancers({results, enhancers, options: {projectRoot, vcs}});
 
   await liftReadme({projectRoot, results: deepmerge.all([results, enhancerResults])});
+
+  return enhancerResults;
 }

@@ -31,8 +31,7 @@ suite('lift', () => {
     core.applyEnhancers.withArgs({results, enhancers, options: {projectRoot, vcs}}).resolves(enhancerResults);
     deepmerge.all.withArgs([results, enhancerResults]).returns(mergedResults);
 
-    await lift({projectRoot, results, enhancers, vcs});
-
+    assert.equal(await lift({projectRoot, results, enhancers, vcs}), enhancerResults);
     assert.calledWith(readme.lift, {projectRoot, results: mergedResults});
   });
 });
