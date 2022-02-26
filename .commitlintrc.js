@@ -1,1 +1,1 @@
-module.exports = {extends: ['travi']};
+module.exports = {extends: ['@form8ion']};

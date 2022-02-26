@@ -1,7 +1,7 @@
 extends:
-  - '@travi'
-  - '@travi/mocha'
-  - '@travi/cucumber'
+  - '@form8ion'
+  - '@form8ion/mocha'
+  - '@form8ion/cucumber'
 
 overrides:
   - files: example.js
