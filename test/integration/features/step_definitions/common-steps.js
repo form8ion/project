@@ -9,7 +9,7 @@ import {World} from '../support/world';
 
 setWorldConstructor(World);
 
-let scaffold, questionNames;
+let scaffold, lift, questionNames;
 const projectPath = [__dirname, '..', '..', '..', '..'];
 const projectTemplatePath = [...projectPath, 'templates'];
 const packagePreviewDirectory = '../__package_previews__/project';
@@ -19,7 +19,7 @@ Before(async function () {
   this.nodegit = td.replace('nodegit');
 
   // eslint-disable-next-line import/no-extraneous-dependencies,import/no-unresolved
-  ({scaffold, questionNames} = require('@form8ion/project'));
+  ({scaffold, lift, questionNames} = require('@form8ion/project'));
 
   stubbedFs({
     node_modules: stubbedNodeModules,
@@ -89,6 +89,22 @@ When(/^the project is scaffolded$/, async function () {
       ...repoShouldBeCreated && {[questionNames.REPO_HOST]: this.getAnswerFor(questionNames.REPO_HOST)},
       [questionNames.PROJECT_LANGUAGE]: chosenLanguage,
       ...this.updaterScaffolderDetails && {[questionNames.DEPENDENCY_UPDATER]: chosenUpdater}
+    }
+  });
+});
+
+When('the project is lifted', async function () {
+  await fs.writeFile(`${process.cwd()}/README.md`, this.existingReadmeContent || '');
+
+  await lift({
+    projectRoot: process.cwd(),
+    vcs: {},
+    results: {badges: this.badgesFromResults},
+    enhancers: {
+      [any.word()]: {
+        test: () => true,
+        lift: () => ({...this.enhancerBadges && {badges: this.enhancerBadges}})
+      }
     }
   });
 });

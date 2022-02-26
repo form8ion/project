@@ -1,7 +1,7 @@
 // #### Import
 // remark-usage-ignore-next
 import stubbedFs from 'mock-fs';
-import {scaffold, questionNames} from './lib/index.cjs';
+import {lift, scaffold, questionNames} from './lib/index.cjs';
 
 // remark-usage-ignore-next 2
 stubbedFs();
@@ -23,5 +23,12 @@ stubbedFs();
     languages: {
       foo: options => options
     }
+  });
+
+  await lift({
+    projectRoot: process.cwd(),
+    results: {},
+    enhancers: {foo: {test: () => true, lift: () => undefined}},
+    vcs: {}
   });
 })();
