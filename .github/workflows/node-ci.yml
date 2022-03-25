@@ -30,9 +30,9 @@ jobs:
     strategy:
       matrix:
         node:
-          - '12.17'
-          - 12
-          - 14
+          - '12.20'
+          - '14.10'
+          - 16
     steps:
       - uses: actions/checkout@v3
       - name: Setup node ${{ matrix.node_version }}
