@@ -100,7 +100,7 @@
     "@travi/cli-messages": "1.0.5",
     "deepmerge": "^4.2.2",
     "execa": "^5.0.0",
-    "hosted-git-info": "^4.0.0",
+    "hosted-git-info": "^5.0.0",
     "inquirer": "^8.0.0",
     "joi": "^17.1.1",
     "mustache": "4.2.0",
