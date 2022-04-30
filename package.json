@@ -85,7 +85,7 @@
     "remark-cli": "9.0.0",
     "remark-toc": "7.2.0",
     "remark-usage": "9.0.0",
-    "rollup": "2.71.0",
+    "rollup": "2.71.1",
     "rollup-plugin-auto-external": "2.0.0",
     "sinon": "13.0.2",
     "testdouble": "3.16.5",
