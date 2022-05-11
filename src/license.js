@@ -1,7 +1,8 @@
 import {promises} from 'fs';
 import wrap from 'word-wrap';
 import mustache from 'mustache';
-import spdxLicenseList from 'spdx-license-list/full';
+// eslint-disable-next-line import/extensions
+import spdxLicenseList from 'spdx-license-list/full.js';
 import {info} from '@travi/cli-messages';
 
 export default async function ({projectRoot, license, copyright, vcs}) {
