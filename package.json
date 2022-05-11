@@ -2,8 +2,12 @@
   "name": "@form8ion/project",
   "description": "opinionated scaffolder for new projects",
   "version": "0.0.0-semantically-released",
-  "main": "lib/index.cjs.js",
-  "module": "lib/index.es.js",
+  "main": "lib/index.js",
+  "module": "lib/index.mjs",
+  "exports": {
+    "require": "./lib/index.js",
+    "import": "./lib/index.mjs"
+  },
   "license": "MIT",
   "repository": "form8ion/project",
   "bugs": "https://github.com/form8ion/project/issues",
