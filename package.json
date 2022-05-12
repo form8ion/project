@@ -96,7 +96,7 @@
     "unist-util-find": "1.0.2"
   },
   "dependencies": {
-    "@form8ion/core": "^1.4.0",
+    "@form8ion/core": "^1.6.0-alpha.1",
     "@form8ion/overridable-prompts": "^1.1.0",
     "@form8ion/readme": "2.0.0",
     "@form8ion/results-reporter": "^1.1.0",
