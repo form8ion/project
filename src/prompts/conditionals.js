@@ -1,5 +1,7 @@
-import {Separator} from 'inquirer';
+import inquirer from 'inquirer';
 import {questionNames} from './question-names';
+
+const {Separator} = inquirer;
 
 export function unlicensedConfirmationShouldBePresented(answers) {
   return 'Private' === answers[questionNames.VISIBILITY];

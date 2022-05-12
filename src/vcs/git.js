@@ -1,10 +1,12 @@
-import {Remote as gitRemote, Repository as gitRepository} from 'nodegit';
+import nodegit from 'nodegit';
 import {promises} from 'fs';
 import {directoryExists} from '@form8ion/core';
 import {info, warn} from '@travi/cli-messages';
 import {fromUrl} from '../../thirdparty-wrappers/hosted-git-info';
 import {promptForVcsHostDetails} from '../prompts/questions';
 import {questionNames} from '../prompts/question-names';
+
+const {Remote: gitRemote, Repository: gitRepository} = nodegit;
 
 function createIgnoreFile(projectRoot, ignore) {
   const {directories, files} = ignore;
