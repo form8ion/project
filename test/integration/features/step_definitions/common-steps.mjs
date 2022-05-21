@@ -1,11 +1,17 @@
-import stubbedFs from 'mock-fs';
-import {promises as fs} from 'fs';
-import {resolve} from 'path';
+import {promises as fs} from 'node:fs';
+import {dirname, resolve} from 'node:path';
+import {fileURLToPath} from 'node:url';
+
 import {info} from '@travi/cli-messages';
+
+import stubbedFs from 'mock-fs';
 import {Before, After, Given, When, setWorldConstructor} from '@cucumber/cucumber';
 import any from '@travi/any';
-import td from 'testdouble';
-import {World} from '../support/world';
+import * as td from 'testdouble';
+
+import {World} from '../support/world.mjs';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 setWorldConstructor(World);
 
@@ -15,33 +21,33 @@ const projectTemplatePath = [...projectPath, 'templates'];
 const packagePreviewDirectory = '../__package_previews__/project';
 const stubbedNodeModules = stubbedFs.load(resolve(...projectPath, 'node_modules'));
 
-Before(async function () {
-  this.nodegit = td.replace('nodegit');
+Before({timeout: 20 * 1000}, async function () {
+  this.nodegit = await td.replaceEsm('@form8ion/nodegit-wrapper');
 
   // eslint-disable-next-line import/no-extraneous-dependencies,import/no-unresolved
-  ({scaffold, lift, questionNames} = require('@form8ion/project'));
+  ({scaffold, lift, questionNames} = await import('@form8ion/project'));
 
   stubbedFs({
     node_modules: stubbedNodeModules,
-    [packagePreviewDirectory]: {
-      '@form8ion': {
-        project: {
-          templates: {
-            'README.mustache': await fs.readFile(resolve(...projectTemplatePath, 'README.mustache')),
-            'editorconfig.txt': await fs.readFile(resolve(...projectTemplatePath, 'editorconfig.txt'))
-          },
-          node_modules: {
-            ...stubbedNodeModules,
-            '.pnpm': {
-              node_modules: stubbedNodeModules,
-              'ansi-styles@4.3.0': {
-                node_modules: stubbedNodeModules
-              }
-            }
-          }
-        }
-      }
-    }
+    templates: {
+      'README.mustache': await fs.readFile(resolve(...projectTemplatePath, 'README.mustache')),
+      'editorconfig.txt': await fs.readFile(resolve(...projectTemplatePath, 'editorconfig.txt'))
+    },
+    // [packagePreviewDirectory]: {
+    //   '@form8ion': {
+    //     project: {
+    //       node_modules: {
+    //         ...stubbedNodeModules,
+    //         '.pnpm': {
+    //           node_modules: stubbedNodeModules,
+    //           'ansi-styles@4.3.0': {
+    //             node_modules: stubbedNodeModules
+    //           }
+    //         }
+    //       }
+    //     }
+    //   }
+    // }
   });
 });
 

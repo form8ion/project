@@ -1,9 +1,12 @@
 import {resolve} from 'path';
 import {promises as fs} from 'fs';
+
+import filedirname from 'filedirname';
 import deepmerge from 'deepmerge';
 import {questionNames as coreQuestionNames} from '@form8ion/core';
 import {reportResults} from '@form8ion/results-reporter';
 import {info} from '@travi/cli-messages';
+
 import execa from '../thirdparty-wrappers/execa';
 import {scaffold as scaffoldLanguage} from './language-scaffolder';
 import scaffoldReadme from './readme';
@@ -14,6 +17,8 @@ import scaffoldDependencyUpdater from './dependency-updater/scaffolder';
 import {promptForBaseDetails, promptForLanguageDetails} from './prompts/questions';
 import {validate} from './options-validator';
 import {questionNames} from './prompts/question-names';
+
+const [, __dirname] = filedirname();
 
 export async function scaffold(options) {
   const projectRoot = process.cwd();

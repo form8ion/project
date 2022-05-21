@@ -1,4 +1,4 @@
-import {Branch as gitBranch, Remote as gitRemote, Repository as gitRepository} from 'nodegit';
+import {Branch as gitBranch, Remote as gitRemote, Repository as gitRepository} from '@form8ion/nodegit-wrapper';
 import * as core from '@form8ion/core';
 import {promises} from 'fs';
 import any from '@travi/any';

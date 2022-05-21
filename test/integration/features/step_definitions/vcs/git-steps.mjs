@@ -1,11 +1,14 @@
-import {promises as fs} from 'fs';
+import {promises as fs} from 'node:fs';
+
 import {fileExists} from '@form8ion/core';
+import makeDir from 'make-dir';
+
 import {Given, Then} from '@cucumber/cucumber';
 import {assert} from 'chai';
-import td from 'testdouble';
+import * as td from 'testdouble';
 import any from '@travi/any';
-import makeDir from 'make-dir';
-import {questionNames} from '../../../../../src/prompts/question-names';
+
+import {questionNames} from '../../../../../src/prompts/question-names.mjs';
 
 const nodegitRepository = any.simpleObject();
 

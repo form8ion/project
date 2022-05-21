@@ -1,6 +1,7 @@
 import {Given} from '@cucumber/cucumber';
 import any from '@travi/any';
-import {questionNames} from '../../../../src/prompts/question-names';
+
+import {questionNames} from '../../../../src/prompts/question-names.mjs';
 
 function generateFullBadge() {
   return {
