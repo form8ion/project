@@ -1,14 +1,22 @@
 // #### Import
-// remark-usage-ignore-next
+// remark-usage-ignore-next 3
+import {promises as fs} from 'fs';
+import {resolve} from 'path';
 import stubbedFs from 'mock-fs';
 import {lift, scaffold, questionNames} from './lib/index.js';
 
-// remark-usage-ignore-next 2
-stubbedFs();
-
 // #### Execute
 
+// remark-usage-ignore-next 8
 (async () => {
+  const projectTemplatePath = [__dirname, 'templates'];
+  stubbedFs({
+    templates: {
+      'README.mustache': await fs.readFile(resolve(...projectTemplatePath, 'README.mustache')),
+      'editorconfig.txt': await fs.readFile(resolve(...projectTemplatePath, 'editorconfig.txt'))
+    }
+  });
+
   await scaffold({
     decisions: {
       [questionNames.PROJECT_NAME]: 'my-project',
@@ -28,7 +36,8 @@ stubbedFs();
   await lift({
     projectRoot: process.cwd(),
     results: {},
-    enhancers: {foo: {test: () => true, lift: () => undefined}},
+    enhancers: {foo: {test: () => true, lift: () => ({})}},
     vcs: {}
   });
+// remark-usage-ignore-next
 })();

@@ -79,7 +79,6 @@ import {lift, scaffold, questionNames} from '@form8ion/project';
 #### Execute
 
 ```javascript
-(async () => {
   await scaffold({
     decisions: {
       [questionNames.PROJECT_NAME]: 'my-project',
@@ -96,8 +95,12 @@ import {lift, scaffold, questionNames} from '@form8ion/project';
     }
   });
 
-  await lift({projectRoot: process.cwd(), results: {}});
-})();
+  await lift({
+    projectRoot: process.cwd(),
+    results: {},
+    enhancers: {foo: {test: () => true, lift: () => ({})}},
+    vcs: {}
+  });
 ```
 
 ### API
