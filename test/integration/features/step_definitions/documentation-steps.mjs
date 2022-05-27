@@ -2,7 +2,7 @@ import {promises as fs} from 'node:fs';
 
 import parse from 'mdast-util-from-markdown';
 import find from 'unist-util-find';
-import zone from 'mdast-zone';
+import {zone} from 'mdast-zone';
 import headingRange from 'mdast-util-heading-range';
 
 import {Before, Given, Then} from '@cucumber/cucumber';
