@@ -1,3 +1,3 @@
-import execa from 'execa';
+import execa from '@form8ion/execa-wrapper';
 
 export default execa;

@@ -18,7 +18,6 @@ setWorldConstructor(World);
 let scaffold, lift, questionNames;
 const projectPath = [__dirname, '..', '..', '..', '..'];
 const projectTemplatePath = [...projectPath, 'templates'];
-const packagePreviewDirectory = '../__package_previews__/project';
 const stubbedNodeModules = stubbedFs.load(resolve(...projectPath, 'node_modules'));
 
 Before({timeout: 20 * 1000}, async function () {
@@ -32,22 +31,7 @@ Before({timeout: 20 * 1000}, async function () {
     templates: {
       'README.mustache': await fs.readFile(resolve(...projectTemplatePath, 'README.mustache')),
       'editorconfig.txt': await fs.readFile(resolve(...projectTemplatePath, 'editorconfig.txt'))
-    },
-    // [packagePreviewDirectory]: {
-    //   '@form8ion': {
-    //     project: {
-    //       node_modules: {
-    //         ...stubbedNodeModules,
-    //         '.pnpm': {
-    //           node_modules: stubbedNodeModules,
-    //           'ansi-styles@4.3.0': {
-    //             node_modules: stubbedNodeModules
-    //           }
-    //         }
-    //       }
-    //     }
-    //   }
-    // }
+    }
   });
 });
 

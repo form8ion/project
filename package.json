@@ -96,6 +96,7 @@
   },
   "dependencies": {
     "@form8ion/core": "^1.6.0-alpha.2",
+    "@form8ion/execa-wrapper": "^1.0.0",
     "@form8ion/nodegit-wrapper": "^1.1.0-alpha.1",
     "@form8ion/overridable-prompts": "^1.1.0",
     "@form8ion/readme": "2.0.1",
@@ -103,7 +104,6 @@
     "@hapi/hoek": "^10.0.0",
     "@travi/cli-messages": "1.0.5",
     "deepmerge": "^4.2.2",
-    "execa": "^5.0.0",
     "filedirname": "^2.7.0",
     "hosted-git-info": "^5.0.0",
     "inquirer": "^8.0.0",
