@@ -109,7 +109,7 @@
     "inquirer": "^8.0.0",
     "joi": "^17.1.1",
     "mustache": "4.2.0",
-    "spdx-license-list": "6.5.0",
+    "spdx-license-list": "6.6.0",
     "word-wrap": "^1.2.3",
     "write-yaml": "1.0.0"
   }
