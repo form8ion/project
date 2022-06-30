@@ -66,7 +66,7 @@
     "@form8ion/eslint-config": "5.0.5",
     "@form8ion/eslint-config-cucumber": "1.4.1",
     "@form8ion/eslint-config-mocha": "2.0.2",
-    "@form8ion/remark-lint-preset": "4.0.0",
+    "@form8ion/remark-lint-preset": "4.0.1",
     "@travi/any": "2.1.5",
     "c8": "7.11.3",
     "chai": "4.3.6",
