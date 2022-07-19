@@ -68,7 +68,7 @@
     "@form8ion/eslint-config-mocha": "2.0.2",
     "@form8ion/remark-lint-preset": "4.0.1",
     "@travi/any": "2.1.5",
-    "c8": "7.11.3",
+    "c8": "7.12.0",
     "chai": "4.3.6",
     "chai-as-promised": "7.1.1",
     "cross-env": "7.0.3",
