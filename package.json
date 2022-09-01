@@ -53,7 +53,7 @@
     }
   },
   "dependencies": {
-    "@form8ion/core": "^1.6.0-alpha.2",
+    "@form8ion/core": "^2.0.0",
     "@form8ion/execa-wrapper": "^1.0.0",
     "@form8ion/nodegit-wrapper": "^1.1.0-alpha.1",
     "@form8ion/overridable-prompts": "^1.1.0",
