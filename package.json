@@ -1,24 +1,21 @@
 {
   "name": "@form8ion/project",
   "description": "opinionated scaffolder for new projects",
+  "license": "MIT",
   "version": "0.0.0-semantically-released",
-  "main": "lib/index.js",
-  "module": "lib/index.mjs",
+  "engines": {
+    "node": "^14.15 || ^16"
+  },
+  "author": "Matt Travi <npm@travi.org> (https://matt.travi.org/)",
+  "repository": "form8ion/project",
+  "bugs": "https://github.com/form8ion/project/issues",
+  "homepage": "https://npm.im/@form8ion/project",
   "exports": {
     "require": "./lib/index.js",
     "import": "./lib/index.mjs"
   },
-  "license": "MIT",
-  "repository": "form8ion/project",
-  "bugs": "https://github.com/form8ion/project/issues",
-  "homepage": "https://npm.im/@form8ion/project",
-  "author": "Matt Travi <npm@travi.org> (https://matt.travi.org/)",
-  "contributors": [
-    "Trevor Richardson <npm@trevorrichardson.me> (https://trevorrichardson.me)"
-  ],
-  "funding": {
-    "url": "https://github.com/sponsors/travi"
-  },
+  "main": "lib/index.js",
+  "module": "lib/index.mjs",
   "scripts": {
     "clean": "rimraf lib/",
     "lint:js": "eslint . --cache",
@@ -43,20 +40,36 @@
     "prepack": "run-s build",
     "prepare": "husky install"
   },
-  "publishConfig": {
-    "access": "public"
-  },
-  "engines": {
-    "node": "^14.15 || ^16"
-  },
   "files": [
     "lib/",
     "templates/"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
   "config": {
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
     }
+  },
+  "dependencies": {
+    "@form8ion/core": "^1.6.0-alpha.2",
+    "@form8ion/execa-wrapper": "^1.0.0",
+    "@form8ion/nodegit-wrapper": "^1.1.0-alpha.1",
+    "@form8ion/overridable-prompts": "^1.1.0",
+    "@form8ion/readme": "2.0.1",
+    "@form8ion/results-reporter": "^1.1.0",
+    "@hapi/hoek": "^10.0.0",
+    "@travi/cli-messages": "1.0.5",
+    "deepmerge": "^4.2.2",
+    "filedirname": "^2.7.0",
+    "hosted-git-info": "^5.0.0",
+    "inquirer": "^8.0.0",
+    "joi": "^17.1.1",
+    "mustache": "4.2.0",
+    "spdx-license-list": "6.6.0",
+    "word-wrap": "^1.2.3",
+    "write-yaml": "1.0.0"
   },
   "devDependencies": {
     "@babel/register": "7.18.9",
@@ -94,23 +107,10 @@
     "testdouble": "3.16.6",
     "unist-util-find": "1.0.2"
   },
-  "dependencies": {
-    "@form8ion/core": "^1.6.0-alpha.2",
-    "@form8ion/execa-wrapper": "^1.0.0",
-    "@form8ion/nodegit-wrapper": "^1.1.0-alpha.1",
-    "@form8ion/overridable-prompts": "^1.1.0",
-    "@form8ion/readme": "2.0.1",
-    "@form8ion/results-reporter": "^1.1.0",
-    "@hapi/hoek": "^10.0.0",
-    "@travi/cli-messages": "1.0.5",
-    "deepmerge": "^4.2.2",
-    "filedirname": "^2.7.0",
-    "hosted-git-info": "^5.0.0",
-    "inquirer": "^8.0.0",
-    "joi": "^17.1.1",
-    "mustache": "4.2.0",
-    "spdx-license-list": "6.6.0",
-    "word-wrap": "^1.2.3",
-    "write-yaml": "1.0.0"
+  "contributors": [
+    "Trevor Richardson <npm@trevorrichardson.me> (https://trevorrichardson.me)"
+  ],
+  "funding": {
+    "url": "https://github.com/sponsors/travi"
   }
 }
