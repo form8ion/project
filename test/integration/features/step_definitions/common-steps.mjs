@@ -28,10 +28,7 @@ Before({timeout: 20 * 1000}, async function () {
 
   stubbedFs({
     node_modules: stubbedNodeModules,
-    templates: {
-      'README.mustache': await fs.readFile(resolve(...projectTemplatePath, 'README.mustache')),
-      'editorconfig.txt': await fs.readFile(resolve(...projectTemplatePath, 'editorconfig.txt'))
-    }
+    templates: {'editorconfig.txt': await fs.readFile(resolve(...projectTemplatePath, 'editorconfig.txt'))}
   });
 });
 

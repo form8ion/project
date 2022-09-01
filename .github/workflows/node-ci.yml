@@ -30,8 +30,6 @@ jobs:
     strategy:
       matrix:
         node:
-          - 14.15.0
-          - 14
           - 16.0.0
           - 16
     steps:

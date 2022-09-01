@@ -73,7 +73,7 @@ a wrapper.
 #### Import
 
 ```javascript
-import {lift, scaffold, questionNames} from '@form8ion/project';
+import {lift, questionNames, scaffold} from '@form8ion/project';
 ```
 
 #### Execute
