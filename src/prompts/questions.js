@@ -1,10 +1,7 @@
-import inquirer from 'inquirer';
 import {questionsForBaseDetails} from '@form8ion/core';
-import {prompt} from '@form8ion/overridable-prompts';
+import {prompt, Separator} from '@form8ion/overridable-prompts';
 import {filterChoicesByVisibility} from './conditionals';
 import {questionNames} from './question-names';
-
-const {Separator} = inquirer;
 
 export function promptForBaseDetails(projectRoot, copyrightHolder, decisions) {
   return prompt([

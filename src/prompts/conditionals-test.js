@@ -1,6 +1,8 @@
-import {Separator} from 'inquirer';
+import {Separator} from '@form8ion/overridable-prompts';
+
 import {assert} from 'chai';
 import any from '@travi/any';
+
 import {questionNames} from './question-names';
 import {
   unlicensedConfirmationShouldBePresented,

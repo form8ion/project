@@ -1,5 +1,4 @@
 import path from 'path';
-import {Separator} from 'inquirer';
 import * as core from '@form8ion/core';
 import * as prompts from '@form8ion/overridable-prompts';
 import any from '@travi/any';
@@ -108,7 +107,7 @@ suite('project scaffolder prompts', () => {
           name: questionNames.PROJECT_LANGUAGE,
           type: 'list',
           message: 'What type of project is this?',
-          choices: [...Object.keys(languages), new Separator(), 'Other']
+          choices: [...Object.keys(languages), new prompts.Separator(), 'Other']
         }], decisions)
         .resolves(answers);
 

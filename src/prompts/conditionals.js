@@ -1,7 +1,6 @@
-import inquirer from 'inquirer';
-import {questionNames} from './question-names';
+import {Separator} from '@form8ion/overridable-prompts';
 
-const {Separator} = inquirer;
+import {questionNames} from './question-names';
 
 export function unlicensedConfirmationShouldBePresented(answers) {
   return 'Private' === answers[questionNames.VISIBILITY];

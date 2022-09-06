@@ -1,6 +1,5 @@
 import * as prompts from '@form8ion/overridable-prompts';
 import any from '@travi/any';
-import {Separator} from 'inquirer';
 import {assert} from 'chai';
 import sinon from 'sinon';
 import {questionNames} from '..';
@@ -26,7 +25,7 @@ suite('dependency updater prompt', () => {
         name: questionNames.DEPENDENCY_UPDATER,
         type: 'list',
         message: 'Which dependency-update service do you want to manage this project?',
-        choices: [...Object.keys(updaters), new Separator(), 'Other']
+        choices: [...Object.keys(updaters), new prompts.Separator(), 'Other']
       }], decisions)
       .resolves(answers);
 
