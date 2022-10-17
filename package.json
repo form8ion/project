@@ -63,7 +63,7 @@
     "@travi/cli-messages": "1.0.5",
     "deepmerge": "^4.2.2",
     "filedirname": "^2.7.0",
-    "hosted-git-info": "^5.0.0",
+    "hosted-git-info": "^6.0.0",
     "joi": "^17.1.1",
     "mustache": "4.2.0",
     "spdx-license-list": "6.6.0",
