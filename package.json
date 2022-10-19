@@ -7,9 +7,15 @@
     "node": "^16.13.0"
   },
   "author": "Matt Travi <npm@travi.org> (https://matt.travi.org/)",
+  "contributors": [
+    "Trevor Richardson <npm@trevorrichardson.me> (https://trevorrichardson.me)"
+  ],
   "repository": "form8ion/project",
   "bugs": "https://github.com/form8ion/project/issues",
   "homepage": "https://npm.im/@form8ion/project",
+  "funding": {
+    "url": "https://github.com/sponsors/travi"
+  },
   "exports": {
     "require": "./lib/index.js",
     "import": "./lib/index.mjs"
@@ -105,11 +111,5 @@
     "sinon": "14.0.1",
     "testdouble": "3.16.6",
     "unist-util-find": "1.0.2"
-  },
-  "contributors": [
-    "Trevor Richardson <npm@trevorrichardson.me> (https://trevorrichardson.me)"
-  ],
-  "funding": {
-    "url": "https://github.com/sponsors/travi"
   }
 }
