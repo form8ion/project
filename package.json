@@ -4,12 +4,18 @@
   "license": "MIT",
   "version": "0.0.0-semantically-released",
   "engines": {
-    "node": "^16"
+    "node": "^16.13.0"
   },
   "author": "Matt Travi <npm@travi.org> (https://matt.travi.org/)",
+  "contributors": [
+    "Trevor Richardson <npm@trevorrichardson.me> (https://trevorrichardson.me)"
+  ],
   "repository": "form8ion/project",
   "bugs": "https://github.com/form8ion/project/issues",
   "homepage": "https://npm.im/@form8ion/project",
+  "funding": {
+    "url": "https://github.com/sponsors/travi"
+  },
   "exports": {
     "require": "./lib/index.js",
     "import": "./lib/index.mjs"
@@ -63,7 +69,7 @@
     "@travi/cli-messages": "1.0.5",
     "deepmerge": "^4.2.2",
     "filedirname": "^2.7.0",
-    "hosted-git-info": "^5.0.0",
+    "hosted-git-info": "^6.0.0",
     "joi": "^17.1.1",
     "mustache": "4.2.0",
     "spdx-license-list": "6.6.0",
@@ -105,11 +111,5 @@
     "sinon": "14.0.1",
     "testdouble": "3.16.6",
     "unist-util-find": "1.0.2"
-  },
-  "contributors": [
-    "Trevor Richardson <npm@trevorrichardson.me> (https://trevorrichardson.me)"
-  ],
-  "funding": {
-    "url": "https://github.com/sponsors/travi"
   }
 }

@@ -2,7 +2,7 @@ import {Remote as gitRemote, Repository as gitRepository} from '@form8ion/nodegi
 import {promises} from 'fs';
 import {directoryExists} from '@form8ion/core';
 import {info, warn} from '@travi/cli-messages';
-import {fromUrl} from '../../thirdparty-wrappers/hosted-git-info';
+import hostedGitInfo from 'hosted-git-info';
 import {promptForVcsHostDetails} from '../prompts/questions';
 import {questionNames} from '../prompts/question-names';
 
@@ -65,7 +65,7 @@ export async function initialize(
 
       const repository = await gitRepository.open(projectRoot);
       const remoteOrigin = await gitRemote.lookup(repository, 'origin');
-      const {user, project, type} = fromUrl(remoteOrigin.url());
+      const {user, project, type} = hostedGitInfo.fromUrl(remoteOrigin.url());
 
       return {owner: user, name: project, host: type};
     }
