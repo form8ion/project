@@ -4,7 +4,7 @@
   "license": "MIT",
   "version": "0.0.0-semantically-released",
   "engines": {
-    "node": "^16"
+    "node": "^16.13.0"
   },
   "author": "Matt Travi <npm@travi.org> (https://matt.travi.org/)",
   "repository": "form8ion/project",

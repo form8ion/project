@@ -4,7 +4,7 @@ import {promises} from 'fs';
 import any from '@travi/any';
 import sinon from 'sinon';
 import {assert} from 'chai';
-import * as hostedGitInfo from '../../thirdparty-wrappers/hosted-git-info';
+import hostedGitInfo from 'hosted-git-info';
 import * as prompts from '../prompts/questions';
 import {questionNames} from '../prompts/question-names';
 import {initialize, scaffold} from './git';
