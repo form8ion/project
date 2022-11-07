@@ -87,7 +87,7 @@
     "@form8ion/remark-lint-preset": "4.0.2",
     "@travi/any": "2.1.6",
     "c8": "7.12.0",
-    "chai": "4.3.6",
+    "chai": "4.3.7",
     "chai-as-promised": "7.1.1",
     "cross-env": "7.0.3",
     "cz-conventional-changelog": "3.3.0",
