@@ -65,7 +65,7 @@
     "@form8ion/overridable-prompts": "^1.1.0",
     "@form8ion/readme": "2.0.1",
     "@form8ion/results-reporter": "^1.1.0",
-    "@hapi/hoek": "^10.0.0",
+    "@hapi/hoek": "^11.0.0",
     "@travi/cli-messages": "1.0.5",
     "deepmerge": "^4.2.2",
     "filedirname": "^2.7.0",
