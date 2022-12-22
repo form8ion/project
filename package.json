@@ -66,7 +66,7 @@
     "@form8ion/readme": "2.0.1",
     "@form8ion/results-reporter": "^1.1.0",
     "@hapi/hoek": "^11.0.0",
-    "@travi/cli-messages": "1.0.5",
+    "@travi/cli-messages": "1.1.0",
     "deepmerge": "^4.2.2",
     "filedirname": "^2.7.0",
     "hosted-git-info": "^6.0.0",
