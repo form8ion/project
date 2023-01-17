@@ -12,6 +12,8 @@ name: Node.js CI
 env:
   FORCE_COLOR: 1
   NPM_CONFIG_COLOR: always
+permissions:
+  contents: read
 jobs:
   verify:
     runs-on: ubuntu-latest
@@ -40,21 +42,13 @@ jobs:
           cache: npm
       - run: npm clean-install
       - run: npm test
-  trigger-release:
-    runs-on: ubuntu-latest
-    if: github.event_name == 'push'
+  release:
     needs:
       - verify
       - verify-matrix
-    steps:
-      - uses: octokit/request-action@v2.x
-        with:
-          route: >-
-            POST
-            /repos/{owner}/{repo}/actions/workflows/{workflow_id}/dispatches
-          owner: form8ion
-          repo: project
-          ref: ${{ github.ref }}
-          workflow_id: release.yml
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
+    uses: >-
+      form8ion/.github/.github/workflows/release-package-semantic-release-19.yml@master
+    secrets:
+      NPM_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
+permissions:
+  contents: read
