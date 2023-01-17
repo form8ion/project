@@ -46,6 +46,10 @@ jobs:
     needs:
       - verify
       - verify-matrix
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
     uses: >-
       form8ion/.github/.github/workflows/release-package-semantic-release-19.yml@master
     secrets:
