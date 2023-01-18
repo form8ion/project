@@ -6,6 +6,7 @@ opinionated scaffolder for new projects
 
 [![Codecov](https://img.shields.io/codecov/c/github/form8ion/project?logo=codecov)](https://codecov.io/github/form8ion/project)
 [![Node CI Workflow Status][github-actions-ci-badge]][github-actions-ci-link]
+[![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/form8ion/project/badge)](https://api.securityscorecards.dev/projects/github.com/form8ion/project)
 
 <!--status-badges end -->
 
