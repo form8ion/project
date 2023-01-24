@@ -105,7 +105,7 @@
     "remark-cli": "11.0.0",
     "remark-toc": "8.0.1",
     "remark-usage": "10.0.1",
-    "rimraf": "4.1.1",
+    "rimraf": "4.1.2",
     "rollup": "2.79.1",
     "rollup-plugin-auto-external": "2.0.0",
     "sinon": "15.0.1",
