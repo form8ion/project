@@ -41,6 +41,10 @@ Then('the directory is initialized as a git repository', async function () {
   td.verify(simpleGitInstance.init());
 });
 
+Then('the remote origin is defined', async function () {
+  td.verify(simpleGitInstance.addRemote('origin', this.remoteOriginUrl));
+});
+
 Then(/^the base git files should be present$/, async function () {
   const gitAttributes = await fs.readFile(`${process.cwd()}/.gitattributes`, 'utf-8');
 

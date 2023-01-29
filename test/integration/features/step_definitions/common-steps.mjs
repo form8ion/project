@@ -46,6 +46,7 @@ When(/^the project is scaffolded$/, async function () {
   const visibility = this.visibility || any.fromList(['Public', 'Private']);
   const chosenUpdater = any.word();
   const chosenLanguage = this.getAnswerFor(questionNames.PROJECT_LANGUAGE) || 'Other';
+  const vcsHost = this.getAnswerFor(questionNames.REPO_HOST);
 
   this.projectName = 'project-name';
   this.projectDescription = any.sentence();
@@ -62,6 +63,11 @@ When(/^the project is scaffolded$/, async function () {
     },
     overrides: {},
     ...this.updaterScaffolderDetails && {dependencyUpdaters: {[chosenUpdater]: this.updaterScaffolderDetails}},
+    ...vcsHost && {
+      vcsHosts: {
+        [vcsHost]: {scaffolder: ({name, owner}) => ({sshUrl: this.remoteOriginUrl}), prompt: () => undefined}
+      }
+    },
     decisions: {
       [questionNames.PROJECT_NAME]: this.projectName,
       [questionNames.DESCRIPTION]: this.projectDescription,
@@ -73,7 +79,7 @@ When(/^the project is scaffolded$/, async function () {
       },
       ...'Private' === visibility && {[questionNames.UNLICENSED]: true},
       [questionNames.GIT_REPO]: repoShouldBeCreated ?? false,
-      ...repoShouldBeCreated && {[questionNames.REPO_HOST]: this.getAnswerFor(questionNames.REPO_HOST)},
+      ...repoShouldBeCreated && {[questionNames.REPO_HOST]: vcsHost},
       [questionNames.PROJECT_LANGUAGE]: chosenLanguage,
       ...this.updaterScaffolderDetails && {[questionNames.DEPENDENCY_UPDATER]: chosenUpdater}
     }
