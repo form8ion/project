@@ -33,6 +33,9 @@ jobs:
       matrix:
         node:
           - 16.13.0
+          - 18.0.0
+          - 18
+          - 19
     steps:
       - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # v3
       - name: Setup node ${{ matrix.node_version }}
@@ -50,7 +53,6 @@ jobs:
       contents: write
       issues: write
       pull-requests: write
-    uses: >-
-      form8ion/.github/.github/workflows/release-package-semantic-release-19.yml@master
+    uses: form8ion/.github/.github/workflows/release-package.yml@master
     secrets:
       NPM_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
