@@ -12,6 +12,6 @@ Feature: Git Repository
     And the base git files should be present
 
   Scenario: already versioned
-    Given the project root is already intialized as a git repository
+    Given the project root is already initialized as a git repository
     When the project is scaffolded
     Then the base git files should be present

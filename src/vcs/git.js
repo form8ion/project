@@ -1,8 +1,9 @@
-import {Remote as gitRemote, Repository as gitRepository} from '@form8ion/nodegit-wrapper';
 import {promises} from 'fs';
-import {directoryExists} from '@form8ion/core';
-import {info, warn} from '@travi/cli-messages';
+
+import {simpleGit} from 'simple-git';
 import hostedGitInfo from 'hosted-git-info';
+import {info, warn} from '@travi/cli-messages';
+
 import {promptForVcsHostDetails} from '../prompts/questions';
 import {questionNames} from '../prompts/question-names';
 
@@ -22,8 +23,8 @@ function generateConfigFiles(projectRoot, ignore) {
 }
 
 async function defineRemoteOrigin(projectRoot, origin) {
-  const repository = await gitRepository.open(projectRoot);
-  const existingRemotes = await gitRemote.list(repository);
+  const git = simpleGit(projectRoot);
+  const existingRemotes = await git.listRemote();
 
   if (existingRemotes.includes('origin')) {
     warn('The `origin` remote is already defined for this repository');
@@ -34,7 +35,7 @@ async function defineRemoteOrigin(projectRoot, origin) {
   if (origin.sshUrl) {
     info(`Setting remote origin to ${origin.sshUrl}`, {level: 'secondary'});
 
-    await gitRemote.create(repository, 'origin', origin.sshUrl);
+    await git.addRemote('origin', origin.sshUrl);
 
     // info('Setting the local `master` branch to track `origin/master`');
     //
@@ -60,12 +61,12 @@ export async function initialize(
   decisions
 ) {
   if (gitRepoShouldBeInitialized) {
-    if (await directoryExists(`${projectRoot}/.git`)) {
+    const git = simpleGit(projectRoot);
+    if (await git.checkIsRepo('root')) {
       info('Git repository already exists');
 
-      const repository = await gitRepository.open(projectRoot);
-      const remoteOrigin = await gitRemote.lookup(repository, 'origin');
-      const {user, project, type} = hostedGitInfo.fromUrl(remoteOrigin.url());
+      const remoteOrigin = await git.remote(['get-url', 'origin']);
+      const {user, project, type} = hostedGitInfo.fromUrl(remoteOrigin);
 
       return {owner: user, name: project, host: type};
     }
@@ -74,7 +75,7 @@ export async function initialize(
 
     const [answers] = await Promise.all([
       promptForVcsHostDetails(vcsHosts, visibility, decisions),
-      gitRepository.init(projectRoot, 0)
+      git.init()
     ]);
 
     return {

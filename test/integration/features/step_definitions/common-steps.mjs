@@ -21,7 +21,7 @@ const projectTemplatePath = [...projectPath, 'templates'];
 const stubbedNodeModules = stubbedFs.load(resolve(...projectPath, 'node_modules'));
 
 Before({timeout: 20 * 1000}, async function () {
-  this.nodegit = await td.replaceEsm('@form8ion/nodegit-wrapper');
+  this.git = await td.replaceEsm('simple-git');
 
   // eslint-disable-next-line import/no-extraneous-dependencies,import/no-unresolved
   ({scaffold, lift, questionNames} = await import('@form8ion/project'));
