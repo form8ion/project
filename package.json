@@ -31,7 +31,9 @@
     "lint:engines": "ls-engines",
     "lint:peer": "npm ls >/dev/null",
     "test": "npm-run-all --print-label build --parallel lint:* --parallel test:*",
-    "test:unit:base": "mocha 'src/**/*-test.js'",
+    "test:unit:base": "npm-run-all --print-label build --parallel test:unit:vitest test:unit:mocha",
+    "test:unit:mocha": "mocha 'src/**/*-test.js'",
+    "test:unit:vitest": "DEBUG=any vitest run",
     "test:unit": "cross-env NODE_ENV=test c8 run-s test:unit:base",
     "test:integration:base": "NODE_OPTIONS=\"--loader=testdouble --enable-source-maps\" cucumber-js test/integration",
     "test:integration:wip": "run-s 'test:integration:base -- --profile wip'",
@@ -93,6 +95,7 @@
     "cz-conventional-changelog": "3.3.0",
     "gherkin-lint": "4.2.2",
     "husky": "8.0.3",
+    "jest-when": "3.5.2",
     "lockfile-lint": "4.10.1",
     "ls-engines": "0.9.0",
     "make-dir": "3.1.0",
@@ -110,6 +113,7 @@
     "rollup-plugin-auto-external": "2.0.0",
     "sinon": "15.0.3",
     "testdouble": "3.17.2",
-    "unist-util-find": "1.0.2"
+    "unist-util-find": "1.0.2",
+    "vitest": "0.30.1"
   }
 }

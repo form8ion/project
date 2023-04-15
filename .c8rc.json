@@ -1,1 +1,14 @@
-{"reporter":["lcov","text-summary","html"],"exclude":["src/**/*-test.js","test/","thirdparty-wrappers/","vendor/"]}
+{
+  "reporter": [
+    "lcov",
+    "text-summary",
+    "html"
+  ],
+  "exclude": [
+    "src/**/*-test.js",
+    "src/**/*.test.js",
+    "test/",
+    "thirdparty-wrappers/",
+    "vendor/"
+  ]
+}
