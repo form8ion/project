@@ -1,4 +1,4 @@
-import {promises} from 'fs';
+import {promises as fs} from 'node:fs';
 
 import {simpleGit} from 'simple-git';
 import hostedGitInfo from 'hosted-git-info';
@@ -10,14 +10,14 @@ import {questionNames} from '../prompts/question-names';
 function createIgnoreFile(projectRoot, ignore) {
   const {directories, files} = ignore;
 
-  return promises.writeFile(`${projectRoot}/.gitignore`, `${directories.join('\n')}\n\n${files.join('\n')}`);
+  return fs.writeFile(`${projectRoot}/.gitignore`, `${directories.join('\n')}\n\n${files.join('\n')}`);
 }
 
 function generateConfigFiles(projectRoot, ignore) {
   info('Generating Git config files', {level: 'secondary'});
 
   return Promise.all([
-    promises.writeFile(`${projectRoot}/.gitattributes`, '* text=auto'),
+    fs.writeFile(`${projectRoot}/.gitattributes`, '* text=auto'),
     ignore ? createIgnoreFile(projectRoot, ignore) : undefined
   ].filter(Boolean));
 }
