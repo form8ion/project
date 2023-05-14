@@ -22,9 +22,21 @@ function generateConfigFiles(projectRoot, ignore) {
   ].filter(Boolean));
 }
 
+async function getExistingRemotes(git) {
+  try {
+    return await git.listRemote();
+  } catch (e) {
+    if ('fatal: No remote configured to list refs from.' === e.message) {
+      return [];
+    }
+
+    throw e;
+  }
+}
+
 async function defineRemoteOrigin(projectRoot, origin) {
   const git = simpleGit(projectRoot);
-  const existingRemotes = await git.listRemote();
+  const existingRemotes = await getExistingRemotes(git);
 
   if (existingRemotes.includes('origin')) {
     warn('The `origin` remote is already defined for this repository');

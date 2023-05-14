@@ -85,11 +85,10 @@ describe('git', () => {
   });
 
   describe('scaffold', () => {
-    beforeEach(() => {
-      listRemote.mockResolvedValue(any.listOf(any.word));
-    });
-
     it('should scaffold the git repo', async () => {
+      // listRemote.mockRejectedValue(new simpleGit.GitError(null, 'fatal: No remote configured to list refs from.'));
+      listRemote.mockRejectedValue(new Error('fatal: No remote configured to list refs from.'));
+
       const results = await scaffold({projectRoot, origin: {}});
 
       expect(fs.writeFile).toHaveBeenCalledWith(`${projectRoot}/.gitattributes`, '* text=auto');
@@ -99,9 +98,17 @@ describe('git', () => {
       expect(results.nextSteps).toEqual([{summary: 'Commit scaffolded files'}]);
     });
 
+    it('throws git errors that are not a lack of defined remotes', async () => {
+      const error = new Error(any.sentence());
+      listRemote.mockRejectedValue(error);
+
+      await expect(scaffold({projectRoot, origin: {}})).rejects.toThrow(error);
+    });
+
     it('should create the ignore file when patterns are defined', async () => {
       const directories = any.listOf(any.string);
       const files = any.listOf(any.string);
+      listRemote.mockResolvedValue(any.listOf(any.word));
 
       await scaffold({projectRoot, ignore: {directories, files}, origin: {}});
 
@@ -115,6 +122,7 @@ describe('git', () => {
       const sshUrl = any.url();
       // const branch = any.simpleObject();
       // gitBranch.lookup.withArgs(repository, 'master', gitBranch.BRANCH.LOCAL).resolves(branch);
+      listRemote.mockResolvedValue(any.listOf(any.word));
 
       const results = await scaffold({projectRoot, origin: {sshUrl}});
 

@@ -1,7 +1,8 @@
 import {promises as fs} from 'node:fs';
 
-import {fileExists} from '@form8ion/core';
+import {GitError} from 'simple-git';
 import makeDir from 'make-dir';
+import {fileExists} from '@form8ion/core';
 
 import {Given, Then} from '@cucumber/cucumber';
 import {assert} from 'chai';
@@ -18,7 +19,8 @@ Given(/^the project should be versioned in git$/, async function () {
 
   td.when(this.git.simpleGit(process.cwd())).thenReturn(simpleGitInstance);
   td.when(simpleGitInstance.checkIsRepo('root')).thenResolve(false);
-  td.when(simpleGitInstance.listRemote()).thenResolve([]);
+  td.when(simpleGitInstance.listRemote())
+    .thenReject(new GitError(null, 'fatal: No remote configured to list refs from.'));
 });
 
 Given(/^the project should not be versioned in git$/, async function () {
