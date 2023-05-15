@@ -26,7 +26,7 @@ async function getExistingRemotes(git) {
   try {
     return await git.listRemote();
   } catch (e) {
-    if ('fatal: No remote configured to list refs from.' === e.message) {
+    if ('fatal: No remote configured to list refs from.\n' === e.message) {
       return [];
     }
 

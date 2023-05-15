@@ -86,8 +86,7 @@ describe('git', () => {
 
   describe('scaffold', () => {
     it('should scaffold the git repo', async () => {
-      // listRemote.mockRejectedValue(new simpleGit.GitError(null, 'fatal: No remote configured to list refs from.'));
-      listRemote.mockRejectedValue(new Error('fatal: No remote configured to list refs from.'));
+      listRemote.mockRejectedValue(new Error('fatal: No remote configured to list refs from.\n'));
 
       const results = await scaffold({projectRoot, origin: {}});
 

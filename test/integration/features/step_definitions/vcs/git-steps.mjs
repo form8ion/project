@@ -20,7 +20,7 @@ Given(/^the project should be versioned in git$/, async function () {
   td.when(this.git.simpleGit(process.cwd())).thenReturn(simpleGitInstance);
   td.when(simpleGitInstance.checkIsRepo('root')).thenResolve(false);
   td.when(simpleGitInstance.listRemote())
-    .thenReject(new GitError(null, 'fatal: No remote configured to list refs from.'));
+    .thenReject(new GitError(null, 'fatal: No remote configured to list refs from.\n'));
 });
 
 Given(/^the project should not be versioned in git$/, async function () {
