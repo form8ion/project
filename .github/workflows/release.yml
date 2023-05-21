@@ -8,6 +8,6 @@ permissions:
 jobs:
   release:
     uses: >-
-      form8ion/.github/.github/workflows/release-package-semantic-release-19.yml@master
+      form8ion/.github/.github/workflows/release-package-semantic-release-19.yml@d7062208039222450ac7926b68f3a30d32285f26
     secrets:
       NPM_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
