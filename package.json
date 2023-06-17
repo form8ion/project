@@ -84,7 +84,7 @@
     "@cucumber/cucumber": "9.1.2",
     "@form8ion/babel-preset": "1.6.104",
     "@form8ion/commitlint-config": "1.0.51",
-    "@form8ion/eslint-config": "5.0.33",
+    "@form8ion/eslint-config": "5.0.34",
     "@form8ion/eslint-config-cucumber": "1.4.1",
     "@form8ion/eslint-config-mocha": "2.0.3",
     "@form8ion/remark-lint-preset": "5.0.9",
