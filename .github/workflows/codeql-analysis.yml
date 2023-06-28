@@ -12,7 +12,7 @@
 name: "CodeQL"
 
 permissions:
-  contents: write
+  contents: read
 
 on:
   push:
