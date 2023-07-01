@@ -1,4 +1,6 @@
-import {lift as liftReadme, scaffold as scaffoldReadme} from '@form8ion/readme';
+import {lift as liftReadme} from '@form8ion/readme';
+
+import {scaffold as scaffoldReadme} from './readme/index';
 
 export default async function ({projectName, projectRoot, description, badges, documentation}) {
   await scaffoldReadme({projectRoot, projectName, description});
