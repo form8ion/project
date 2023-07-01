@@ -1,7 +1,3 @@
-import {resolve} from 'path';
-import {promises as fs} from 'fs';
-
-import filedirname from 'filedirname';
 import deepmerge from 'deepmerge';
 import {questionNames as coreQuestionNames} from '@form8ion/core';
 import {reportResults} from '@form8ion/results-reporter';
@@ -17,8 +13,7 @@ import scaffoldDependencyUpdater from './dependency-updater/scaffolder';
 import {promptForBaseDetails, promptForLanguageDetails} from './prompts/questions';
 import {validate} from './options-validator';
 import {questionNames} from './prompts/question-names';
-
-const [, __dirname] = filedirname();
+import {scaffold as scaffoldEditorConfig} from './editorconfig';
 
 export async function scaffold(options) {
   const projectRoot = process.cwd();
@@ -97,7 +92,7 @@ export async function scaffold(options) {
         ...contributors.map(contributor => contributor.badges).filter(Boolean)
       ])
     }),
-    fs.copyFile(resolve(__dirname, '..', 'templates', 'editorconfig.txt'), `${projectRoot}/.editorconfig`)
+    scaffoldEditorConfig({projectRoot})
   ]);
 
   const gitResults = gitRepo && await scaffoldGit({
