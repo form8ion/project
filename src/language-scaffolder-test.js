@@ -4,7 +4,7 @@ import sinon from 'sinon';
 import {scaffold} from './language-scaffolder';
 
 suite('language scaffolder', () => {
-  test('that the language specific scaffolder is called with necessary data', () => {
+  test('that the language specific scaffolder is called with necessary data', async () => {
     const options = any.simpleObject();
     const chosenLanguage = any.word();
     const chosenLanguageScaffolder = sinon.stub();
@@ -12,7 +12,7 @@ suite('language scaffolder', () => {
     chosenLanguageScaffolder.withArgs(options).resolves(scaffolderResult);
     const scaffolders = {...any.simpleObject(), [chosenLanguage]: chosenLanguageScaffolder};
 
-    return assert.becomes(scaffold(scaffolders, chosenLanguage, options), scaffolderResult);
+    assert.deepEqual(await scaffold(scaffolders, chosenLanguage, options), scaffolderResult);
   });
 
   test('that that choosing a language without a defined scaffolder does not result in an error', () => scaffold(

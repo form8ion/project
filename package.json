@@ -92,7 +92,6 @@
     "@travi/any": "2.1.8",
     "c8": "8.0.0",
     "chai": "4.3.7",
-    "chai-as-promised": "7.1.1",
     "cross-env": "7.0.3",
     "cz-conventional-changelog": "3.3.0",
     "gherkin-lint": "4.2.2",
