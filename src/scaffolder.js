@@ -7,7 +7,7 @@ import execa from '../thirdparty-wrappers/execa';
 import {scaffold as scaffoldLanguage} from './language-scaffolder';
 import scaffoldReadme from './readme';
 import {initialize as initializeGit, scaffold as scaffoldGit} from './vcs/git';
-import scaffoldLicense from './license';
+import {scaffold as scaffoldLicense} from './license';
 import scaffoldVcsHost from './vcs/host';
 import scaffoldDependencyUpdater from './dependency-updater/scaffolder';
 import {promptForBaseDetails, promptForLanguageDetails} from './prompts/questions';

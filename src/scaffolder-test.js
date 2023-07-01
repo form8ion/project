@@ -8,7 +8,7 @@ import any from '@travi/any';
 import * as readmeScaffolder from './readme';
 import * as gitScaffolder from './vcs/git';
 import * as vcsHostScaffolder from './vcs/host';
-import * as licenseScaffolder from './license';
+import * as licenseScaffolder from './license/scaffolder';
 import * as languageScaffolder from './language-scaffolder';
 import * as dependencyUpdaterScaffolder from './dependency-updater/scaffolder';
 import * as execa from '../thirdparty-wrappers/execa';

@@ -1,4 +1,4 @@
-import {promises} from 'fs';
+import {promises as fs} from 'fs';
 import wrap from 'word-wrap';
 import mustache from 'mustache';
 // eslint-disable-next-line import/extensions
@@ -9,13 +9,9 @@ export default async function ({projectRoot, license, copyright, vcs}) {
   if (license) {
     info('Generating License');
 
-    let licenseContent = spdxLicenseList[license].licenseText;
+    const licenseContent = spdxLicenseList[license].licenseText;
 
-    if ('MIT' === license) {
-      licenseContent = licenseContent.replace('(including the next paragraph) ', '');
-    }
-
-    await promises.writeFile(
+    await fs.writeFile(
       `${projectRoot}/LICENSE`,
       `${wrap(
         mustache.render(licenseContent, {year: copyright.year, 'copyright holders': copyright.holder}, {}, ['<', '>']),
