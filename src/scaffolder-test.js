@@ -9,7 +9,7 @@ import * as readmeScaffolder from './readme';
 import * as gitScaffolder from './vcs/git';
 import * as vcsHostScaffolder from './vcs/host';
 import * as licenseScaffolder from './license/scaffolder';
-import * as languageScaffolder from './language-scaffolder';
+import * as languageScaffolder from './language/scaffolder';
 import * as dependencyUpdaterScaffolder from './dependency-updater/scaffolder';
 import * as execa from '../thirdparty-wrappers/execa';
 import * as prompts from './prompts/questions';
@@ -49,7 +49,7 @@ suite('project scaffolder', () => {
     sandbox.stub(gitScaffolder, 'scaffold');
     sandbox.stub(vcsHostScaffolder, 'default');
     sandbox.stub(licenseScaffolder, 'default');
-    sandbox.stub(languageScaffolder, 'scaffold');
+    sandbox.stub(languageScaffolder, 'default');
     sandbox.stub(dependencyUpdaterScaffolder, 'default');
     sandbox.stub(promises, 'copyFile');
     sandbox.stub(execa, 'default');
@@ -116,7 +116,7 @@ suite('project scaffolder', () => {
         }
       )
       .resolves(vcsOriginDetails);
-    languageScaffolder.scaffold
+    languageScaffolder.default
       .resolves({badges: {status: {ci: ciBadge}}, vcsIgnore, projectDetails: {}, documentation, tags});
     dependencyUpdaterScaffolder.default
       .withArgs(dependencyUpdaters, decisions, {projectRoot: projectPath, vcs})
@@ -283,7 +283,7 @@ suite('project scaffolder', () => {
     const languageStatusBadges = any.simpleObject();
     const languageNextSteps = any.listOf(any.simpleObject);
     const verificationCommand = any.string();
-    languageScaffolder.scaffold
+    languageScaffolder.default
       .withArgs(scaffolders, projectLanguage, {
         projectName,
         projectRoot: projectPath,
@@ -362,7 +362,7 @@ suite('project scaffolder', () => {
       [questionNames.REPO_HOST]: repoHost,
       [questionNames.REPO_OWNER]: repoOwner
     });
-    languageScaffolder.scaffold.resolves({});
+    languageScaffolder.default.resolves({});
 
     return scaffold(options).then(() => {
       assert.calledWith(gitScaffolder.scaffold, {projectRoot: projectPath, ignore: undefined, origin: undefined});
@@ -387,7 +387,7 @@ suite('project scaffolder', () => {
     gitScaffolder.initialize.resolves({});
 
     return scaffold(options).then(() => assert.calledWithMatch(
-      languageScaffolder.scaffold,
+      languageScaffolder.default,
       {},
       projectLanguage,
       {license: 'UNLICENSED'}
@@ -399,7 +399,7 @@ suite('project scaffolder', () => {
     prompts.promptForBaseDetails.resolves({});
     prompts.promptForLanguageDetails.resolves({});
     gitScaffolder.initialize.resolves({});
-    languageScaffolder.scaffold.resolves({badges: {}, projectDetails: {}});
+    languageScaffolder.default.resolves({badges: {}, projectDetails: {}});
 
     return scaffold(options).then(() => assert.notCalled(execa.default));
   });

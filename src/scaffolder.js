@@ -4,7 +4,7 @@ import {reportResults} from '@form8ion/results-reporter';
 import {info} from '@travi/cli-messages';
 
 import execa from '../thirdparty-wrappers/execa';
-import {scaffold as scaffoldLanguage} from './language-scaffolder';
+import {scaffold as scaffoldLanguage} from './language';
 import scaffoldReadme from './readme';
 import {initialize as initializeGit, scaffold as scaffoldGit} from './vcs/git';
 import {scaffold as scaffoldLicense} from './license';

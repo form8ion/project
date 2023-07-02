@@ -2,7 +2,7 @@ import {describe, expect, it, vi} from 'vitest';
 import any from '@travi/any';
 import {when} from 'jest-when';
 
-import {scaffold} from './language-scaffolder';
+import scaffold from './scaffolder';
 
 describe('language scaffolder', () => {
   it('should scaffold the chosen language', async () => {
