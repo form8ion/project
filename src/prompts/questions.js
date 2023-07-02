@@ -1,5 +1,5 @@
 import {questionsForBaseDetails} from '@form8ion/core';
-import {prompt, Separator} from '@form8ion/overridable-prompts';
+import {prompt} from '@form8ion/overridable-prompts';
 import {filterChoicesByVisibility} from './conditionals';
 import {questionNames} from './question-names';
 
@@ -8,15 +8,6 @@ export function promptForBaseDetails(projectRoot, copyrightHolder, decisions) {
     ...questionsForBaseDetails(decisions, projectRoot, copyrightHolder),
     {name: questionNames.GIT_REPO, type: 'confirm', default: true, message: 'Should a git repository be initialized?'}
   ], decisions);
-}
-
-export function promptForLanguageDetails(languages, decisions) {
-  return prompt([{
-    name: questionNames.PROJECT_LANGUAGE,
-    type: 'list',
-    message: 'What type of project is this?',
-    choices: [...Object.keys(languages), new Separator(), 'Other']
-  }], decisions);
 }
 
 export async function promptForVcsHostDetails(hosts, visibility, decisions) {

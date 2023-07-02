@@ -4,13 +4,13 @@ import {reportResults} from '@form8ion/results-reporter';
 import {info} from '@travi/cli-messages';
 
 import execa from '../thirdparty-wrappers/execa';
-import {scaffold as scaffoldLanguage} from './language';
+import {scaffold as scaffoldLanguage, prompt as promptForLanguageDetails} from './language';
 import scaffoldReadme from './readme';
 import {initialize as initializeGit, scaffold as scaffoldGit} from './vcs/git';
 import {scaffold as scaffoldLicense} from './license';
 import scaffoldVcsHost from './vcs/host';
 import scaffoldDependencyUpdater from './dependency-updater/scaffolder';
-import {promptForBaseDetails, promptForLanguageDetails} from './prompts/questions';
+import {promptForBaseDetails} from './prompts/questions';
 import {validate} from './options-validator';
 import {questionNames} from './prompts/question-names';
 import {scaffold as scaffoldEditorConfig} from './editorconfig';

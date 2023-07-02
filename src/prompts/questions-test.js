@@ -5,7 +5,7 @@ import any from '@travi/any';
 import {assert} from 'chai';
 import sinon from 'sinon';
 import * as conditionals from './conditionals';
-import {promptForBaseDetails, promptForLanguageDetails, promptForVcsHostDetails} from './questions';
+import {promptForBaseDetails, promptForVcsHostDetails} from './questions';
 import {questionNames} from './question-names';
 
 suite('project scaffolder prompts', () => {
@@ -96,22 +96,6 @@ suite('project scaffolder prompts', () => {
         .resolves(answersWithHostChoice);
 
       assert.deepEqual(await promptForVcsHostDetails(hosts, visibility, decisions), answersWithHostChoice);
-    });
-  });
-
-  suite('language details', () => {
-    test('that the user is prompted for the language details', async () => {
-      const languages = any.simpleObject();
-      prompts.prompt
-        .withArgs([{
-          name: questionNames.PROJECT_LANGUAGE,
-          type: 'list',
-          message: 'What type of project is this?',
-          choices: [...Object.keys(languages), new prompts.Separator(), 'Other']
-        }], decisions)
-        .resolves(answers);
-
-      assert.equal(await promptForLanguageDetails(languages, decisions), answers);
     });
   });
 });

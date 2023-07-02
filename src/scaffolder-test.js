@@ -10,6 +10,7 @@ import * as gitScaffolder from './vcs/git';
 import * as vcsHostScaffolder from './vcs/host';
 import * as licenseScaffolder from './license/scaffolder';
 import * as languageScaffolder from './language/scaffolder';
+import * as languagePrompt from './language/prompt';
 import * as dependencyUpdaterScaffolder from './dependency-updater/scaffolder';
 import * as execa from '../thirdparty-wrappers/execa';
 import * as prompts from './prompts/questions';
@@ -41,7 +42,7 @@ suite('project scaffolder', () => {
 
     sandbox.stub(process, 'cwd');
     sandbox.stub(prompts, 'promptForBaseDetails');
-    sandbox.stub(prompts, 'promptForLanguageDetails');
+    sandbox.stub(languagePrompt, 'default');
     sandbox.stub(prompts, 'promptForVcsHostDetails');
     sandbox.stub(optionsValidator, 'validate');
     sandbox.stub(readmeScaffolder, 'default');
@@ -90,7 +91,7 @@ suite('project scaffolder', () => {
         [coreQuestionNames.COPYRIGHT_YEAR]: year,
         [coreQuestionNames.VISIBILITY]: visibility
       });
-    prompts.promptForLanguageDetails
+    languagePrompt.default
       .withArgs(scaffolders, decisions)
       .resolves({[questionNames.PROJECT_LANGUAGE]: projectLanguage});
     readmeScaffolder.default.resolves();
@@ -162,7 +163,7 @@ suite('project scaffolder', () => {
     prompts.promptForBaseDetails
       .withArgs(projectPath, undefined)
       .resolves({[coreQuestionNames.PROJECT_NAME]: projectName, [questionNames.GIT_REPO]: gitRepoShouldBeInitialized});
-    prompts.promptForLanguageDetails.resolves({});
+    languagePrompt.default.resolves({});
 
     await scaffold();
 
@@ -173,7 +174,7 @@ suite('project scaffolder', () => {
     const emptyOptions = {};
     optionsValidator.validate.withArgs(emptyOptions).returns({});
     prompts.promptForBaseDetails.withArgs(projectPath, undefined).resolves({});
-    prompts.promptForLanguageDetails.resolves({});
+    languagePrompt.default.resolves({});
     gitScaffolder.initialize.resolves({});
 
     return scaffold(emptyOptions);
@@ -188,7 +189,7 @@ suite('project scaffolder', () => {
       [coreQuestionNames.DESCRIPTION]: description,
       [coreQuestionNames.VISIBILITY]: 'Public'
     });
-    prompts.promptForLanguageDetails.resolves({});
+    languagePrompt.default.resolves({});
     gitScaffolder.initialize.resolves({});
     vcsHostScaffolder.default.resolves(vcsOriginDetails);
 
@@ -225,7 +226,7 @@ suite('project scaffolder', () => {
       [coreQuestionNames.DESCRIPTION]: description,
       [questionNames.GIT_REPO]: false
     });
-    prompts.promptForLanguageDetails.resolves({});
+    languagePrompt.default.resolves({});
     readmeScaffolder.default.resolves();
     gitScaffolder.initialize.resolves({});
 
@@ -246,7 +247,7 @@ suite('project scaffolder', () => {
   test('that the git repo is not initialized if not requested', async () => {
     optionsValidator.validate.withArgs(options).returns({});
     prompts.promptForBaseDetails.resolves({[questionNames.GIT_REPO]: false});
-    prompts.promptForLanguageDetails.resolves({});
+    languagePrompt.default.resolves({});
     readmeScaffolder.default.resolves();
     gitScaffolder.initialize.resolves(undefined);
 
@@ -271,7 +272,7 @@ suite('project scaffolder', () => {
       [coreQuestionNames.LICENSE]: license,
       [coreQuestionNames.DESCRIPTION]: description
     });
-    prompts.promptForLanguageDetails
+    languagePrompt.default
       .withArgs(scaffolders)
       .resolves({[questionNames.PROJECT_LANGUAGE]: projectLanguage});
     prompts.promptForVcsHostDetails.resolves({
@@ -355,7 +356,7 @@ suite('project scaffolder', () => {
       [coreQuestionNames.LICENSE]: license,
       [coreQuestionNames.DESCRIPTION]: description
     });
-    prompts.promptForLanguageDetails
+    languagePrompt.default
       .withArgs(scaffolders)
       .resolves({[questionNames.PROJECT_LANGUAGE]: projectLanguage});
     prompts.promptForVcsHostDetails.resolves({
@@ -383,7 +384,7 @@ suite('project scaffolder', () => {
   test('that the license is passed to the language scaffolder as `UNLICENSED` when no license was chosen', () => {
     optionsValidator.validate.withArgs(options).returns({});
     prompts.promptForBaseDetails.resolves({});
-    prompts.promptForLanguageDetails.resolves({[questionNames.PROJECT_LANGUAGE]: projectLanguage});
+    languagePrompt.default.resolves({[questionNames.PROJECT_LANGUAGE]: projectLanguage});
     gitScaffolder.initialize.resolves({});
 
     return scaffold(options).then(() => assert.calledWithMatch(
@@ -397,7 +398,7 @@ suite('project scaffolder', () => {
   test('that running a verification command is not attempted when not provided', () => {
     optionsValidator.validate.withArgs(options).returns({});
     prompts.promptForBaseDetails.resolves({});
-    prompts.promptForLanguageDetails.resolves({});
+    languagePrompt.default.resolves({});
     gitScaffolder.initialize.resolves({});
     languageScaffolder.default.resolves({badges: {}, projectDetails: {}});
 
