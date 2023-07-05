@@ -23,8 +23,6 @@ suite('project scaffolder', () => {
   const options = any.simpleObject();
   const projectPath = any.string();
   const projectName = any.string();
-  const repoHost = any.word();
-  const repoOwner = any.word();
   const description = any.string();
   const homepage = any.url();
   const license = any.string();
@@ -43,7 +41,6 @@ suite('project scaffolder', () => {
     sandbox.stub(process, 'cwd');
     sandbox.stub(prompts, 'promptForBaseDetails');
     sandbox.stub(languagePrompt, 'default');
-    sandbox.stub(prompts, 'promptForVcsHostDetails');
     sandbox.stub(optionsValidator, 'validate');
     sandbox.stub(readmeScaffolder, 'default');
     sandbox.stub(gitScaffolder, 'initialize');
@@ -231,7 +228,6 @@ suite('project scaffolder', () => {
     gitScaffolder.initialize.resolves({});
 
     return scaffold(options).then(() => {
-      assert.notCalled(prompts.promptForVcsHostDetails);
       assert.calledWith(
         readmeScaffolder.default,
         {
@@ -275,10 +271,6 @@ suite('project scaffolder', () => {
     languagePrompt.default
       .withArgs(scaffolders)
       .resolves({[questionNames.PROJECT_LANGUAGE]: projectLanguage});
-    prompts.promptForVcsHostDetails.resolves({
-      [questionNames.REPO_HOST]: repoHost,
-      [questionNames.REPO_OWNER]: repoOwner
-    });
     const languageConsumerBadges = any.simpleObject();
     const languageContributionBadges = any.simpleObject();
     const languageStatusBadges = any.simpleObject();
@@ -359,10 +351,6 @@ suite('project scaffolder', () => {
     languagePrompt.default
       .withArgs(scaffolders)
       .resolves({[questionNames.PROJECT_LANGUAGE]: projectLanguage});
-    prompts.promptForVcsHostDetails.resolves({
-      [questionNames.REPO_HOST]: repoHost,
-      [questionNames.REPO_OWNER]: repoOwner
-    });
     languageScaffolder.default.resolves({});
 
     return scaffold(options).then(() => {

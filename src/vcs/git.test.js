@@ -6,14 +6,14 @@ import {afterEach, beforeEach, describe, expect, it, vi} from 'vitest';
 import any from '@travi/any';
 import {when} from 'jest-when';
 
-import * as prompts from '../prompts/questions';
+import promptForVcsHostDetails from './host/prompt';
 import {questionNames} from '../prompts/question-names';
 import {initialize, scaffold} from './git';
 
 vi.mock('node:fs');
 vi.mock('hosted-git-info');
 vi.mock('simple-git');
-vi.mock('../prompts/questions');
+vi.mock('./host/prompt');
 
 describe('git', () => {
   let checkIsRepo, init, remote, listRemote, addRemote;
@@ -46,7 +46,7 @@ describe('git', () => {
     it('should initialize the git repo', async () => {
       const vcsHosts = any.simpleObject();
       when(checkIsRepo).calledWith('root').mockResolvedValue(false);
-      when(prompts.promptForVcsHostDetails)
+      when(promptForVcsHostDetails)
         .calledWith(vcsHosts, visibility, decisions)
         .mockResolvedValue({[questionNames.REPO_HOST]: repoHost, [questionNames.REPO_OWNER]: repoOwner});
 
@@ -58,7 +58,7 @@ describe('git', () => {
 
     it('should not initialize the git repo if the project will not be versioned', async () => {
       when(checkIsRepo).calledWith('root').mockResolvedValue(false);
-      when(prompts.promptForVcsHostDetails)
+      when(promptForVcsHostDetails)
         .calledWith(githubAccount, visibility, decisions)
         .mockResolvedValue({[questionNames.REPO_HOST]: repoHost, [questionNames.REPO_OWNER]: repoOwner});
 
