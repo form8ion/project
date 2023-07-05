@@ -7,7 +7,7 @@ import {assert} from 'chai';
 import any from '@travi/any';
 import * as readmeScaffolder from './readme';
 import * as gitScaffolder from './vcs/git';
-import * as vcsHostScaffolder from './vcs/host';
+import * as vcsHostScaffolder from './vcs/host/scaffolder';
 import * as licenseScaffolder from './license/scaffolder';
 import * as languageScaffolder from './language/scaffolder';
 import * as languagePrompt from './language/prompt';

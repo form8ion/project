@@ -8,7 +8,7 @@ import {scaffold as scaffoldLanguage, prompt as promptForLanguageDetails} from '
 import scaffoldReadme from './readme';
 import {initialize as initializeGit, scaffold as scaffoldGit} from './vcs/git';
 import {scaffold as scaffoldLicense} from './license';
-import scaffoldVcsHost from './vcs/host';
+import {scaffold as scaffoldVcsHost} from './vcs/host';
 import scaffoldDependencyUpdater from './dependency-updater/scaffolder';
 import {promptForBaseDetails} from './prompts/questions';
 import {validate} from './options-validator';

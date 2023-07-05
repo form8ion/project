@@ -2,7 +2,7 @@ import {describe, expect, it, vi} from 'vitest';
 import any from '@travi/any';
 import {when} from 'jest-when';
 
-import scaffoldVcsHost from './host';
+import scaffoldVcsHost from './scaffolder';
 
 describe('vcs host scaffolder', () => {
   it('should scaffold the chosen vcs host', async () => {
