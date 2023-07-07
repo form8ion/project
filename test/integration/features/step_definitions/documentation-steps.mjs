@@ -307,7 +307,7 @@ Then('{string} details are included in the README', async function (visibility) 
     imageReferenceLabel: 'PRs-badge',
     imageAltText: 'PRs Welcome',
     imageSrc: 'https://img.shields.io/badge/PRs-welcome-brightgreen.svg',
-    link: 'http://makeapullrequest.com'
+    link: 'https://makeapullrequest.com'
   };
 
   if ('Public' === visibility) assertGroupContainsBadge(badgeGroups.contribution, references, PrsWelcomeDetails);

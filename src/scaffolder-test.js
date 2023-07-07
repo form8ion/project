@@ -108,7 +108,7 @@ suite('project scaffolder', () => {
             contribution: {
               PRs: {
                 text: 'PRs Welcome',
-                link: 'http://makeapullrequest.com',
+                link: 'https://makeapullrequest.com',
                 img: 'https://img.shields.io/badge/PRs-welcome-brightgreen.svg'
               }
             }
