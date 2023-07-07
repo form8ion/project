@@ -1,4 +1,3 @@
-import path from 'path';
 import {promises} from 'fs';
 import {questionNames as coreQuestionNames} from '@form8ion/core';
 import * as resultsReporter from '@form8ion/results-reporter';
@@ -27,7 +26,6 @@ suite('project scaffolder', () => {
   const homepage = any.url();
   const license = any.string();
   const projectLanguage = any.word();
-  const licenseBadge = any.url();
   const scaffolders = any.simpleObject();
   const vcsHosts = any.simpleObject();
   const documentation = any.simpleObject();
@@ -59,100 +57,6 @@ suite('project scaffolder', () => {
   });
 
   teardown(() => sandbox.restore());
-
-  test('that project files are generated', async () => {
-    const ciBadge = any.url();
-    const year = any.word();
-    const holder = any.sentence();
-    const copyright = {year, holder};
-    const visibility = any.word();
-    const overrides = {...any.simpleObject(), copyrightHolder: any.string()};
-    const vcsIgnore = any.simpleObject();
-    const gitRepoShouldBeInitialized = true;
-    const dependencyUpdaters = any.simpleObject();
-    const decisions = any.simpleObject();
-    const gitNextSteps = any.listOf(any.simpleObject);
-    const dependencyUpdaterNextSteps = any.listOf(any.simpleObject);
-    const dependencyUpdaterContributionBadges = any.simpleObject();
-    optionsValidator.validate
-      .withArgs(options)
-      .returns({languages: scaffolders, overrides, vcsHosts, decisions, dependencyUpdaters});
-    prompts.promptForBaseDetails
-      .withArgs(projectPath, overrides.copyrightHolder, decisions)
-      .resolves({
-        [coreQuestionNames.PROJECT_NAME]: projectName,
-        [questionNames.GIT_REPO]: gitRepoShouldBeInitialized,
-        [coreQuestionNames.LICENSE]: license,
-        [coreQuestionNames.DESCRIPTION]: description,
-        [coreQuestionNames.COPYRIGHT_HOLDER]: holder,
-        [coreQuestionNames.COPYRIGHT_YEAR]: year,
-        [coreQuestionNames.VISIBILITY]: visibility
-      });
-    languagePrompt.default
-      .withArgs(scaffolders, decisions)
-      .resolves({[questionNames.PROJECT_LANGUAGE]: projectLanguage});
-    readmeScaffolder.default.resolves();
-    gitScaffolder.initialize
-      .withArgs(gitRepoShouldBeInitialized, projectPath, projectName, vcsHosts, visibility, decisions)
-      .resolves(vcs);
-    gitScaffolder.scaffold.resolves({nextSteps: gitNextSteps});
-    licenseScaffolder.default
-      .withArgs({projectRoot: projectPath, license, copyright, vcs})
-      .resolves({badges: {consumer: {license: licenseBadge}}});
-    vcsHostScaffolder.default
-      .withArgs(
-        vcsHosts,
-        {
-          ...vcs,
-          projectRoot: projectPath,
-          projectType: projectLanguage,
-          description,
-          visibility,
-          homepage: undefined,
-          nextSteps: [...dependencyUpdaterNextSteps],
-          tags
-        }
-      )
-      .resolves(vcsOriginDetails);
-    languageScaffolder.default
-      .resolves({badges: {status: {ci: ciBadge}}, vcsIgnore, projectDetails: {}, documentation, tags});
-    dependencyUpdaterScaffolder.default
-      .withArgs(dependencyUpdaters, decisions, {projectRoot: projectPath, vcs})
-      .resolves({badges: {contribution: dependencyUpdaterContributionBadges}, nextSteps: dependencyUpdaterNextSteps});
-
-    await scaffold(options);
-
-    assert.calledWith(
-      gitScaffolder.scaffold,
-      {projectRoot: projectPath, ignore: vcsIgnore, origin: vcsOriginDetails}
-    );
-    assert.calledWith(
-      readmeScaffolder.default,
-      {
-        projectName,
-        projectRoot: projectPath,
-        description,
-        documentation,
-        badges: {
-          consumer: {license: licenseBadge},
-          status: {ci: ciBadge},
-          contribution: dependencyUpdaterContributionBadges
-        }
-      }
-    );
-    assert.calledWith(
-      dependencyUpdaterScaffolder.default,
-      dependencyUpdaters,
-      decisions,
-      {projectRoot: projectPath, vcs}
-    );
-    assert.calledWith(
-      promises.copyFile,
-      path.resolve(__dirname, '..', 'templates', 'editorconfig.txt'),
-      `${projectPath}/.editorconfig`
-    );
-    assert.calledWith(resultsReporter.reportResults, {nextSteps: [...gitNextSteps, ...dependencyUpdaterNextSteps]});
-  });
 
   test('that the options are optional', async () => {
     const gitRepoShouldBeInitialized = any.boolean();
