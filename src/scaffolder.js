@@ -14,6 +14,7 @@ import {promptForBaseDetails} from './prompts/questions';
 import {validate} from './options-validator';
 import {questionNames} from './prompts/question-names';
 import {scaffold as scaffoldEditorConfig} from './editorconfig';
+import {scaffold as scaffoldContributing} from './contributing';
 
 export async function scaffold(options) {
   const projectRoot = process.cwd();
@@ -35,13 +36,14 @@ export async function scaffold(options) {
 
   const {[questionNames.PROJECT_LANGUAGE]: projectLanguage} = await promptForLanguageDetails(languages, decisions);
 
-  const [license, language] = await Promise.all([
+  const [license, language, contributing] = await Promise.all([
     scaffoldLicense({projectRoot, license: chosenLicense, copyright, vcs}),
     scaffoldLanguage(
       languages,
       projectLanguage,
       {projectRoot, projectName, vcs, visibility, license: chosenLicense || 'UNLICENSED', description}
-    )
+    ),
+    scaffoldContributing({visibility})
   ]);
 
   const dependencyUpdaterResults = vcs && await scaffoldDependencyUpdater(
@@ -50,7 +52,7 @@ export async function scaffold(options) {
     {projectRoot, vcs}
   );
 
-  const contributors = [license, language, dependencyUpdaterResults].filter(Boolean);
+  const contributors = [license, language, dependencyUpdaterResults, contributing].filter(Boolean);
   const contributedTasks = contributors
     .map(contributor => contributor.nextSteps)
     .filter(Boolean)
@@ -80,19 +82,7 @@ export async function scaffold(options) {
       description,
       ...language && {documentation: language.documentation},
       badges: deepmerge.all([
-        {
-          contribution: {
-            ...'Public' === visibility && {
-              PRs: {
-                text: 'PRs Welcome',
-                link: 'https://makeapullrequest.com',
-                img: 'https://img.shields.io/badge/PRs-welcome-brightgreen.svg'
-              }
-            }
-          },
-          status: {},
-          consumer: {}
-        },
+        {contribution: {}, status: {}, consumer: {}},
         ...contributors.map(contributor => contributor.badges).filter(Boolean)
       ])
     }),
