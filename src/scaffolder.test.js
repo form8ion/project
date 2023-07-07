@@ -153,4 +153,31 @@ describe('project scaffolder', () => {
       nextSteps: [...gitNextSteps, ...dependencyUpdaterNextSteps]
     });
   });
+
+  it('should consider all options to be optional', async () => {
+    const gitRepoShouldBeInitialized = any.boolean();
+    optionsValidator.validate.mockReturnValue({});
+    when(prompts.promptForBaseDetails)
+      .calledWith(projectPath, undefined, undefined)
+      .mockResolvedValue({
+        [coreQuestionNames.PROJECT_NAME]: projectName,
+        [questionNames.GIT_REPO]: gitRepoShouldBeInitialized
+      });
+    languagePrompt.default.mockResolvedValue({});
+
+    await scaffold();
+
+    expect(gitScaffolder.initialize)
+      .toHaveBeenCalledWith(gitRepoShouldBeInitialized, projectPath, projectName, {}, undefined, undefined);
+  });
+
+  it('should consider each option optional', async () => {
+    const emptyOptions = {};
+    when(optionsValidator.validate).calledWith(emptyOptions).mockReturnValue({});
+    when(prompts.promptForBaseDetails).calledWith(projectPath, undefined, undefined).mockResolvedValue({});
+    languagePrompt.default.mockResolvedValue({});
+    gitScaffolder.initialize.mockResolvedValue({});
+
+    await scaffold(emptyOptions);
+  });
 });

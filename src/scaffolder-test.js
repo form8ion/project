@@ -58,29 +58,6 @@ suite('project scaffolder', () => {
 
   teardown(() => sandbox.restore());
 
-  test('that the options are optional', async () => {
-    const gitRepoShouldBeInitialized = any.boolean();
-    optionsValidator.validate.returns({});
-    prompts.promptForBaseDetails
-      .withArgs(projectPath, undefined)
-      .resolves({[coreQuestionNames.PROJECT_NAME]: projectName, [questionNames.GIT_REPO]: gitRepoShouldBeInitialized});
-    languagePrompt.default.resolves({});
-
-    await scaffold();
-
-    assert.calledWith(gitScaffolder.initialize, gitRepoShouldBeInitialized, projectPath, projectName, {});
-  });
-
-  test('that each option is optional', () => {
-    const emptyOptions = {};
-    optionsValidator.validate.withArgs(emptyOptions).returns({});
-    prompts.promptForBaseDetails.withArgs(projectPath, undefined).resolves({});
-    languagePrompt.default.resolves({});
-    gitScaffolder.initialize.resolves({});
-
-    return scaffold(emptyOptions);
-  });
-
   test('that the PRs-welcome badge is included for public projects', () => {
     optionsValidator.validate.withArgs(options).returns({});
     prompts.promptForBaseDetails.resolves({
