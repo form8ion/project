@@ -24,9 +24,8 @@ opinionated scaffolder for new projects
     * [`languages` (_optional_)](#languages-optional)
     * [`vcsHosts` (_optional_)](#vcshosts-optional)
     * [`dependencyUpdaters` (_optional_)](#dependencyupdaters-optional)
-    * [`overrides` (_optional_)](#overrides-optional)
+    * [`overrides` (_optional_) (_deprecated_)](#overrides-optional-deprecated)
       * [`copyrightHolder`](#copyrightholder)
-      * [`githubAccount`](#githubaccount)
 * [Contributing](#contributing)
   * [Dependencies](#dependencies)
   * [Verification](#verification)
@@ -134,7 +133,7 @@ __object__:
       * `host`: __string__ host name
       * `name`: __string__ repository name. equal to `projectName`
       * `owner`: __string__ account name on the host service for the repository
-        owner. defaults to `$ git config github.user` or the [overridden value](#githubaccount)
+        owner. defaults to `$ git config github.user`
     * `visibility`: __string__ `Public` or `Private`. defaults to `Private`
     * `license`: __string__ identifier of the chosen [SPDX License](https://spdx.org/licenses/)
       or `UNLICENSED`
@@ -197,20 +196,16 @@ __object__:
       * `host`: __string__ host name
       * `name`: __string__ repository name. equal to `projectName`
       * `owner`: __string__ account name on the host service for the repository
-        owner. defaults to `$ git config github.user` or the [overridden value](#githubaccount)
+        owner. defaults to `$ git config github.user`
 
-#### `overrides` (_optional_)
+#### `overrides` (_optional_) (_deprecated_)
+
+use `decisions` instead of `overrides`
 
 ##### `copyrightHolder`
 
 __string__ enables setting the value of the prompt default for the copyright
 holder. if not provided, the default will be empty.
-
-##### `githubAccount`
-
-__string__ enables setting the  GitHub account for the prompt default to define
-the owner of scaffolded repositories. if not provided, the default will use the
-result of `$ git config github.user`
 
 ## Contributing
 

@@ -9,6 +9,9 @@ import {decisionsSchema, overridesSchema} from './options-schemas';
 export function validate(options) {
   return validateOptions(joi.object({
     languages: languagePluginsSchema,
+    /**
+     * @deprecated overrides should no longer be necessary. use decisions instead
+     */
     overrides: overridesSchema,
     vcsHosts: vcsHostPluginsSchema,
     decisions: decisionsSchema,
