@@ -5,11 +5,11 @@ import any from '@travi/any';
 
 import languageSchema from './schema';
 
-describe('languages schema', () => {
+describe('language plugins schema', () => {
   const key = any.word();
 
   it('should return the validated options', () => {
-    const options = {};
+    const options = any.objectWithKeys(any.listOf(any.string), {factory: () => foo => foo});
 
     expect(validateOptions(languageSchema, options)).toEqual(options);
   });
