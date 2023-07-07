@@ -3,6 +3,7 @@ import * as hoek from '@hapi/hoek';
 
 import languagePluginsSchema from './language/schema';
 import vcsHostPluginsSchema from './vcs/host/schema';
+import dependencyUpdaterPluginsSchema from './dependency-updater/schema';
 
 export function validate(options) {
   const schema = joi.object({
@@ -10,9 +11,7 @@ export function validate(options) {
     overrides: joi.object({copyrightHolder: joi.string()}),
     vcsHosts: vcsHostPluginsSchema,
     decisions: joi.object(),
-    dependencyUpdaters: joi.object().pattern(/^/, joi.object({
-      scaffolder: joi.func().arity(1).required()
-    })).default({})
+    dependencyUpdaters: dependencyUpdaterPluginsSchema
   });
   const validated = schema.validate(options);
 
