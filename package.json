@@ -3,6 +3,7 @@
   "description": "opinionated scaffolder for new projects",
   "license": "MIT",
   "version": "0.0.0-semantically-released",
+  "type": "module",
   "engines": {
     "node": "^16.14.0 || >=18"
   },
@@ -16,12 +17,8 @@
   "funding": {
     "url": "https://github.com/sponsors/travi"
   },
-  "exports": {
-    "require": "./lib/index.js",
-    "import": "./lib/index.mjs"
-  },
-  "main": "lib/index.js",
-  "module": "lib/index.mjs",
+  "exports": "./lib/index.js",
+  "main": "./lib/index.js",
   "scripts": {
     "clean": "rimraf lib/",
     "lint:js": "eslint . --cache",
@@ -78,9 +75,7 @@
     "write-yaml": "1.0.0"
   },
   "devDependencies": {
-    "@babel/register": "7.22.5",
     "@cucumber/cucumber": "9.2.0",
-    "@form8ion/babel-preset": "1.6.106",
     "@form8ion/commitlint-config": "1.0.52",
     "@form8ion/eslint-config": "5.0.35",
     "@form8ion/eslint-config-cucumber": "1.4.1",
