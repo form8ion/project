@@ -107,7 +107,6 @@ describe('project scaffolder', () => {
         {
           ...vcs,
           projectRoot: projectPath,
-          projectType: projectLanguage,
           description,
           visibility,
           homepage: undefined,
@@ -294,7 +293,6 @@ describe('project scaffolder', () => {
       {
         ...vcs,
         projectRoot: projectPath,
-        projectType: projectLanguage,
         description,
         homepage,
         visibility,

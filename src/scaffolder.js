@@ -61,11 +61,6 @@ export async function scaffold(options) {
   const vcsHostResults = vcs && await scaffoldVcsHost(vcsHosts, {
     ...vcs,
     projectRoot,
-    /**
-     * @deprecated vcs-host plugins should no longer expect `projectType` to be provided.
-     * will be removed with the next major version
-     */
-    projectType: projectLanguage,
     description,
     visibility,
     ...language && {

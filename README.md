@@ -165,9 +165,6 @@ __object__:
         returned from the `prompt` function
       * `projectRoot`: __string__ path of the working directory where the CLI
         command was executed
-      * `projectType`:
-        * __string__ primary language for the project
-        * _deprecated_ will be removed with the next major version
       * `description`: __string__ brief summary of the project
       * `homepage`: __string__ url of the project homepage
   * `public`: __boolean__ (_optional_) whether this host should be presented
