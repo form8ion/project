@@ -1,9 +1,9 @@
 import deepmerge from 'deepmerge';
+import execa from '@form8ion/execa-wrapper';
 import {questionNames as coreQuestionNames} from '@form8ion/core';
 import {reportResults} from '@form8ion/results-reporter';
 import {info} from '@travi/cli-messages';
 
-import execa from '../thirdparty-wrappers/execa';
 import {scaffold as scaffoldLanguage, prompt as promptForLanguageDetails} from './language';
 import scaffoldReadme from './readme';
 import {initialize as initializeGit, scaffold as scaffoldGit} from './vcs/git';
