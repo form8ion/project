@@ -27,7 +27,7 @@
     "lint:lockfile": "lockfile-lint --path package-lock.json --type npm --validate-https --allowed-hosts npm",
     "lint:engines": "ls-engines",
     "lint:peer": "npm ls >/dev/null",
-    "lint:publish": "publint",
+    "lint:publish": "publint --strict",
     "test": "npm-run-all --print-label build --parallel lint:* --parallel test:*",
     "test:unit:base": "DEBUG=any vitest run",
     "test:unit": "cross-env NODE_ENV=test c8 run-s test:unit:base",
