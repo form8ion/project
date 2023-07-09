@@ -5,11 +5,11 @@ import {describe, expect, it, beforeEach, afterEach, vi} from 'vitest';
 import any from '@travi/any';
 import {when} from 'jest-when';
 
-import languagePluginsSchema from './language/schema';
-import {decisionsSchema, overridesSchema} from './options-schemas';
-import vcsHostPluginsSchema from './vcs/host/schema';
-import dependencyUpdaterPluginsSchema from './dependency-updater/schema';
-import {validate} from './options-validator';
+import languagePluginsSchema from './language/schema.js';
+import {decisionsSchema} from './options-schemas.js';
+import vcsHostPluginsSchema from './vcs/host/schema.js';
+import dependencyUpdaterPluginsSchema from './dependency-updater/schema.js';
+import {validate} from './options-validator.js';
 
 vi.mock('@form8ion/core');
 
@@ -28,7 +28,6 @@ describe('options validator', () => {
     const validatedOptions = any.simpleObject();
     when(joi.object).calledWith({
       languages: languagePluginsSchema,
-      overrides: overridesSchema,
       vcsHosts: vcsHostPluginsSchema,
       decisions: decisionsSchema,
       dependencyUpdaters: dependencyUpdaterPluginsSchema

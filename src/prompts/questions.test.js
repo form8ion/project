@@ -22,8 +22,7 @@ describe('base details prompt', () => {
   });
 
   it('should prompt for the necessary details', async () => {
-    const copyrightHolder = any.string();
-    when(core.questionsForBaseDetails).calledWith(decisions, projectPath, copyrightHolder).mockReturnValue(questions);
+    when(core.questionsForBaseDetails).calledWith(decisions, projectPath).mockReturnValue(questions);
     when(prompts.prompt).calledWith([
       ...questions,
       {
@@ -34,6 +33,6 @@ describe('base details prompt', () => {
       }
     ], decisions).mockResolvedValue(answers);
 
-    expect(await promptForBaseDetails(projectPath, copyrightHolder, decisions)).toEqual(answers);
+    expect(await promptForBaseDetails(projectPath, decisions)).toEqual(answers);
   });
 });

@@ -18,8 +18,7 @@ import {scaffold as scaffoldContributing} from './contributing';
 
 export async function scaffold(options) {
   const projectRoot = process.cwd();
-  const {languages = {}, overrides = {}, vcsHosts = {}, decisions, dependencyUpdaters} = validate(options);
-  const {copyrightHolder} = overrides;
+  const {languages = {}, vcsHosts = {}, decisions, dependencyUpdaters} = validate(options);
 
   const {
     [coreQuestionNames.PROJECT_NAME]: projectName,
@@ -29,7 +28,7 @@ export async function scaffold(options) {
     [questionNames.GIT_REPO]: gitRepo,
     [coreQuestionNames.COPYRIGHT_YEAR]: copyrightYear,
     [coreQuestionNames.COPYRIGHT_HOLDER]: copyHolder
-  } = await promptForBaseDetails(projectRoot, copyrightHolder, decisions);
+  } = await promptForBaseDetails(projectRoot, decisions);
   const copyright = {year: copyrightYear, holder: copyHolder};
 
   const vcs = await initializeGit(gitRepo, projectRoot, projectName, vcsHosts, visibility, decisions);
@@ -61,11 +60,6 @@ export async function scaffold(options) {
   const vcsHostResults = vcs && await scaffoldVcsHost(vcsHosts, {
     ...vcs,
     projectRoot,
-    /**
-     * @deprecated vcs-host plugins should no longer expect `projectType` to be provided.
-     * will be removed with the next major version
-     */
-    projectType: projectLanguage,
     description,
     visibility,
     ...language && {

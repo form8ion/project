@@ -3,6 +3,7 @@
   "description": "opinionated scaffolder for new projects",
   "license": "MIT",
   "version": "0.0.0-semantically-released",
+  "type": "module",
   "engines": {
     "node": "^16.14.0 || >=18"
   },
@@ -16,12 +17,8 @@
   "funding": {
     "url": "https://github.com/sponsors/travi"
   },
-  "exports": {
-    "require": "./lib/index.js",
-    "import": "./lib/index.mjs"
-  },
-  "main": "lib/index.js",
-  "module": "lib/index.mjs",
+  "exports": "./lib/index.js",
+  "main": "./lib/index.js",
   "scripts": {
     "clean": "rimraf lib/",
     "lint:js": "eslint . --cache",
@@ -30,7 +27,7 @@
     "lint:lockfile": "lockfile-lint --path package-lock.json --type npm --validate-https --allowed-hosts npm",
     "lint:engines": "ls-engines",
     "lint:peer": "npm ls >/dev/null",
-    "lint:publish": "publint",
+    "lint:publish": "publint --strict",
     "test": "npm-run-all --print-label build --parallel lint:* --parallel test:*",
     "test:unit:base": "DEBUG=any vitest run",
     "test:unit": "cross-env NODE_ENV=test c8 run-s test:unit:base",
@@ -52,7 +49,8 @@
     "templates/"
   ],
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "provenance": true
   },
   "config": {
     "commitizen": {
@@ -78,9 +76,7 @@
     "write-yaml": "1.0.0"
   },
   "devDependencies": {
-    "@babel/register": "7.22.5",
     "@cucumber/cucumber": "9.2.0",
-    "@form8ion/babel-preset": "1.6.106",
     "@form8ion/commitlint-config": "1.0.52",
     "@form8ion/eslint-config": "5.0.35",
     "@form8ion/eslint-config-cucumber": "1.4.1",
@@ -108,7 +104,7 @@
     "remark-toc": "8.0.1",
     "remark-usage": "10.0.1",
     "rimraf": "5.0.1",
-    "rollup": "2.79.1",
+    "rollup": "3.26.2",
     "rollup-plugin-auto-external": "2.0.0",
     "sinon": "15.2.0",
     "testdouble": "3.18.0",

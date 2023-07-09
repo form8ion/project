@@ -1,6 +1,6 @@
 // #### Import
 // remark-usage-ignore-next 3
-import {promises as fs} from 'fs';
+import {promises as fs} from 'node:fs';
 import {resolve} from 'path';
 import stubbedFs from 'mock-fs';
 import {lift, questionNames, scaffold} from './lib/index.js';
@@ -9,7 +9,7 @@ import {lift, questionNames, scaffold} from './lib/index.js';
 
 // remark-usage-ignore-next 2
 (async () => {
-  stubbedFs({templates: {'editorconfig.txt': await fs.readFile(resolve(__dirname, 'templates', 'editorconfig.txt'))}});
+  stubbedFs({templates: {'editorconfig.txt': await fs.readFile(resolve('templates', 'editorconfig.txt'))}});
 
   await scaffold({
     decisions: {

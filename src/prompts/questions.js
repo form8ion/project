@@ -3,9 +3,9 @@ import {prompt} from '@form8ion/overridable-prompts';
 
 import {questionNames} from './question-names';
 
-export function promptForBaseDetails(projectRoot, copyrightHolder, decisions) {
+export function promptForBaseDetails(projectRoot, decisions) {
   return prompt([
-    ...questionsForBaseDetails(decisions, projectRoot, copyrightHolder),
+    ...questionsForBaseDetails(decisions, projectRoot),
     {name: questionNames.GIT_REPO, type: 'confirm', default: true, message: 'Should a git repository be initialized?'}
   ], decisions);
 }

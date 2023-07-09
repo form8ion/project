@@ -3,6 +3,11 @@ extends:
   - '@form8ion/mocha'
   - '@form8ion/cucumber'
 
+rules:
+  import/extensions:
+    - warn
+    - ignorePackages
+
 overrides:
   - files: example.js
     rules:
