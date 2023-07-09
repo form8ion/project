@@ -24,8 +24,6 @@ opinionated scaffolder for new projects
     * [`languages` (_optional_)](#languages-optional)
     * [`vcsHosts` (_optional_)](#vcshosts-optional)
     * [`dependencyUpdaters` (_optional_)](#dependencyupdaters-optional)
-    * [`overrides` (_optional_) (_deprecated_)](#overrides-optional-deprecated)
-      * [`copyrightHolder`](#copyrightholder)
 * [Contributing](#contributing)
   * [Dependencies](#dependencies)
   * [Verification](#verification)
@@ -194,15 +192,6 @@ __object__:
       * `name`: __string__ repository name. equal to `projectName`
       * `owner`: __string__ account name on the host service for the repository
         owner. defaults to `$ git config github.user`
-
-#### `overrides` (_optional_) (_deprecated_)
-
-use `decisions` instead of `overrides`
-
-##### `copyrightHolder`
-
-__string__ enables setting the value of the prompt default for the copyright
-holder. if not provided, the default will be empty.
 
 ## Contributing
 

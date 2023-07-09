@@ -61,7 +61,6 @@ When(/^the project is scaffolded$/, async function () {
         }
       }
     },
-    overrides: {},
     ...this.updaterScaffolderDetails && {dependencyUpdaters: {[chosenUpdater]: this.updaterScaffolderDetails}},
     ...vcsHost && {
       vcsHosts: {

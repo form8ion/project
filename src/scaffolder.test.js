@@ -71,7 +71,6 @@ describe('project scaffolder', () => {
     const year = any.word();
     const holder = any.sentence();
     const copyright = {year, holder};
-    const overrides = {...any.simpleObject(), copyrightHolder: any.string()};
     const gitRepoShouldBeInitialized = true;
     const dependencyUpdaters = any.simpleObject();
     const gitNextSteps = any.listOf(any.simpleObject);
@@ -79,9 +78,9 @@ describe('project scaffolder', () => {
     const dependencyUpdaterContributionBadges = any.simpleObject();
     when(optionsValidator.validate)
       .calledWith(options)
-      .mockReturnValue({languages: languageScaffolders, overrides, vcsHosts, decisions, dependencyUpdaters});
+      .mockReturnValue({languages: languageScaffolders, vcsHosts, decisions, dependencyUpdaters});
     when(prompts.promptForBaseDetails)
-      .calledWith(projectPath, overrides.copyrightHolder, decisions)
+      .calledWith(projectPath, decisions)
       .mockResolvedValue({
         [coreQuestionNames.PROJECT_NAME]: projectName,
         [questionNames.GIT_REPO]: gitRepoShouldBeInitialized,
@@ -162,7 +161,7 @@ describe('project scaffolder', () => {
     const gitRepoShouldBeInitialized = any.boolean();
     optionsValidator.validate.mockReturnValue({});
     when(prompts.promptForBaseDetails)
-      .calledWith(projectPath, undefined, undefined)
+      .calledWith(projectPath, undefined)
       .mockResolvedValue({
         [coreQuestionNames.PROJECT_NAME]: projectName,
         [questionNames.GIT_REPO]: gitRepoShouldBeInitialized
