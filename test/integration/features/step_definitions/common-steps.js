@@ -11,7 +11,7 @@ import * as td from 'testdouble';
 
 import {World} from '../support/world.mjs';
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
+const __dirname = dirname(fileURLToPath(import.meta.url));          // eslint-disable-line no-underscore-dangle
 
 setWorldConstructor(World);
 
@@ -64,7 +64,10 @@ When(/^the project is scaffolded$/, async function () {
     ...this.updaterScaffolderDetails && {dependencyUpdaters: {[chosenUpdater]: this.updaterScaffolderDetails}},
     ...vcsHost && {
       vcsHosts: {
-        [vcsHost]: {scaffolder: ({name, owner}) => ({sshUrl: this.remoteOriginUrl}), prompt: () => undefined}
+        [vcsHost]: {
+          scaffolder: ({name, owner}) => ({sshUrl: this.remoteOriginUrl, name, owner}),
+          prompt: () => undefined
+        }
       }
     },
     decisions: {
