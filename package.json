@@ -61,7 +61,7 @@
     "@form8ion/core": "^3.1.0",
     "@form8ion/execa-wrapper": "^1.0.0",
     "@form8ion/overridable-prompts": "^1.1.0",
-    "@form8ion/readme": "3.0.1",
+    "@form8ion/readme": "3.0.2",
     "@form8ion/results-reporter": "^1.1.0",
     "@hapi/hoek": "^11.0.2",
     "@travi/cli-messages": "1.1.1",
