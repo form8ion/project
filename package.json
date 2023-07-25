@@ -83,7 +83,7 @@
     "@form8ion/remark-lint-preset": "5.0.9",
     "@rollup/plugin-node-resolve": "15.1.0",
     "@travi/any": "2.1.8",
-    "c8": "8.0.0",
+    "c8": "8.0.1",
     "chai": "4.3.7",
     "cross-env": "7.0.3",
     "cz-conventional-changelog": "3.3.0",
