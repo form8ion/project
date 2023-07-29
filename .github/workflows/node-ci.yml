@@ -27,7 +27,7 @@ jobs:
       - run: npm clean-install
       - run: npm audit signatures
       - run: npm test
-      - uses: codecov/codecov-action@eaaf4bedf32dbdc6b720b63067d99c4d77d6047d # v3
+      - uses: codecov/codecov-action@eaaf4bedf32dbdc6b720b63067d99c4d77d6047d # v3.1.4
   verify-matrix:
     runs-on: ubuntu-latest
     strategy:
