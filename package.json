@@ -107,7 +107,7 @@
     "rollup-plugin-auto-external": "2.0.0",
     "sinon": "15.2.0",
     "testdouble": "3.18.0",
-    "unist-util-find": "2.0.0",
+    "unist-util-find": "3.0.0",
     "vitest": "0.34.1"
   }
 }
