@@ -67,7 +67,7 @@
     "@travi/cli-messages": "1.1.1",
     "deepmerge": "^4.2.2",
     "filedirname": "^2.7.0",
-    "hosted-git-info": "^6.0.0",
+    "hosted-git-info": "^7.0.0",
     "joi": "^17.1.1",
     "mustache": "4.2.0",
     "simple-git": "^3.16.0",
