@@ -84,7 +84,7 @@
     "@rollup/plugin-node-resolve": "15.2.1",
     "@travi/any": "2.1.8",
     "c8": "8.0.1",
-    "chai": "4.3.7",
+    "chai": "4.3.8",
     "cross-env": "7.0.3",
     "cz-conventional-changelog": "3.3.0",
     "gherkin-lint": "4.2.2",
