@@ -108,6 +108,6 @@
     "sinon": "16.0.0",
     "testdouble": "3.19.0",
     "unist-util-find": "3.0.0",
-    "vitest": "0.34.4"
+    "vitest": "0.34.5"
   }
 }
