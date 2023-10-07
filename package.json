@@ -76,7 +76,7 @@
     "write-yaml": "1.0.0"
   },
   "devDependencies": {
-    "@cucumber/cucumber": "9.5.1",
+    "@cucumber/cucumber": "9.6.0",
     "@form8ion/commitlint-config": "1.0.56",
     "@form8ion/eslint-config": "6.0.5",
     "@form8ion/eslint-config-cucumber": "1.4.1",
