@@ -1,6 +1,6 @@
 import {prompt} from '@form8ion/overridable-prompts';
 
-import {questionNames} from '../../prompts/question-names';
+import {questionNames} from '../../prompts/question-names.js';
 import {filterChoicesByVisibility} from '../../prompts/conditionals';
 
 export default async function (hosts, visibility, decisions) {

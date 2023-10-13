@@ -16,7 +16,7 @@ import * as languagePrompt from './language/prompt';
 import * as dependencyUpdaterScaffolder from './dependency-updater/scaffolder';
 import * as optionsValidator from './options-validator';
 import * as prompts from './prompts/questions';
-import {questionNames} from './prompts/question-names';
+import {questionNames} from './prompts/question-names.js';
 import {scaffold as scaffoldEditorconfig} from './editorconfig';
 import {scaffold as scaffoldContributing} from './contributing';
 import {scaffold} from './scaffolder';

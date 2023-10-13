@@ -5,7 +5,7 @@ import {afterEach, describe, expect, it, vi} from 'vitest';
 import any from '@travi/any';
 import {when} from 'jest-when';
 
-import {questionNames} from './question-names';
+import {questionNames} from './question-names.js';
 import {promptForBaseDetails} from './questions';
 
 vi.mock('@form8ion/core');

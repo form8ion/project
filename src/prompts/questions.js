@@ -1,7 +1,7 @@
 import {questionsForBaseDetails} from '@form8ion/core';
 import {prompt} from '@form8ion/overridable-prompts';
 
-import {questionNames} from './question-names';
+import {questionNames} from './question-names.js';
 
 export function promptForBaseDetails(projectRoot, decisions) {
   return prompt([

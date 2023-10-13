@@ -5,7 +5,7 @@ import hostedGitInfo from 'hosted-git-info';
 import {info, warn} from '@travi/cli-messages';
 
 import promptForVcsHostDetails from './host/prompt';
-import {questionNames} from '../prompts/question-names';
+import {questionNames} from '../prompts/question-names.js';
 
 function createIgnoreFile(projectRoot, ignore) {
   const {directories, files} = ignore;

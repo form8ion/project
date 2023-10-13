@@ -12,7 +12,7 @@ import {scaffold as scaffoldVcsHost} from './vcs/host';
 import scaffoldDependencyUpdater from './dependency-updater/scaffolder';
 import {promptForBaseDetails} from './prompts/questions';
 import {validate} from './options-validator';
-import {questionNames} from './prompts/question-names';
+import {questionNames} from './prompts/question-names.js';
 import {scaffold as scaffoldEditorConfig} from './editorconfig';
 import {scaffold as scaffoldContributing} from './contributing';
 

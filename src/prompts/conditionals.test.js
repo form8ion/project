@@ -3,7 +3,7 @@ import {Separator} from '@form8ion/overridable-prompts';
 import {describe, expect, it} from 'vitest';
 import any from '@travi/any';
 
-import {questionNames} from './question-names';
+import {questionNames} from './question-names.js';
 import {
   copyrightInformationShouldBeRequested,
   filterChoicesByVisibility,

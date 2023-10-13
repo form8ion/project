@@ -7,7 +7,7 @@ import any from '@travi/any';
 import {when} from 'jest-when';
 
 import promptForVcsHostDetails from './host/prompt';
-import {questionNames} from '../prompts/question-names';
+import {questionNames} from '../prompts/question-names.js';
 import {initialize, scaffold} from './git';
 
 vi.mock('node:fs');

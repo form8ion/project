@@ -4,7 +4,7 @@ import {afterEach, describe, expect, it, vi} from 'vitest';
 import any from '@travi/any';
 import {when} from 'jest-when';
 
-import {questionNames} from '../prompts/question-names';
+import {questionNames} from '../prompts/question-names.js';
 import promptForLanguageDetails from './prompt';
 
 vi.mock('@form8ion/overridable-prompts');

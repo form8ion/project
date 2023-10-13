@@ -1,6 +1,6 @@
 import {prompt, Separator} from '@form8ion/overridable-prompts';
 
-import {questionNames} from '../prompts/question-names';
+import {questionNames} from '../prompts/question-names.js';
 
 export default function (languages, decisions) {
   return prompt([{

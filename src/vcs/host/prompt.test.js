@@ -5,7 +5,7 @@ import any from '@travi/any';
 import {when} from 'jest-when';
 
 import * as conditionals from '../../prompts/conditionals';
-import {questionNames} from '../../prompts/question-names';
+import {questionNames} from '../../prompts/question-names.js';
 import promptForVcsHostDetails from './prompt';
 
 vi.mock('@form8ion/overridable-prompts');

@@ -1,4 +1,4 @@
-import {questionNames} from '../prompts/question-names';
+import {questionNames} from '../prompts/question-names.js';
 import {promptForDependencyUpdaterChoice} from './prompt';
 
 export default async function (scaffolders, decisions, options) {
