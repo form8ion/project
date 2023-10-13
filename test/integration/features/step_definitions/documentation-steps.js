@@ -9,7 +9,7 @@ import {Before, Given, Then} from '@cucumber/cucumber';
 import {assert} from 'chai';
 import any from '@travi/any';
 
-import {questionNames} from '../../../../src/prompts/question-names.mjs';
+import {questionNames} from '../../../../src/prompts/question-names.js';
 
 function getBadgesFromZone(tree, badgeGroupName) {
   let badges;

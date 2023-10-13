@@ -9,7 +9,7 @@ import {assert} from 'chai';
 import * as td from 'testdouble';
 import any from '@travi/any';
 
-import {questionNames} from '../../../../../src/prompts/question-names.mjs';
+import {questionNames} from '../../../../../src/prompts/question-names.js';
 
 const simpleGitInstance = td.object(['checkIsRepo', 'listRemote', 'remote', 'addRemote', 'init']);
 
