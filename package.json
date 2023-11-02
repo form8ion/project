@@ -101,7 +101,7 @@
     "publint": "0.2.5",
     "remark-cli": "12.0.0",
     "remark-toc": "9.0.0",
-    "remark-usage": "11.0.0",
+    "remark-usage": "11.0.1",
     "rimraf": "5.0.5",
     "rollup": "4.2.0",
     "rollup-plugin-auto-external": "2.0.0",
