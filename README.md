@@ -261,7 +261,7 @@ $ npm test
 
 [github-actions-ci-link]: https://github.com/form8ion/project/actions?query=workflow%3A%22Node.js+CI%22+branch%3Amaster
 
-[github-actions-ci-badge]: https://github.com/form8ion/project/workflows/Node.js%20CI/badge.svg
+[github-actions-ci-badge]: https://img.shields.io/github/actions/workflow/status/form8ion/project/node-ci.yml.svg?branch=master&logo=github
 
 [node-badge]: https://img.shields.io/node/v/@form8ion/project?logo=node.js
 
