@@ -6,8 +6,8 @@ opinionated scaffolder for new projects
 
 [![Node CI Workflow Status][github-actions-ci-badge]][github-actions-ci-link]
 [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/form8ion/project/badge)](https://securityscorecards.dev/viewer/?uri=github.com/form8ion/project)
-[![SLSA 2](https://slsa.dev/images/gh-badge-level2.svg)](https://slsa.dev)
 [![Codecov][coverage-badge]][coverage-link]
+![SLSA Level 2][slsa-badge]
 
 <!--status-badges end -->
 
@@ -268,3 +268,5 @@ $ npm test
 [coverage-link]: https://codecov.io/github/form8ion/project
 
 [coverage-badge]: https://img.shields.io/codecov/c/github/form8ion/project?logo=codecov
+
+[slsa-badge]: https://slsa.dev/images/gh-badge-level2.svg
