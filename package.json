@@ -91,7 +91,7 @@
     "husky": "8.0.3",
     "jest-when": "3.6.0",
     "lockfile-lint": "4.12.1",
-    "ls-engines": "0.9.0",
+    "ls-engines": "0.9.1",
     "make-dir": "4.0.0",
     "mdast-util-from-markdown": "2.0.0",
     "mdast-util-heading-range": "4.0.0",
