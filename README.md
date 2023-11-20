@@ -4,10 +4,10 @@ opinionated scaffolder for new projects
 
 <!--status-badges start -->
 
-[![Codecov](https://img.shields.io/codecov/c/github/form8ion/project?logo=codecov)](https://codecov.io/github/form8ion/project)
 [![Node CI Workflow Status][github-actions-ci-badge]][github-actions-ci-link]
 [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/form8ion/project/badge)](https://securityscorecards.dev/viewer/?uri=github.com/form8ion/project)
 [![SLSA 2](https://slsa.dev/images/gh-badge-level2.svg)](https://slsa.dev)
+[![Codecov][coverage-badge]][coverage-link]
 
 <!--status-badges end -->
 
@@ -264,3 +264,7 @@ $ npm test
 [github-actions-ci-badge]: https://github.com/form8ion/project/workflows/Node.js%20CI/badge.svg
 
 [node-badge]: https://img.shields.io/node/v/@form8ion/project?logo=node.js
+
+[coverage-link]: https://codecov.io/github/form8ion/project
+
+[coverage-badge]: https://img.shields.io/codecov/c/github/form8ion/project?logo=codecov
