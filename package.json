@@ -78,7 +78,7 @@
   "devDependencies": {
     "@cucumber/cucumber": "10.0.1",
     "@form8ion/commitlint-config": "1.0.65",
-    "@form8ion/eslint-config": "7.0.5",
+    "@form8ion/eslint-config": "7.0.6",
     "@form8ion/eslint-config-cucumber": "1.4.1",
     "@form8ion/remark-lint-preset": "6.0.2",
     "@rollup/plugin-node-resolve": "15.2.3",
