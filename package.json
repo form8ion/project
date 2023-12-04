@@ -95,7 +95,7 @@
     "make-dir": "4.0.0",
     "mdast-util-from-markdown": "2.0.0",
     "mdast-util-heading-range": "4.0.0",
-    "mdast-zone": "6.0.1",
+    "mdast-zone": "6.1.0",
     "mock-fs": "5.2.0",
     "npm-run-all2": "6.1.1",
     "publint": "0.2.6",
