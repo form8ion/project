@@ -87,7 +87,7 @@
     "chai": "4.3.10",
     "cross-env": "7.0.3",
     "cz-conventional-changelog": "3.3.0",
-    "gherkin-lint": "4.2.2",
+    "gherkin-lint": "4.2.4",
     "husky": "8.0.3",
     "jest-when": "3.6.0",
     "lockfile-lint": "4.12.1",
