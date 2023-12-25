@@ -8,12 +8,14 @@ import {when} from 'jest-when';
 
 import promptForVcsHostDetails from '../host/prompt.js';
 import {questionNames} from '../../prompts/question-names.js';
+import {scaffold as scaffoldIgnoreFile} from './ignore/index.js';
 import {initialize, scaffold} from './git.js';
 
 vi.mock('node:fs');
 vi.mock('hosted-git-info');
 vi.mock('simple-git');
 vi.mock('../host/prompt');
+vi.mock('./ignore/index.js');
 
 describe('git', () => {
   let checkIsRepo, init, remote, listRemote, addRemote;
@@ -91,7 +93,7 @@ describe('git', () => {
       const results = await scaffold({projectRoot, origin: {}});
 
       expect(fs.writeFile).toHaveBeenCalledWith(`${projectRoot}/.gitattributes`, '* text=auto');
-      expect(fs.writeFile).not.toHaveBeenCalledWith(`${projectRoot}/.gitignore`);
+      expect(scaffoldIgnoreFile).not.toHaveBeenCalled();
       expect(init).not.toHaveBeenCalled();
 
       expect(results.nextSteps).toEqual([{summary: 'Commit scaffolded files'}]);
@@ -111,10 +113,7 @@ describe('git', () => {
 
       await scaffold({projectRoot, ignore: {directories, files}, origin: {}});
 
-      expect(fs.writeFile).toHaveBeenCalledWith(
-        `${projectRoot}/.gitignore`,
-        `${directories.join('\n')}\n\n${files.join('\n')}`
-      );
+      expect(scaffoldIgnoreFile).toHaveBeenCalledWith({projectRoot, directories, files});
     });
 
     it('should define the remote origin when an ssl-url is provided for the remote', async () => {

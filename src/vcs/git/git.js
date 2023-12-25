@@ -6,19 +6,14 @@ import {info, warn} from '@travi/cli-messages';
 
 import promptForVcsHostDetails from '../host/prompt.js';
 import {questionNames} from '../../prompts/question-names.js';
-
-function createIgnoreFile(projectRoot, ignore) {
-  const {directories, files} = ignore;
-
-  return fs.writeFile(`${projectRoot}/.gitignore`, `${directories.join('\n')}\n\n${files.join('\n')}`);
-}
+import {scaffold as scaffoldIgnoreFile} from './ignore/index.js';
 
 function generateConfigFiles(projectRoot, ignore) {
   info('Generating Git config files', {level: 'secondary'});
 
   return Promise.all([
     fs.writeFile(`${projectRoot}/.gitattributes`, '* text=auto'),
-    ignore ? createIgnoreFile(projectRoot, ignore) : undefined
+    ignore ? scaffoldIgnoreFile({projectRoot, ...ignore}) : undefined
   ].filter(Boolean));
 }
 
