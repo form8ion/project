@@ -4,7 +4,7 @@ import {simpleGit} from 'simple-git';
 import hostedGitInfo from 'hosted-git-info';
 import {info, warn} from '@travi/cli-messages';
 
-import promptForVcsHostDetails from './host/prompt';
+import promptForVcsHostDetails from './host/prompt.js';
 import {questionNames} from '../prompts/question-names.js';
 
 function createIgnoreFile(projectRoot, ignore) {

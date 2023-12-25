@@ -2,10 +2,10 @@ import {afterEach, describe, expect, it, vi} from 'vitest';
 import any from '@travi/any';
 import {when} from 'jest-when';
 
-import * as prompt from './prompt';
-import scaffoldUpdater from './scaffolder';
-import {questionNames} from '..';
-import {promptForDependencyUpdaterChoice} from './prompt';
+import * as prompt from './prompt.js';
+import scaffoldUpdater from './scaffolder.js';
+import {questionNames} from '../index.js';
+import {promptForDependencyUpdaterChoice} from './prompt.js';
 
 vi.mock('./prompt');
 

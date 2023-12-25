@@ -3,7 +3,7 @@ import {validateOptions} from '@form8ion/core';
 import {describe, expect, it} from 'vitest';
 import any from '@travi/any';
 
-import dependencyUpdaterPluginsSchema from './schema';
+import dependencyUpdaterPluginsSchema from './schema.js';
 
 describe('dependency-updater plugins schema', () => {
   const key = any.word();

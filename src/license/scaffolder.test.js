@@ -6,7 +6,7 @@ import spdxLicenseList from 'spdx-license-list/simple';
 import {afterEach, describe, expect, it, vi} from 'vitest';
 import any from '@travi/any';
 
-import scaffoldLicense from './scaffolder';
+import scaffoldLicense from './scaffolder.js';
 
 vi.mock('fs');
 

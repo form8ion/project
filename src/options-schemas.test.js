@@ -3,7 +3,7 @@ import {validateOptions} from '@form8ion/core';
 import {describe, expect, it} from 'vitest';
 import any from '@travi/any';
 
-import {decisionsSchema} from './options-schemas';
+import {decisionsSchema} from './options-schemas.js';
 
 describe('generic options schemas', () => {
   describe('decisions', () => {

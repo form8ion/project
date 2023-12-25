@@ -3,7 +3,7 @@ import {validateOptions} from '@form8ion/core';
 import {describe, expect, it} from 'vitest';
 import any from '@travi/any';
 
-import languageSchema from './schema';
+import languageSchema from './schema.js';
 
 describe('language plugins schema', () => {
   const key = any.word();

@@ -3,7 +3,7 @@ import * as readme from '@form8ion/readme';
 import {afterEach, describe, expect, it, vi} from 'vitest';
 import any from '@travi/any';
 
-import scaffoldReadme from './readme';
+import scaffoldReadme from './readme.js';
 
 vi.mock('@form8ion/readme');
 

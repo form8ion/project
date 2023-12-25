@@ -4,7 +4,7 @@ import {resolve} from 'node:path';
 import {afterEach, describe, expect, it, vi} from 'vitest';
 import any from '@travi/any';
 
-import scaffoldEditorconfig from './scaffolder';
+import scaffoldEditorconfig from './scaffolder.js';
 
 vi.mock('fs');
 

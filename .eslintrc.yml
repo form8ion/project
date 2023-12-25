@@ -1,14 +1,3 @@
 extends:
   - '@form8ion'
   - '@form8ion/cucumber'
-
-rules:
-  import/extensions:
-    - warn
-    - ignorePackages
-
-overrides:
-  - files: example.js
-    rules:
-      import/no-extraneous-dependencies: off
-      no-console: off

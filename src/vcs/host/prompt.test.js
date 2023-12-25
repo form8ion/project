@@ -4,9 +4,9 @@ import {afterEach, describe, expect, it, vi} from 'vitest';
 import any from '@travi/any';
 import {when} from 'jest-when';
 
-import * as conditionals from '../../prompts/conditionals';
+import * as conditionals from '../../prompts/conditionals.js';
 import {questionNames} from '../../prompts/question-names.js';
-import promptForVcsHostDetails from './prompt';
+import promptForVcsHostDetails from './prompt.js';
 
 vi.mock('@form8ion/overridable-prompts');
 vi.mock('../../prompts/conditionals');

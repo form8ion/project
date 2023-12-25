@@ -1,7 +1,7 @@
 import {prompt} from '@form8ion/overridable-prompts';
 
 import {questionNames} from '../../prompts/question-names.js';
-import {filterChoicesByVisibility} from '../../prompts/conditionals';
+import {filterChoicesByVisibility} from '../../prompts/conditionals.js';
 
 export default async function (hosts, visibility, decisions) {
   const answers = await prompt([{

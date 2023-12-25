@@ -4,17 +4,17 @@ import {questionNames as coreQuestionNames} from '@form8ion/core';
 import {reportResults} from '@form8ion/results-reporter';
 import {info} from '@travi/cli-messages';
 
-import {scaffold as scaffoldLanguage, prompt as promptForLanguageDetails} from './language';
-import scaffoldReadme from './readme';
-import {initialize as initializeGit, scaffold as scaffoldGit} from './vcs/git';
-import {scaffold as scaffoldLicense} from './license';
-import {scaffold as scaffoldVcsHost} from './vcs/host';
-import scaffoldDependencyUpdater from './dependency-updater/scaffolder';
-import {promptForBaseDetails} from './prompts/questions';
-import {validate} from './options-validator';
+import {scaffold as scaffoldLanguage, prompt as promptForLanguageDetails} from './language/index.js';
+import scaffoldReadme from './readme.js';
+import {initialize as initializeGit, scaffold as scaffoldGit} from './vcs/git.js';
+import {scaffold as scaffoldLicense} from './license/index.js';
+import {scaffold as scaffoldVcsHost} from './vcs/host/index.js';
+import scaffoldDependencyUpdater from './dependency-updater/scaffolder.js';
+import {promptForBaseDetails} from './prompts/questions.js';
+import {validate} from './options-validator.js';
 import {questionNames} from './prompts/question-names.js';
-import {scaffold as scaffoldEditorConfig} from './editorconfig';
-import {scaffold as scaffoldContributing} from './contributing';
+import {scaffold as scaffoldEditorConfig} from './editorconfig/index.js';
+import {scaffold as scaffoldContributing} from './contributing/index.js';
 
 export async function scaffold(options) {
   const projectRoot = process.cwd();

@@ -3,7 +3,7 @@ import {validateOptions} from '@form8ion/core';
 import {describe, expect, it} from 'vitest';
 import any from '@travi/any';
 
-import vcsHostSchema from './schema';
+import vcsHostSchema from './schema.js';
 
 describe('vcs-host plugins schema', () => {
   const key = any.word();

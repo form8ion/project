@@ -9,7 +9,7 @@ import {
   filterChoicesByVisibility,
   licenseChoicesShouldBePresented,
   unlicensedConfirmationShouldBePresented
-} from './conditionals';
+} from './conditionals.js';
 
 describe('prompt conditionals', () => {
   describe('unlicensed confirmation', () => {

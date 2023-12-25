@@ -1,7 +1,7 @@
 import {describe, expect, it} from 'vitest';
 import any from '@travi/any';
 
-import scaffoldContributing from './scaffolder';
+import scaffoldContributing from './scaffolder.js';
 
 describe('contributing scaffolder', () => {
   it('should return the PRs-welcome badge for public projects', () => {

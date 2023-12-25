@@ -6,9 +6,9 @@ import {afterEach, beforeEach, describe, expect, it, vi} from 'vitest';
 import any from '@travi/any';
 import {when} from 'jest-when';
 
-import promptForVcsHostDetails from './host/prompt';
+import promptForVcsHostDetails from './host/prompt.js';
 import {questionNames} from '../prompts/question-names.js';
-import {initialize, scaffold} from './git';
+import {initialize, scaffold} from './git.js';
 
 vi.mock('node:fs');
 vi.mock('hosted-git-info');

@@ -6,7 +6,7 @@ import {afterEach, describe, expect, it, vi} from 'vitest';
 import any from '@travi/any';
 import {when} from 'jest-when';
 
-import lift from './lift';
+import lift from './lift.js';
 
 vi.mock('deepmerge');
 vi.mock('@form8ion/core');
