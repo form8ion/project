@@ -6,14 +6,14 @@ import {afterEach, beforeEach, describe, expect, it, vi} from 'vitest';
 import any from '@travi/any';
 import {when} from 'jest-when';
 
-import promptForVcsHostDetails from './host/prompt.js';
-import {questionNames} from '../prompts/question-names.js';
+import promptForVcsHostDetails from '../host/prompt.js';
+import {questionNames} from '../../prompts/question-names.js';
 import {initialize, scaffold} from './git.js';
 
 vi.mock('node:fs');
 vi.mock('hosted-git-info');
 vi.mock('simple-git');
-vi.mock('./host/prompt');
+vi.mock('../host/prompt');
 
 describe('git', () => {
   let checkIsRepo, init, remote, listRemote, addRemote;

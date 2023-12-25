@@ -6,7 +6,7 @@ import {info} from '@travi/cli-messages';
 
 import {scaffold as scaffoldLanguage, prompt as promptForLanguageDetails} from './language/index.js';
 import scaffoldReadme from './readme.js';
-import {initialize as initializeGit, scaffold as scaffoldGit} from './vcs/git.js';
+import {initialize as initializeGit, scaffold as scaffoldGit} from './vcs/git/git.js';
 import {scaffold as scaffoldLicense} from './license/index.js';
 import {scaffold as scaffoldVcsHost} from './vcs/host/index.js';
 import scaffoldDependencyUpdater from './dependency-updater/scaffolder.js';

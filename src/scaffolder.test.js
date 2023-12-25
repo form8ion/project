@@ -8,7 +8,7 @@ import any from '@travi/any';
 import {when} from 'jest-when';
 
 import * as readmeScaffolder from './readme.js';
-import * as gitScaffolder from './vcs/git.js';
+import * as gitScaffolder from './vcs/git/git.js';
 import * as vcsHostScaffolder from './vcs/host/scaffolder.js';
 import * as licenseScaffolder from './license/scaffolder.js';
 import * as languageScaffolder from './language/scaffolder.js';
@@ -24,7 +24,7 @@ import {scaffold} from './scaffolder.js';
 vi.mock('@form8ion/execa-wrapper');
 vi.mock('@form8ion/results-reporter');
 vi.mock('./readme');
-vi.mock('./vcs/git');
+vi.mock('./vcs/git/git.js');
 vi.mock('./vcs/host/scaffolder');
 vi.mock('./license/scaffolder');
 vi.mock('./language/scaffolder');
