@@ -89,12 +89,23 @@ When(/^the project is scaffolded$/, async function () {
 });
 
 When('the project is lifted', async function () {
-  await fs.writeFile(`${process.cwd()}/README.md`, this.existingReadmeContent || '');
+  await Promise.all([
+    fs.writeFile(`${process.cwd()}/README.md`, this.existingReadmeContent || ''),
+    fs.writeFile(`${process.cwd()}/.gitignore`, '')
+  ]);
 
   await lift({
     projectRoot: process.cwd(),
     vcs: {},
-    results: {badges: this.badgesFromResults},
+    results: {
+      badges: this.badgesFromResults,
+      ...(this.vcsIgnoreDirectories || this.vcsIgnoreFiles) && {
+        vcsIgnore: {
+          ...this.vcsIgnoreDirectories && {directories: this.vcsIgnoreDirectories},
+          ...this.vcsIgnoreFiles && {files: this.vcsIgnoreFiles}
+        }
+      }
+    },
     enhancers: {
       [any.word()]: {
         test: () => true,

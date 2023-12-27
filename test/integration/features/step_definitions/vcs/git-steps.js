@@ -39,6 +39,18 @@ Given('the project root is already initialized as a git repository', async funct
     .thenResolve(`git@github.com:${any.word()}/${this.projectName}.git`);
 });
 
+Given('no additional ignores are provided for vcs', async function () {
+  return undefined;
+});
+
+Given('additional files are provided to be ignored from vcs', async function () {
+  this.vcsIgnoreFiles = any.listOf(any.word);
+});
+
+Given('additional directories are provided to be ignored from vcs', async function () {
+  this.vcsIgnoreDirectories = any.listOf(any.word);
+});
+
 Then('the directory is initialized as a git repository', async function () {
   td.verify(simpleGitInstance.init());
 });
@@ -57,4 +69,15 @@ Then(/^the base git files should not be present$/, async function () {
   assert.isFalse(await fileExists(`${process.cwd()}/.git`));
   assert.isFalse(await fileExists(`${process.cwd()}/.gitattributes`));
   assert.isFalse(await fileExists(`${process.cwd()}/.gitignore`));
+});
+
+Then('the additional ignores are added to the gitignore', async function () {
+  // Write code here that turns the phrase above into concrete actions
+  return 'pending';
+});
+
+Then('the gitignore file is unchanged', async function () {
+  const gitIgnoreContent = await fs.readFile(`${process.cwd()}/.gitignore`, 'utf-8');
+
+  assert.equal(gitIgnoreContent, '');
 });
