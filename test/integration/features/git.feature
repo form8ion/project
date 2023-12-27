@@ -21,3 +21,4 @@ Feature: Git Repository
     Given the project root is already initialized as a git repository
     When the project is scaffolded
     Then the base git files should be present
+    And the gitignore file is unchanged

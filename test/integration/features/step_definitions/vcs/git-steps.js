@@ -28,8 +28,14 @@ Given(/^the project should not be versioned in git$/, async function () {
 });
 
 Given('the project root is already initialized as a git repository', async function () {
+  this.existingVcsIgnoredFiles = any.listOf(any.word);
+  this.existingVcsIgnoredDirectories = any.listOf(any.word);
+
   await makeDir(`${process.cwd()}/.git`);
-  await fs.writeFile(`${process.cwd()}/.gitignore`, '');
+  await fs.writeFile(
+    `${process.cwd()}/.gitignore`,
+    `${this.existingVcsIgnoredDirectories.join('\n')}\n\n${this.existingVcsIgnoredFiles.join('\n')}`
+  );
   this.setAnswerFor(questionNames.GIT_REPO, true);
   this.setAnswerFor(questionNames.REPO_HOST, undefined);
 
@@ -41,7 +47,8 @@ Given('the project root is already initialized as a git repository', async funct
 });
 
 Given('no additional ignores are provided for vcs', async function () {
-  return undefined;
+  this.existingVcsIgnoredFiles = any.listOf(any.word);
+  this.existingVcsIgnoredDirectories = any.listOf(any.word);
 });
 
 Given('additional files are provided to be ignored from vcs', async function () {
@@ -80,7 +87,8 @@ Then('the additional ignores are added to the gitignore', async function () {
 });
 
 Then('the gitignore file is unchanged', async function () {
-  const gitIgnoreContent = await fs.readFile(`${process.cwd()}/.gitignore`, 'utf-8');
-
-  assert.equal(gitIgnoreContent, '');
+  assert.equal(
+    await fs.readFile(`${process.cwd()}/.gitignore`, 'utf-8'),
+    `${this.existingVcsIgnoredDirectories.join('\n')}\n\n${this.existingVcsIgnoredFiles.join('\n')}`
+  );
 });
