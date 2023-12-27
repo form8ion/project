@@ -29,6 +29,7 @@ Given(/^the project should not be versioned in git$/, async function () {
 
 Given('the project root is already initialized as a git repository', async function () {
   await makeDir(`${process.cwd()}/.git`);
+  await fs.writeFile(`${process.cwd()}/.gitignore`, '');
   this.setAnswerFor(questionNames.GIT_REPO, true);
   this.setAnswerFor(questionNames.REPO_HOST, undefined);
 
@@ -61,6 +62,7 @@ Then('the remote origin is defined', async function () {
 
 Then(/^the base git files should be present$/, async function () {
   const gitAttributes = await fs.readFile(`${process.cwd()}/.gitattributes`, 'utf-8');
+  assert.isTrue(await fileExists(`${process.cwd()}/.gitignore`));
 
   assert.equal(gitAttributes, '* text=auto');
 });
