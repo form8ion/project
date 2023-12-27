@@ -22,3 +22,11 @@ Feature: Git Repository
     When the project is scaffolded
     Then the base git files should be present
     And the gitignore file is unchanged
+
+  @wip
+  Scenario: already versioned without an existing gitignore
+    Given the project root is already initialized as a git repository
+    But there is no preexisting gitignore
+    When the project is scaffolded
+    Then the base git files should be present
+    And the gitignore file is unchanged

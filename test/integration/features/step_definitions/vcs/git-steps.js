@@ -46,6 +46,10 @@ Given('the project root is already initialized as a git repository', async funct
     .thenResolve(`git@github.com:${any.word()}/${this.projectName}.git`);
 });
 
+Given('there is no preexisting gitignore', async function () {
+  await fs.unlink(`${process.cwd()}/.gitignore`);
+});
+
 Given('no additional ignores are provided for vcs', async function () {
   this.existingVcsIgnoredFiles = any.listOf(any.word);
   this.existingVcsIgnoredDirectories = any.listOf(any.word);
@@ -69,7 +73,7 @@ Then('the remote origin is defined', async function () {
 
 Then(/^the base git files should be present$/, async function () {
   const gitAttributes = await fs.readFile(`${process.cwd()}/.gitattributes`, 'utf-8');
-  assert.isTrue(await fileExists(`${process.cwd()}/.gitignore`));
+  assert.isTrue(await fileExists(`${process.cwd()}/.gitignore`), '.gitignore file is expected, but missing');
 
   assert.equal(gitAttributes, '* text=auto');
 });
