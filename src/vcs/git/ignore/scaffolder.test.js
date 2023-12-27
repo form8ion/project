@@ -21,4 +21,10 @@ describe('gitignore scaffolder', () => {
       `${directories.join('\n')}\n\n${files.join('\n')}`
     );
   });
+
+  it('should not throw an error if directories nor files are provided', async () => {
+    await scaffold({projectRoot});
+
+    expect(fs.writeFile).toHaveBeenCalledWith(`${projectRoot}/.gitignore`, '\n\n');
+  });
 });
