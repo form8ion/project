@@ -72,8 +72,9 @@ Then(/^the base git files should not be present$/, async function () {
 });
 
 Then('the additional ignores are added to the gitignore', async function () {
-  // Write code here that turns the phrase above into concrete actions
-  return 'pending';
+  const gitIgnoreContent = await fs.readFile(`${process.cwd()}/.gitignore`, 'utf-8');
+
+  assert.equal(gitIgnoreContent, `${this.vcsIgnoreDirectories.join('\n')}\n\n${this.vcsIgnoreFiles.join('\n')}`);
 });
 
 Then('the gitignore file is unchanged', async function () {
