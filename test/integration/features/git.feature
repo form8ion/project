@@ -7,9 +7,11 @@ Feature: Git Repository
 
   Scenario: to be versioned
     Given the project should be versioned in git
+    And a language scaffolder is chosen
     When the project is scaffolded
     Then the directory is initialized as a git repository
     And the base git files should be present
+    And the ignores are defined in the gitignore
 
   Scenario: to be versioned and hosted
     Given the project should be versioned in git
@@ -19,14 +21,16 @@ Feature: Git Repository
 
   Scenario: already versioned
     Given the project root is already initialized as a git repository
+    And a language scaffolder is chosen
     When the project is scaffolded
     Then the base git files should be present
-    And the gitignore file is unchanged
+    And the additional ignores are added to the gitignore
 
   @wip
   Scenario: already versioned without an existing gitignore
     Given the project root is already initialized as a git repository
+    And a language scaffolder is chosen
     But there is no preexisting gitignore
     When the project is scaffolded
     Then the base git files should be present
-    And the gitignore file is unchanged
+    And the gitignore file is added

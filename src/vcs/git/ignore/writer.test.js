@@ -16,15 +16,15 @@ describe('gitignore writer', () => {
 
     await write({projectRoot, directories, files});
 
-    expect(fs.writeFile).toHaveBeenCalledWith(
+    expect(fs.appendFile).toHaveBeenCalledWith(
       `${projectRoot}/.gitignore`,
-      `${directories.join('\n')}\n\n${files.join('\n')}`
+      `\n${directories.join('\n')}\n\n${files.join('\n')}`
     );
   });
 
   it('should not throw an error if directories nor files are provided', async () => {
     await write({projectRoot});
 
-    expect(fs.writeFile).toHaveBeenCalledWith(`${projectRoot}/.gitignore`, '\n\n');
+    expect(fs.appendFile).toHaveBeenCalledWith(`${projectRoot}/.gitignore`, '\n\n\n');
   });
 });
