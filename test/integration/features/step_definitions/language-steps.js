@@ -20,6 +20,8 @@ function generateBadgeWithNoLink() {
 
 Given('a language scaffolder is chosen', async function () {
   this.setAnswerFor(questionNames.PROJECT_LANGUAGE, any.word());
+  this.vcsIgnoreDirectories = any.listOf(any.word, {min: 1});
+  this.vcsIgnoreFiles = any.listOf(any.word, {min: 1});
 
   this.languageScaffolderResults = {
     badges: {
@@ -35,6 +37,10 @@ Given('a language scaffolder is chosen', async function () {
         [any.word()]: generateFullBadge(),
         [any.word()]: generateBadgeWithNoLink()
       }
+    },
+    vcsIgnore: {
+      directories: this.vcsIgnoreDirectories,
+      files: this.vcsIgnoreFiles
     }
   };
 });

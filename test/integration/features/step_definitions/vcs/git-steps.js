@@ -84,15 +84,36 @@ Then(/^the base git files should not be present$/, async function () {
   assert.isFalse(await fileExists(`${process.cwd()}/.gitignore`));
 });
 
+Then('the ignores are defined in the gitignore', async function () {
+  const gitIgnoreContent = await fs.readFile(`${process.cwd()}/.gitignore`, 'utf-8');
+
+  assert.include(gitIgnoreContent, `${this.vcsIgnoreDirectories.join('\n')}\n\n${this.vcsIgnoreFiles.join('\n')}`);
+});
+
 Then('the additional ignores are added to the gitignore', async function () {
   const gitIgnoreContent = await fs.readFile(`${process.cwd()}/.gitignore`, 'utf-8');
 
-  assert.equal(gitIgnoreContent, `${this.vcsIgnoreDirectories.join('\n')}\n\n${this.vcsIgnoreFiles.join('\n')}`);
+  assert.equal(
+    gitIgnoreContent,
+    `${this.existingVcsIgnoredDirectories.join('\n')}
+
+${this.existingVcsIgnoredFiles.join('\n')}
+${this.vcsIgnoreDirectories.join('\n')}
+
+${this.vcsIgnoreFiles.join('\n')}`
+  );
 });
 
 Then('the gitignore file is unchanged', async function () {
   assert.equal(
     await fs.readFile(`${process.cwd()}/.gitignore`, 'utf-8'),
     `${this.existingVcsIgnoredDirectories.join('\n')}\n\n${this.existingVcsIgnoredFiles.join('\n')}`
+  );
+});
+
+Then('the gitignore file is added', async function () {
+  assert.equal(
+    await fs.readFile(`${process.cwd()}/.gitignore`, 'utf-8'),
+    `${this.vcsIgnoreDirectories.join('\n')}\n\n${this.vcsIgnoreFiles.join('\n')}`
   );
 });
