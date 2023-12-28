@@ -6,14 +6,14 @@ import {info, warn} from '@travi/cli-messages';
 
 import promptForVcsHostDetails from '../host/prompt.js';
 import {questionNames} from '../../prompts/question-names.js';
-import {scaffold as scaffoldIgnoreFile} from './ignore/index.js';
+import {scaffold as scaffoldIgnoreFile, lift as liftIgnoreFile} from './ignore/index.js';
 
 function generateConfigFiles(projectRoot, ignore) {
   info('Generating Git config files', {level: 'secondary'});
 
   return Promise.all([
     fs.writeFile(`${projectRoot}/.gitattributes`, '* text=auto'),
-    ignore ? scaffoldIgnoreFile({projectRoot, ...ignore}) : undefined
+    ignore ? liftIgnoreFile({projectRoot, results: {vcsIgnore: ignore}}) : undefined
   ].filter(Boolean));
 }
 
@@ -82,7 +82,8 @@ export async function initialize(
 
     const [answers] = await Promise.all([
       promptForVcsHostDetails(vcsHosts, visibility, decisions),
-      git.init()
+      git.init(),
+      scaffoldIgnoreFile({projectRoot})
     ]);
 
     return {

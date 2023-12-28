@@ -1,10 +1,10 @@
 import {describe, it, expect, vi, afterEach} from 'vitest';
 import any from '@travi/any';
 
-import writeIgnores from './scaffolder.js';
+import writeIgnores from './writer.js';
 import liftGitIgnore from './lifter.js';
 
-vi.mock('./scaffolder.js');
+vi.mock('./writer.js');
 
 describe('gitignore lifter', () => {
   const projectRoot = any.string();

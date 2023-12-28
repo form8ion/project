@@ -8,7 +8,7 @@ import {when} from 'jest-when';
 
 import promptForVcsHostDetails from '../host/prompt.js';
 import {questionNames} from '../../prompts/question-names.js';
-import {scaffold as scaffoldIgnoreFile} from './ignore/index.js';
+import {scaffold as scaffoldIgnoreFile, lift as liftIgnoreFile} from './ignore/index.js';
 import {initialize, scaffold} from './git.js';
 
 vi.mock('node:fs');
@@ -56,6 +56,7 @@ describe('git', () => {
 
       expect(init).toHaveBeenCalledOnce();
       expect(hostDetails).toEqual({host: repoHost.toLowerCase(), owner: repoOwner, name: projectName});
+      expect(scaffoldIgnoreFile).toHaveBeenCalledWith({projectRoot});
     });
 
     it('should not initialize the git repo if the project will not be versioned', async () => {
@@ -113,7 +114,7 @@ describe('git', () => {
 
       await scaffold({projectRoot, ignore: {directories, files}, origin: {}});
 
-      expect(scaffoldIgnoreFile).toHaveBeenCalledWith({projectRoot, directories, files});
+      expect(liftIgnoreFile).toHaveBeenCalledWith({projectRoot, results: {vcsIgnore: {directories, files}}});
     });
 
     it('should define the remote origin when an ssl-url is provided for the remote', async () => {

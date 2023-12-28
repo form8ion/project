@@ -91,7 +91,12 @@ When(/^the project is scaffolded$/, async function () {
 When('the project is lifted', async function () {
   await Promise.all([
     fs.writeFile(`${process.cwd()}/README.md`, this.existingReadmeContent || ''),
-    fs.writeFile(`${process.cwd()}/.gitignore`, '')
+    fs.writeFile(
+      `${process.cwd()}/.gitignore`,
+      (this.existingVcsIgnoredFiles && this.existingVcsIgnoredDirectories)
+        ? `${this.existingVcsIgnoredDirectories.join('\n')}\n\n${this.existingVcsIgnoredFiles.join('\n')}`
+        : ''
+    )
   ]);
 
   await lift({

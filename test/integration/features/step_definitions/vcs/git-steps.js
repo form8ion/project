@@ -28,7 +28,14 @@ Given(/^the project should not be versioned in git$/, async function () {
 });
 
 Given('the project root is already initialized as a git repository', async function () {
+  this.existingVcsIgnoredFiles = any.listOf(any.word);
+  this.existingVcsIgnoredDirectories = any.listOf(any.word);
+
   await makeDir(`${process.cwd()}/.git`);
+  await fs.writeFile(
+    `${process.cwd()}/.gitignore`,
+    `${this.existingVcsIgnoredDirectories.join('\n')}\n\n${this.existingVcsIgnoredFiles.join('\n')}`
+  );
   this.setAnswerFor(questionNames.GIT_REPO, true);
   this.setAnswerFor(questionNames.REPO_HOST, undefined);
 
@@ -39,8 +46,13 @@ Given('the project root is already initialized as a git repository', async funct
     .thenResolve(`git@github.com:${any.word()}/${this.projectName}.git`);
 });
 
+Given('there is no preexisting gitignore', async function () {
+  await fs.unlink(`${process.cwd()}/.gitignore`);
+});
+
 Given('no additional ignores are provided for vcs', async function () {
-  return undefined;
+  this.existingVcsIgnoredFiles = any.listOf(any.word);
+  this.existingVcsIgnoredDirectories = any.listOf(any.word);
 });
 
 Given('additional files are provided to be ignored from vcs', async function () {
@@ -61,6 +73,7 @@ Then('the remote origin is defined', async function () {
 
 Then(/^the base git files should be present$/, async function () {
   const gitAttributes = await fs.readFile(`${process.cwd()}/.gitattributes`, 'utf-8');
+  assert.isTrue(await fileExists(`${process.cwd()}/.gitignore`), '.gitignore file is expected, but missing');
 
   assert.equal(gitAttributes, '* text=auto');
 });
@@ -78,7 +91,8 @@ Then('the additional ignores are added to the gitignore', async function () {
 });
 
 Then('the gitignore file is unchanged', async function () {
-  const gitIgnoreContent = await fs.readFile(`${process.cwd()}/.gitignore`, 'utf-8');
-
-  assert.equal(gitIgnoreContent, '');
+  assert.equal(
+    await fs.readFile(`${process.cwd()}/.gitignore`, 'utf-8'),
+    `${this.existingVcsIgnoredDirectories.join('\n')}\n\n${this.existingVcsIgnoredFiles.join('\n')}`
+  );
 });
