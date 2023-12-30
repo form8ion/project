@@ -114,6 +114,6 @@ Then('the gitignore file is unchanged', async function () {
 Then('the gitignore file is added', async function () {
   assert.equal(
     await fs.readFile(`${process.cwd()}/.gitignore`, 'utf-8'),
-    `${this.vcsIgnoreDirectories.join('\n')}\n\n${this.vcsIgnoreFiles.join('\n')}`
+    `\n${this.vcsIgnoreDirectories.join('\n')}\n\n${this.vcsIgnoreFiles.join('\n')}`
   );
 });
