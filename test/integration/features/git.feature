@@ -26,7 +26,6 @@ Feature: Git Repository
     Then the base git files should be present
     And the additional ignores are added to the gitignore
 
-  @wip
   Scenario: already versioned without an existing gitignore
     Given the project root is already initialized as a git repository
     And a language scaffolder is chosen

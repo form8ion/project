@@ -6,6 +6,7 @@ import {afterEach, describe, expect, it, vi} from 'vitest';
 import any from '@travi/any';
 import {when} from 'jest-when';
 
+import {lift as liftGitignore, test as gitIgnoreExists} from './vcs/git/ignore/index.js';
 import lift from './lift.js';
 
 vi.mock('deepmerge');
@@ -25,7 +26,11 @@ describe('lift', () => {
     const enhancerResults = any.simpleObject();
     const mergedResults = any.simpleObject();
     when(core.applyEnhancers)
-      .calledWith({results, enhancers, options: {projectRoot, vcs}})
+      .calledWith({
+        results,
+        enhancers: {...enhancers, gitIgnore: {test: gitIgnoreExists, lift: liftGitignore}},
+        options: {projectRoot, vcs}
+      })
       .mockResolvedValue(enhancerResults);
     when(deepmerge.all).calledWith([results, enhancerResults]).mockReturnValue(mergedResults);
 
