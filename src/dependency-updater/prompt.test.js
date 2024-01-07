@@ -22,7 +22,7 @@ describe('dependency updater prompt', () => {
       name: questionNames.DEPENDENCY_UPDATER,
       type: 'list',
       message: 'Which dependency-update service do you want to manage this project?',
-      choices: [...Object.keys(updaters), new prompts.Separator(), 'Other']
+      choices: [...Object.keys(updaters), 'Other']
     }], decisions).mockResolvedValue(answers);
 
     expect(await promptForDependencyUpdaterChoice(updaters, decisions)).toEqual(answers);

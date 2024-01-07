@@ -1,4 +1,4 @@
-import {prompt, Separator} from '@form8ion/overridable-prompts';
+import {prompt} from '@form8ion/overridable-prompts';
 
 import {afterEach, describe, expect, it, vi} from 'vitest';
 import any from '@travi/any';
@@ -22,7 +22,7 @@ describe('language prompt', () => {
       name: questionNames.PROJECT_LANGUAGE,
       type: 'list',
       message: 'What type of project is this?',
-      choices: [...Object.keys(languages), new Separator(), 'Other']
+      choices: [...Object.keys(languages), 'Other']
     }], decisions).mockResolvedValue(answers);
 
     expect(await promptForLanguageDetails(languages, decisions)).toEqual(answers);
