@@ -17,7 +17,7 @@ Given(/^the project should be versioned in git$/, async function () {
   this.setAnswerFor(questionNames.GIT_REPO, true);
   this.setAnswerFor(questionNames.REPO_HOST, 'Other');
 
-  td.when(this.git.simpleGit(process.cwd())).thenReturn(simpleGitInstance);
+  td.when(this.git.simpleGit({baseDir: process.cwd()})).thenReturn(simpleGitInstance);
   td.when(simpleGitInstance.checkIsRepo('root')).thenResolve(false);
   td.when(simpleGitInstance.listRemote())
     .thenReject(new GitError(null, 'fatal: No remote configured to list refs from.\n'));
@@ -39,7 +39,7 @@ Given('the project root is already initialized as a git repository', async funct
   this.setAnswerFor(questionNames.GIT_REPO, true);
   this.setAnswerFor(questionNames.REPO_HOST, undefined);
 
-  td.when(this.git.simpleGit(process.cwd())).thenReturn(simpleGitInstance);
+  td.when(this.git.simpleGit({baseDir: process.cwd()})).thenReturn(simpleGitInstance);
   td.when(simpleGitInstance.checkIsRepo('root')).thenResolve(true);
   td.when(simpleGitInstance.listRemote()).thenResolve(['origin']);
   td.when(simpleGitInstance.remote(['get-url', 'origin']))

@@ -31,7 +31,7 @@ describe('git', () => {
     addRemote = vi.fn();
 
     when(simpleGit.simpleGit)
-      .calledWith(projectRoot)
+      .calledWith({baseDir: projectRoot})
       .mockReturnValue({checkIsRepo, init, remote, listRemote, addRemote});
   });
 

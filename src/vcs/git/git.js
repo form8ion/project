@@ -30,7 +30,7 @@ async function getExistingRemotes(git) {
 }
 
 async function defineRemoteOrigin(projectRoot, origin) {
-  const git = simpleGit(projectRoot);
+  const git = simpleGit({baseDir: projectRoot});
   const existingRemotes = await getExistingRemotes(git);
 
   if (existingRemotes.includes('origin')) {
@@ -68,7 +68,7 @@ export async function initialize(
   decisions
 ) {
   if (gitRepoShouldBeInitialized) {
-    const git = simpleGit(projectRoot);
+    const git = simpleGit({baseDir: projectRoot});
     if (await git.checkIsRepo('root')) {
       info('Git repository already exists');
 
