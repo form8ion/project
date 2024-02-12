@@ -19,7 +19,7 @@ describe('editorconfig scaffolder', () => {
     await scaffoldEditorconfig({projectRoot});
 
     expect(fs.copyFile).toHaveBeenCalledWith(
-      resolve(__dirname, '..', '..', 'templates', 'editorconfig.txt'),
+      resolve(__dirname, '..', '..', 'templates', 'editorconfig.ini'),
       `${projectRoot}/.editorconfig`
     );
   });

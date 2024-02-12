@@ -9,7 +9,7 @@ import {lift, questionNames, scaffold} from './lib/index.js';
 
 // remark-usage-ignore-next 2
 (async () => {
-  stubbedFs({templates: {'editorconfig.txt': await fs.readFile(resolve('templates', 'editorconfig.txt'))}});
+  stubbedFs({templates: {'editorconfig.ini': await fs.readFile(resolve('templates', 'editorconfig.ini'))}});
 
   await scaffold({
     decisions: {

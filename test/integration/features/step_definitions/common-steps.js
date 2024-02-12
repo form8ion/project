@@ -28,7 +28,7 @@ Before({timeout: 20 * 1000}, async function () {
 
   stubbedFs({
     node_modules: stubbedNodeModules,
-    templates: {'editorconfig.txt': await fs.readFile(resolve(...projectTemplatePath, 'editorconfig.txt'))}
+    templates: {'editorconfig.ini': await fs.readFile(resolve(...projectTemplatePath, 'editorconfig.ini'))}
   });
 });
 
