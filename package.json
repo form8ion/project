@@ -88,7 +88,7 @@
     "cross-env": "7.0.3",
     "cz-conventional-changelog": "3.3.0",
     "gherkin-lint": "4.2.4",
-    "husky": "9.0.10",
+    "husky": "9.0.11",
     "jest-when": "3.6.0",
     "lockfile-lint": "4.13.1",
     "ls-engines": "0.9.1",
