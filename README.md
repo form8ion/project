@@ -48,7 +48,6 @@ opinionated scaffolder for new projects
 <!--consumer-badges start -->
 
 [![npm][npm-badge]][npm-link]
-[![Snyk Vulnerabilities for npm package][snyk-badge]][snyk-link]
 ![node][node-badge]
 [![MIT license][license-badge]][license-link]
 
@@ -250,10 +249,6 @@ $ npm test
 [prs-link]: http://makeapullrequest.com
 
 [prs-badge]: https://img.shields.io/badge/PRs-welcome-brightgreen.svg
-
-[snyk-badge]: https://img.shields.io/snyk/vulnerabilities/npm/@form8ion/project?logo=snyk
-
-[snyk-link]: https://snyk.io/test/npm/@form8ion/project
 
 [renovate-link]: https://renovatebot.com
 
