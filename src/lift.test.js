@@ -21,6 +21,7 @@ describe('lift', () => {
   it('should lift the README based on the provided results', async () => {
     const projectRoot = any.string();
     const enhancers = any.simpleObject();
+    const dependencies = any.simpleObject();
     const vcs = any.simpleObject();
     const results = any.simpleObject();
     const enhancerResults = any.simpleObject();
@@ -29,12 +30,13 @@ describe('lift', () => {
       .calledWith({
         results,
         enhancers: {...enhancers, gitIgnore: {test: gitIgnoreExists, lift: liftGitignore}},
-        options: {projectRoot, vcs}
+        options: {projectRoot, vcs},
+        dependencies
       })
       .mockResolvedValue(enhancerResults);
     when(deepmerge.all).calledWith([results, enhancerResults]).mockReturnValue(mergedResults);
 
-    expect(await lift({projectRoot, results, enhancers, vcs})).toEqual(enhancerResults);
+    expect(await lift({projectRoot, results, enhancers, vcs, dependencies})).toEqual(enhancerResults);
     expect(readme.lift).toHaveBeenCalledWith({projectRoot, results: mergedResults});
   });
 });
