@@ -3,10 +3,11 @@ import {promises as fs} from 'node:fs';
 import {simpleGit} from 'simple-git';
 import hostedGitInfo from 'hosted-git-info';
 import {info, warn} from '@travi/cli-messages';
+import {scaffold as scaffoldGit} from '@form8ion/git';
 
 import promptForVcsHostDetails from '../host/prompt.js';
 import {questionNames} from '../../prompts/question-names.js';
-import {scaffold as scaffoldIgnoreFile, lift as liftIgnoreFile} from './ignore/index.js';
+import {lift as liftIgnoreFile} from './ignore/index.js';
 
 function generateConfigFiles(projectRoot, ignore) {
   info('Generating Git config files', {level: 'secondary'});
@@ -78,12 +79,9 @@ export async function initialize(
       return {owner: user, name: project, host: type};
     }
 
-    info('Initializing Git Repository');
-
     const [answers] = await Promise.all([
       promptForVcsHostDetails(vcsHosts, visibility, decisions),
-      git.init(),
-      scaffoldIgnoreFile({projectRoot})
+      scaffoldGit({projectRoot})
     ]);
 
     return {

@@ -1,6 +1,7 @@
 import {promises as fs} from 'node:fs';
 import hostedGitInfo from 'hosted-git-info';
 import * as simpleGit from 'simple-git';
+import {scaffold as scaffoldGit} from '@form8ion/git';
 
 import {afterEach, beforeEach, describe, expect, it, vi} from 'vitest';
 import any from '@travi/any';
@@ -8,31 +9,31 @@ import {when} from 'jest-when';
 
 import promptForVcsHostDetails from '../host/prompt.js';
 import {questionNames} from '../../prompts/question-names.js';
-import {scaffold as scaffoldIgnoreFile, lift as liftIgnoreFile} from './ignore/index.js';
+import {lift as liftIgnoreFile} from './ignore/index.js';
 import {initialize, scaffold} from './git.js';
 
 vi.mock('node:fs');
 vi.mock('hosted-git-info');
 vi.mock('simple-git');
+vi.mock('@form8ion/git');
 vi.mock('../host/prompt');
 vi.mock('./ignore/index.js');
 
 describe('git', () => {
-  let checkIsRepo, init, remote, listRemote, addRemote;
+  let checkIsRepo, remote, listRemote, addRemote;
   const projectRoot = any.string();
   const visibility = any.word();
   const decisions = any.simpleObject();
 
   beforeEach(() => {
     checkIsRepo = vi.fn();
-    init = vi.fn();
     remote = vi.fn();
     listRemote = vi.fn();
     addRemote = vi.fn();
 
     when(simpleGit.simpleGit)
       .calledWith({baseDir: projectRoot})
-      .mockReturnValue({checkIsRepo, init, remote, listRemote, addRemote});
+      .mockReturnValue({checkIsRepo, remote, listRemote, addRemote});
   });
 
   afterEach(() => {
@@ -54,9 +55,8 @@ describe('git', () => {
 
       const hostDetails = await initialize(true, projectRoot, projectName, vcsHosts, visibility, decisions);
 
-      expect(init).toHaveBeenCalledOnce();
+      expect(scaffoldGit).toHaveBeenCalledWith({projectRoot});
       expect(hostDetails).toEqual({host: repoHost.toLowerCase(), owner: repoOwner, name: projectName});
-      expect(scaffoldIgnoreFile).toHaveBeenCalledWith({projectRoot});
     });
 
     it('should not initialize the git repo if the project will not be versioned', async () => {
@@ -67,7 +67,7 @@ describe('git', () => {
 
       const hostDetails = await initialize(false, projectRoot, projectName, githubAccount, visibility, decisions);
 
-      expect(init).not.toHaveBeenCalledOnce();
+      expect(scaffoldGit).not.toHaveBeenCalled();
       expect(hostDetails).toBe(undefined);
     });
 
@@ -82,7 +82,7 @@ describe('git', () => {
 
       const hostDetails = await initialize(true, projectRoot, projectName, githubAccount, visibility);
 
-      expect(init).not.toHaveBeenCalledOnce();
+      expect(scaffoldGit).not.toHaveBeenCalled();
       expect(hostDetails).toEqual({host: repoHost.toLowerCase(), owner: repoOwner, name: repoName});
     });
   });
@@ -94,8 +94,7 @@ describe('git', () => {
       const results = await scaffold({projectRoot, origin: {}});
 
       expect(fs.writeFile).toHaveBeenCalledWith(`${projectRoot}/.gitattributes`, '* text=auto');
-      expect(scaffoldIgnoreFile).not.toHaveBeenCalled();
-      expect(init).not.toHaveBeenCalled();
+      expect(scaffoldGit).not.toHaveBeenCalled();
 
       expect(results.nextSteps).toEqual([{summary: 'Commit scaffolded files'}]);
     });
