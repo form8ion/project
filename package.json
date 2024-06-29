@@ -60,7 +60,7 @@
   "dependencies": {
     "@form8ion/core": "^4.3.0",
     "@form8ion/execa-wrapper": "^1.0.0",
-    "@form8ion/git": "^1.0.0-alpha.4",
+    "@form8ion/git": "^1.0.0-alpha.5",
     "@form8ion/overridable-prompts": "^1.1.0",
     "@form8ion/readme": "3.1.0",
     "@form8ion/results-reporter": "^1.1.0",

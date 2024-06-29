@@ -1,9 +1,7 @@
-import {promises as fs} from 'node:fs';
-
 import {simpleGit} from 'simple-git';
 import hostedGitInfo from 'hosted-git-info';
 import {info, warn} from '@travi/cli-messages';
-import {scaffold as scaffoldGit} from '@form8ion/git';
+import {lift as liftGit, scaffold as scaffoldGit} from '@form8ion/git';
 
 import promptForVcsHostDetails from '../host/prompt.js';
 import {questionNames} from '../../prompts/question-names.js';
@@ -13,7 +11,6 @@ function generateConfigFiles(projectRoot, ignore) {
   info('Generating Git config files', {level: 'secondary'});
 
   return Promise.all([
-    fs.writeFile(`${projectRoot}/.gitattributes`, '* text=auto'),
     ignore ? liftIgnoreFile({projectRoot, results: {vcsIgnore: ignore}}) : undefined
   ].filter(Boolean));
 }
@@ -99,7 +96,8 @@ export async function scaffold({projectRoot, ignore, origin}) {
 
   const [remoteOriginResults] = await Promise.all([
     defineRemoteOrigin(projectRoot, origin),
-    generateConfigFiles(projectRoot, ignore)
+    generateConfigFiles(projectRoot, ignore),
+    liftGit({projectRoot})
   ]);
 
   return {nextSteps: [{summary: 'Commit scaffolded files'}, ...remoteOriginResults.nextSteps]};

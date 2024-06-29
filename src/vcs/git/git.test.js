@@ -1,7 +1,6 @@
-import {promises as fs} from 'node:fs';
 import hostedGitInfo from 'hosted-git-info';
 import * as simpleGit from 'simple-git';
-import {scaffold as scaffoldGit} from '@form8ion/git';
+import {lift as liftGit, scaffold as scaffoldGit} from '@form8ion/git';
 
 import {afterEach, beforeEach, describe, expect, it, vi} from 'vitest';
 import any from '@travi/any';
@@ -93,7 +92,7 @@ describe('git', () => {
 
       const results = await scaffold({projectRoot, origin: {}});
 
-      expect(fs.writeFile).toHaveBeenCalledWith(`${projectRoot}/.gitattributes`, '* text=auto');
+      expect(liftGit).toHaveBeenCalledWith({projectRoot});
       expect(scaffoldGit).not.toHaveBeenCalled();
 
       expect(results.nextSteps).toEqual([{summary: 'Commit scaffolded files'}]);
