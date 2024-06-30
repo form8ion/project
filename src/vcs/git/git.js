@@ -5,15 +5,6 @@ import {lift as liftGit, scaffold as scaffoldGit} from '@form8ion/git';
 
 import promptForVcsHostDetails from '../host/prompt.js';
 import {questionNames} from '../../prompts/question-names.js';
-import {lift as liftIgnoreFile} from './ignore/index.js';
-
-function generateConfigFiles(projectRoot, ignore) {
-  info('Generating Git config files', {level: 'secondary'});
-
-  return Promise.all([
-    ignore ? liftIgnoreFile({projectRoot, results: {vcsIgnore: ignore}}) : undefined
-  ].filter(Boolean));
-}
 
 async function getExistingRemotes(git) {
   try {
@@ -91,13 +82,12 @@ export async function initialize(
   return undefined;
 }
 
-export async function scaffold({projectRoot, ignore, origin}) {
+export async function scaffold({projectRoot, results, origin}) {
   info('Finishing Git Configuration');
 
   const [remoteOriginResults] = await Promise.all([
     defineRemoteOrigin(projectRoot, origin),
-    generateConfigFiles(projectRoot, ignore),
-    liftGit({projectRoot})
+    liftGit({projectRoot, results})
   ]);
 
   return {nextSteps: [{summary: 'Commit scaffolded files'}, ...remoteOriginResults.nextSteps]};

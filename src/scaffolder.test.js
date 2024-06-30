@@ -76,6 +76,13 @@ describe('project scaffolder', () => {
     const gitNextSteps = any.listOf(any.simpleObject);
     const dependencyUpdaterNextSteps = any.listOf(any.simpleObject);
     const dependencyUpdaterContributionBadges = any.simpleObject();
+    const languageResults = {
+      badges: {status: {ci: ciBadge}},
+      vcsIgnore,
+      projectDetails: {},
+      documentation,
+      tags
+    };
     when(optionsValidator.validate)
       .calledWith(options)
       .mockReturnValue({languages: languageScaffolders, vcsHosts, decisions, dependencyUpdaters});
@@ -114,13 +121,7 @@ describe('project scaffolder', () => {
         }
       )
       .mockResolvedValue(vcsOriginDetails);
-    languageScaffolder.default.mockResolvedValue({
-      badges: {status: {ci: ciBadge}},
-      vcsIgnore,
-      projectDetails: {},
-      documentation,
-      tags
-    });
+    languageScaffolder.default.mockResolvedValue(languageResults);
     when(dependencyUpdaterScaffolder.default)
       .calledWith(dependencyUpdaters, decisions, {projectRoot: projectPath, vcs})
       .mockResolvedValue({
@@ -132,7 +133,7 @@ describe('project scaffolder', () => {
 
     expect(gitScaffolder.scaffold).toHaveBeenCalledWith({
       projectRoot: projectPath,
-      ignore: vcsIgnore,
+      results: languageResults,
       origin: vcsOriginDetails
     });
     expect(readmeScaffolder.default).toHaveBeenCalledWith({
@@ -205,11 +206,12 @@ describe('project scaffolder', () => {
       status: any.simpleObject(),
       contribution: any.simpleObject()
     };
+    const languageResults = {badges: languageBadges, vcsIgnore, documentation};
     when(prompts.promptForBaseDetails)
       .calledWith(projectPath, undefined, undefined)
       .mockResolvedValue({[coreQuestionNames.VISIBILITY]: visibility});
     when(scaffoldContributing).calledWith({visibility}).mockReturnValue({badges: contributingBadges});
-    languageScaffolder.default.mockResolvedValue({badges: languageBadges, vcsIgnore, documentation});
+    languageScaffolder.default.mockResolvedValue(languageResults);
     vcsHostScaffolder.default.mockResolvedValue(vcsOriginDetails);
     dependencyUpdaterScaffolder.default.mockResolvedValue({badges: dependencyUpdaterBadges});
     licenseScaffolder.default.mockResolvedValue({badges: licenseBadges});
@@ -219,7 +221,7 @@ describe('project scaffolder', () => {
     expect(gitScaffolder.scaffold).toHaveBeenCalledWith({
       projectRoot: projectPath,
       origin: vcsOriginDetails,
-      ignore: vcsIgnore
+      results: languageResults
     });
     expect(readmeScaffolder.default).toHaveBeenCalledWith({
       projectName,
@@ -252,6 +254,19 @@ describe('project scaffolder', () => {
     const languageNextSteps = any.listOf(any.simpleObject);
     const verificationCommand = any.string();
     const execaPipe = vi.fn();
+    const languageResults = {
+      vcsIgnore,
+      badges: {
+        consumer: languageConsumerBadges,
+        contribution: languageContributionBadges,
+        status: languageStatusBadges
+      },
+      documentation,
+      verificationCommand,
+      projectDetails: {homepage},
+      nextSteps: languageNextSteps,
+      tags
+    };
     when(optionsValidator.validate)
       .calledWith(options)
       .mockReturnValue({languages: languageScaffolders, vcsHosts, decisions});
@@ -274,19 +289,7 @@ describe('project scaffolder', () => {
       license,
       vcs,
       description
-    }).mockResolvedValue({
-      vcsIgnore,
-      badges: {
-        consumer: languageConsumerBadges,
-        contribution: languageContributionBadges,
-        status: languageStatusBadges
-      },
-      documentation,
-      verificationCommand,
-      projectDetails: {homepage},
-      nextSteps: languageNextSteps,
-      tags
-    });
+    }).mockResolvedValue(languageResults);
     when(vcsHostScaffolder.default).calledWith(
       vcsHosts,
       {
@@ -308,7 +311,7 @@ describe('project scaffolder', () => {
 
     expect(gitScaffolder.scaffold).toHaveBeenCalledWith({
       projectRoot: projectPath,
-      ignore: vcsIgnore,
+      results: languageResults,
       origin: vcsOriginDetails
     });
     expect(readmeScaffolder.default).toHaveBeenCalledWith({
@@ -351,7 +354,7 @@ describe('project scaffolder', () => {
 
     expect(gitScaffolder.scaffold).toHaveBeenCalledWith({
       projectRoot: projectPath,
-      ignore: undefined,
+      results: {},
       origin: vcsOriginDetails
     });
     expect(readmeScaffolder.default).toHaveBeenCalledWith({

@@ -85,7 +85,7 @@ export async function scaffold(options) {
 
   const gitResults = gitRepo && await scaffoldGit({
     projectRoot,
-    ...language && {ignore: language.vcsIgnore},
+    results: {...language},
     origin: vcsHostResults
   });
 

@@ -8,7 +8,6 @@ import {when} from 'jest-when';
 
 import promptForVcsHostDetails from '../host/prompt.js';
 import {questionNames} from '../../prompts/question-names.js';
-import {lift as liftIgnoreFile} from './ignore/index.js';
 import {initialize, scaffold} from './git.js';
 
 vi.mock('node:fs');
@@ -87,15 +86,17 @@ describe('git', () => {
   });
 
   describe('scaffold', () => {
+    const results = any.simpleObject();
+
     it('should scaffold the git repo', async () => {
       listRemote.mockRejectedValue(new Error('fatal: No remote configured to list refs from.\n'));
 
-      const results = await scaffold({projectRoot, origin: {}});
+      const result = await scaffold({projectRoot, origin: {}, results});
 
-      expect(liftGit).toHaveBeenCalledWith({projectRoot});
+      expect(liftGit).toHaveBeenCalledWith({projectRoot, results});
       expect(scaffoldGit).not.toHaveBeenCalled();
 
-      expect(results.nextSteps).toEqual([{summary: 'Commit scaffolded files'}]);
+      expect(result.nextSteps).toEqual([{summary: 'Commit scaffolded files'}]);
     });
 
     it('throws git errors that are not a lack of defined remotes', async () => {
@@ -105,26 +106,16 @@ describe('git', () => {
       await expect(scaffold({projectRoot, origin: {}})).rejects.toThrow(error);
     });
 
-    it('should create the ignore file when patterns are defined', async () => {
-      const directories = any.listOf(any.string);
-      const files = any.listOf(any.string);
-      listRemote.mockResolvedValue(any.listOf(any.word));
-
-      await scaffold({projectRoot, ignore: {directories, files}, origin: {}});
-
-      expect(liftIgnoreFile).toHaveBeenCalledWith({projectRoot, results: {vcsIgnore: {directories, files}}});
-    });
-
     it('should define the remote origin when an ssl-url is provided for the remote', async () => {
       const sshUrl = any.url();
       // const branch = any.simpleObject();
       // gitBranch.lookup.withArgs(repository, 'master', gitBranch.BRANCH.LOCAL).resolves(branch);
       listRemote.mockResolvedValue(any.listOf(any.word));
 
-      const results = await scaffold({projectRoot, origin: {sshUrl}});
+      const result = await scaffold({projectRoot, origin: {sshUrl}});
 
       expect(addRemote).toHaveBeenCalledWith('origin', sshUrl);
-      expect(results.nextSteps).toEqual([
+      expect(result.nextSteps).toEqual([
         {summary: 'Commit scaffolded files'},
         {summary: 'Set local `master` branch to track upstream `origin/master`'}
       ]);
