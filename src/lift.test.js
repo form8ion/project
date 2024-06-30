@@ -1,12 +1,12 @@
 import deepmerge from 'deepmerge';
 import * as core from '@form8ion/core';
 import * as readme from '@form8ion/readme';
+import * as gitPlugin from '@form8ion/git';
 
 import {afterEach, describe, expect, it, vi} from 'vitest';
 import any from '@travi/any';
 import {when} from 'jest-when';
 
-import {lift as liftGitignore, test as gitIgnoreExists} from './vcs/git/ignore/index.js';
 import lift from './lift.js';
 
 vi.mock('deepmerge');
@@ -29,7 +29,7 @@ describe('lift', () => {
     when(core.applyEnhancers)
       .calledWith({
         results,
-        enhancers: {...enhancers, gitIgnore: {test: gitIgnoreExists, lift: liftGitignore}},
+        enhancers: {...enhancers, gitPlugin},
         options: {projectRoot, vcs},
         dependencies
       })

@@ -1,13 +1,12 @@
 import deepmerge from 'deepmerge';
 import {applyEnhancers} from '@form8ion/core';
 import {lift as liftReadme} from '@form8ion/readme';
-
-import {test as gitIgnoreExists, lift as liftGitignore} from './vcs/git/ignore/index.js';
+import * as gitPlugin from '@form8ion/git';
 
 export default async function ({projectRoot, results, enhancers, vcs, dependencies}) {
   const enhancerResults = await applyEnhancers({
     results,
-    enhancers: {...enhancers, gitIgnore: {test: gitIgnoreExists, lift: liftGitignore}},
+    enhancers: {...enhancers, gitPlugin},
     options: {projectRoot, vcs},
     dependencies
   });
