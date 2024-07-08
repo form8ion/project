@@ -6,7 +6,7 @@ import {info} from '@travi/cli-messages';
 
 import {scaffold as scaffoldLanguage, prompt as promptForLanguageDetails} from './language/index.js';
 import scaffoldReadme from './readme.js';
-import {initialize as initializeGit, scaffold as scaffoldGit} from './vcs/git/git.js';
+import {initialize as scaffoldGit, scaffold as liftGit} from './vcs/git/git.js';
 import {scaffold as scaffoldLicense} from './license/index.js';
 import {scaffold as scaffoldVcsHost} from './vcs/host/index.js';
 import scaffoldDependencyUpdater from './dependency-updater/scaffolder.js';
@@ -31,7 +31,7 @@ export async function scaffold(options) {
   } = await promptForBaseDetails(projectRoot, decisions);
   const copyright = {year: copyrightYear, holder: copyHolder};
 
-  const vcs = await initializeGit(gitRepo, projectRoot, projectName, vcsHosts, visibility, decisions);
+  const vcs = await scaffoldGit(gitRepo, projectRoot, projectName, vcsHosts, visibility, decisions);
 
   const {[questionNames.PROJECT_LANGUAGE]: projectLanguage} = await promptForLanguageDetails(languages, decisions);
 
@@ -83,7 +83,7 @@ export async function scaffold(options) {
     scaffoldEditorConfig({projectRoot})
   ]);
 
-  const gitResults = gitRepo && await scaffoldGit({
+  const gitResults = gitRepo && await liftGit({
     projectRoot,
     results: {...language},
     origin: vcsHostResults
