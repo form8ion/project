@@ -1,6 +1,6 @@
 import hostedGitInfo from 'hosted-git-info';
 import * as simpleGit from 'simple-git';
-import {lift as liftGit, scaffold as scaffoldGit} from '@form8ion/git';
+import {scaffold as scaffoldGit} from '@form8ion/git';
 
 import {afterEach, beforeEach, describe, expect, it, vi} from 'vitest';
 import any from '@travi/any';
@@ -92,9 +92,6 @@ describe('git', () => {
       listRemote.mockRejectedValue(new Error('fatal: No remote configured to list refs from.\n'));
 
       const result = await scaffold({projectRoot, origin: {}, results});
-
-      expect(liftGit).toHaveBeenCalledWith({projectRoot, results});
-      expect(scaffoldGit).not.toHaveBeenCalled();
 
       expect(result.nextSteps).toEqual([{summary: 'Commit scaffolded files'}]);
     });

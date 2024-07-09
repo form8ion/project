@@ -2,10 +2,10 @@ import deepmerge from 'deepmerge';
 import execa from '@form8ion/execa-wrapper';
 import {questionNames as coreQuestionNames} from '@form8ion/core';
 import {reportResults} from '@form8ion/results-reporter';
+import {scaffold as scaffoldReadme} from '@form8ion/readme';
 import {info} from '@travi/cli-messages';
 
 import {scaffold as scaffoldLanguage, prompt as promptForLanguageDetails} from './language/index.js';
-import scaffoldReadme from './readme.js';
 import {initialize as scaffoldGit, scaffold as liftGit} from './vcs/git/git.js';
 import {scaffold as scaffoldLicense} from './license/index.js';
 import {scaffold as scaffoldVcsHost} from './vcs/host/index.js';
@@ -15,6 +15,7 @@ import {validate} from './options-validator.js';
 import {questionNames} from './prompts/question-names.js';
 import {scaffold as scaffoldEditorConfig} from './editorconfig/index.js';
 import {scaffold as scaffoldContributing} from './contributing/index.js';
+import lift from './lift.js';
 
 export async function scaffold(options) {
   const projectRoot = process.cwd();
@@ -70,24 +71,13 @@ export async function scaffold(options) {
   });
 
   await Promise.all([
-    scaffoldReadme({
-      projectName,
-      projectRoot,
-      description,
-      ...language && {documentation: language.documentation},
-      badges: deepmerge.all([
-        {contribution: {}, status: {}, consumer: {}},
-        ...contributors.map(contributor => contributor.badges).filter(Boolean)
-      ])
-    }),
+    scaffoldReadme({projectName, projectRoot, description}),
     scaffoldEditorConfig({projectRoot})
   ]);
 
-  const gitResults = gitRepo && await liftGit({
-    projectRoot,
-    results: {...language},
-    origin: vcsHostResults
-  });
+  await lift({projectRoot, results: deepmerge.all(contributors)});
+
+  const gitResults = gitRepo && await liftGit({projectRoot, origin: vcsHostResults});
 
   if (language && language.verificationCommand) {
     info('Verifying the generated project');

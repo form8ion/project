@@ -1,7 +1,7 @@
 import {simpleGit} from 'simple-git';
 import hostedGitInfo from 'hosted-git-info';
 import {info, warn} from '@travi/cli-messages';
-import {lift as liftGit, scaffold as scaffoldGit} from '@form8ion/git';
+import {scaffold as scaffoldGit} from '@form8ion/git';
 
 import promptForVcsHostDetails from '../host/prompt.js';
 import {questionNames} from '../../prompts/question-names.js';
@@ -82,13 +82,10 @@ export async function initialize(
   return undefined;
 }
 
-export async function scaffold({projectRoot, results, origin}) {
+export async function scaffold({projectRoot, origin}) {
   info('Finishing Git Configuration');
 
-  const [remoteOriginResults] = await Promise.all([
-    defineRemoteOrigin(projectRoot, origin),
-    liftGit({projectRoot, results})
-  ]);
+  const remoteOriginResults = await defineRemoteOrigin(projectRoot, origin);
 
   return {nextSteps: [{summary: 'Commit scaffolded files'}, ...remoteOriginResults.nextSteps]};
 }

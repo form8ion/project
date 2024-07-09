@@ -1,13 +1,13 @@
 import deepmerge from 'deepmerge';
 import execa from '@form8ion/execa-wrapper';
 import {questionNames as coreQuestionNames} from '@form8ion/core';
+import {scaffold as scaffoldReadme} from '@form8ion/readme';
 import * as resultsReporter from '@form8ion/results-reporter';
 
 import {afterEach, beforeEach, describe, expect, it, vi} from 'vitest';
 import any from '@travi/any';
 import {when} from 'jest-when';
 
-import * as readmeScaffolder from './readme.js';
 import * as gitScaffolder from './vcs/git/git.js';
 import * as vcsHostScaffolder from './vcs/host/scaffolder.js';
 import * as licenseScaffolder from './license/scaffolder.js';
@@ -19,8 +19,10 @@ import * as prompts from './prompts/questions.js';
 import {questionNames} from './prompts/question-names.js';
 import {scaffold as scaffoldEditorconfig} from './editorconfig/index.js';
 import {scaffold as scaffoldContributing} from './contributing/index.js';
+import lift from './lift.js';
 import {scaffold} from './scaffolder.js';
 
+vi.mock('@form8ion/readme');
 vi.mock('@form8ion/execa-wrapper');
 vi.mock('@form8ion/results-reporter');
 vi.mock('./readme');
@@ -34,6 +36,7 @@ vi.mock('./options-validator');
 vi.mock('./prompts/questions');
 vi.mock('./editorconfig');
 vi.mock('./contributing');
+vi.mock('./lift.js');
 
 describe('project scaffolder', () => {
   const originalProcessCwd = process.cwd;
@@ -76,6 +79,10 @@ describe('project scaffolder', () => {
     const gitNextSteps = any.listOf(any.simpleObject);
     const dependencyUpdaterNextSteps = any.listOf(any.simpleObject);
     const dependencyUpdaterContributionBadges = any.simpleObject();
+    const dependencyUpdaterResults = {
+      badges: {contribution: dependencyUpdaterContributionBadges},
+      nextSteps: dependencyUpdaterNextSteps
+    };
     const languageResults = {
       badges: {status: {ci: ciBadge}},
       vcsIgnore,
@@ -83,6 +90,8 @@ describe('project scaffolder', () => {
       documentation,
       tags
     };
+    const licenseResults = {badges: {consumer: {license: licenseBadge}}};
+    const contributingResults = any.simpleObject();
     when(optionsValidator.validate)
       .calledWith(options)
       .mockReturnValue({languages: languageScaffolders, vcsHosts, decisions, dependencyUpdaters});
@@ -106,7 +115,7 @@ describe('project scaffolder', () => {
     gitScaffolder.scaffold.mockResolvedValue({nextSteps: gitNextSteps});
     when(licenseScaffolder.default)
       .calledWith({projectRoot: projectPath, license, copyright, vcs})
-      .mockResolvedValue({badges: {consumer: {license: licenseBadge}}});
+      .mockResolvedValue(licenseResults);
     when(vcsHostScaffolder.default)
       .calledWith(
         vcsHosts,
@@ -124,35 +133,26 @@ describe('project scaffolder', () => {
     languageScaffolder.default.mockResolvedValue(languageResults);
     when(dependencyUpdaterScaffolder.default)
       .calledWith(dependencyUpdaters, decisions, {projectRoot: projectPath, vcs})
-      .mockResolvedValue({
-        badges: {contribution: dependencyUpdaterContributionBadges},
-        nextSteps: dependencyUpdaterNextSteps
-      });
+      .mockResolvedValue(dependencyUpdaterResults);
+    when(scaffoldContributing).calledWith({visibility}).mockReturnValue(contributingResults);
 
     await scaffold(options);
 
     expect(gitScaffolder.scaffold).toHaveBeenCalledWith({
       projectRoot: projectPath,
-      results: languageResults,
       origin: vcsOriginDetails
     });
-    expect(readmeScaffolder.default).toHaveBeenCalledWith({
-      projectName,
-      projectRoot: projectPath,
-      description,
-      documentation,
-      badges: {
-        consumer: {license: licenseBadge},
-        status: {ci: ciBadge},
-        contribution: dependencyUpdaterContributionBadges
-      }
-    });
+    expect(scaffoldReadme).toHaveBeenCalledWith({projectName, projectRoot: projectPath, description});
     expect(dependencyUpdaterScaffolder.default).toHaveBeenCalledWith(
       dependencyUpdaters,
       decisions,
       {projectRoot: projectPath, vcs}
     );
     expect(scaffoldEditorconfig).toHaveBeenCalledWith({projectRoot: projectPath});
+    expect(lift).toHaveBeenCalledWith({
+      projectRoot: projectPath,
+      results: deepmerge.all([licenseResults, languageResults, dependencyUpdaterResults, contributingResults])
+    });
     expect(resultsReporter.reportResults).toHaveBeenCalledWith({
       nextSteps: [...gitNextSteps, ...dependencyUpdaterNextSteps]
     });
@@ -218,25 +218,15 @@ describe('project scaffolder', () => {
 
     await scaffold(options);
 
-    expect(gitScaffolder.scaffold).toHaveBeenCalledWith({
-      projectRoot: projectPath,
-      origin: vcsOriginDetails,
-      results: languageResults
-    });
-    expect(readmeScaffolder.default).toHaveBeenCalledWith({
-      projectName,
-      projectRoot: projectPath,
-      description,
-      badges: deepmerge.all([licenseBadges, languageBadges, dependencyUpdaterBadges, contributingBadges]),
-      documentation
-    });
+    expect(gitScaffolder.scaffold).toHaveBeenCalledWith({projectRoot: projectPath, origin: vcsOriginDetails});
+    expect(scaffoldReadme).toHaveBeenCalledWith({projectName, projectRoot: projectPath, description});
   });
 
   it('should not scaffold the git repo if not requested', async () => {
     when(optionsValidator.validate).calledWith(options).mockReturnValue({});
     prompts.promptForBaseDetails.mockResolvedValue({[questionNames.GIT_REPO]: false});
     languagePrompt.default.mockResolvedValue({});
-    readmeScaffolder.default.mockResolvedValue();
+    scaffoldReadme.mockResolvedValue();
     gitScaffolder.initialize.mockResolvedValue(undefined);
 
     await scaffold(options);
@@ -309,22 +299,8 @@ describe('project scaffolder', () => {
 
     await scaffold(options);
 
-    expect(gitScaffolder.scaffold).toHaveBeenCalledWith({
-      projectRoot: projectPath,
-      results: languageResults,
-      origin: vcsOriginDetails
-    });
-    expect(readmeScaffolder.default).toHaveBeenCalledWith({
-      projectName,
-      projectRoot: projectPath,
-      description,
-      documentation,
-      badges: {
-        consumer: languageConsumerBadges,
-        status: languageStatusBadges,
-        contribution: languageContributionBadges
-      }
-    });
+    expect(gitScaffolder.scaffold).toHaveBeenCalledWith({projectRoot: projectPath, origin: vcsOriginDetails});
+    expect(scaffoldReadme).toHaveBeenCalledWith({projectName, projectRoot: projectPath, description});
     expect(execaPipe).toHaveBeenCalledWith(process.stdout);
     expect(resultsReporter.reportResults).toHaveBeenCalledWith({nextSteps: [...gitNextSteps, ...languageNextSteps]});
   });
@@ -352,18 +328,8 @@ describe('project scaffolder', () => {
 
     await scaffold(options);
 
-    expect(gitScaffolder.scaffold).toHaveBeenCalledWith({
-      projectRoot: projectPath,
-      results: {},
-      origin: vcsOriginDetails
-    });
-    expect(readmeScaffolder.default).toHaveBeenCalledWith({
-      projectName,
-      projectRoot: projectPath,
-      description,
-      documentation: undefined,
-      badges: {consumer: {}, status: {}, contribution: {}}
-    });
+    expect(gitScaffolder.scaffold).toHaveBeenCalledWith({projectRoot: projectPath, origin: vcsOriginDetails});
+    expect(scaffoldReadme).toHaveBeenCalledWith({projectName, projectRoot: projectPath, description});
     expect(execa).not.toHaveBeenCalled();
   });
 
