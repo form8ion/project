@@ -32,7 +32,11 @@ export async function scaffold(options) {
   } = await promptForBaseDetails(projectRoot, decisions);
   const copyright = {year: copyrightYear, holder: copyHolder};
 
-  const vcs = await scaffoldGit(gitRepo, projectRoot, projectName, vcsHosts, visibility, decisions);
+  const [vcs] = await Promise.all([
+    scaffoldGit(gitRepo, projectRoot, projectName, vcsHosts, visibility, decisions),
+    scaffoldReadme({projectName, projectRoot, description}),
+    scaffoldEditorConfig({projectRoot})
+  ]);
 
   const {[questionNames.PROJECT_LANGUAGE]: projectLanguage} = await promptForLanguageDetails(languages, decisions);
 
@@ -69,11 +73,6 @@ export async function scaffold(options) {
     },
     nextSteps: contributedTasks
   });
-
-  await Promise.all([
-    scaffoldReadme({projectName, projectRoot, description}),
-    scaffoldEditorConfig({projectRoot})
-  ]);
 
   await lift({projectRoot, results: deepmerge.all(contributors)});
 

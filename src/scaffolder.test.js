@@ -8,7 +8,7 @@ import {afterEach, beforeEach, describe, expect, it, vi} from 'vitest';
 import any from '@travi/any';
 import {when} from 'jest-when';
 
-import * as gitScaffolder from './vcs/git/git.js';
+import {scaffold as liftGit, initialize as scaffoldGit} from './vcs/git/git.js';
 import * as vcsHostScaffolder from './vcs/host/scaffolder.js';
 import * as licenseScaffolder from './license/scaffolder.js';
 import * as languageScaffolder from './language/scaffolder.js';
@@ -109,10 +109,10 @@ describe('project scaffolder', () => {
     when(languagePrompt.default)
       .calledWith(languageScaffolders, decisions)
       .mockResolvedValue({[questionNames.PROJECT_LANGUAGE]: projectLanguage});
-    when(gitScaffolder.initialize)
+    when(scaffoldGit)
       .calledWith(gitRepoShouldBeInitialized, projectPath, projectName, vcsHosts, visibility, decisions)
       .mockResolvedValue(vcs);
-    gitScaffolder.scaffold.mockResolvedValue({nextSteps: gitNextSteps});
+    liftGit.mockResolvedValue({nextSteps: gitNextSteps});
     when(licenseScaffolder.default)
       .calledWith({projectRoot: projectPath, license, copyright, vcs})
       .mockResolvedValue(licenseResults);
@@ -138,7 +138,7 @@ describe('project scaffolder', () => {
 
     await scaffold(options);
 
-    expect(gitScaffolder.scaffold).toHaveBeenCalledWith({
+    expect(liftGit).toHaveBeenCalledWith({
       projectRoot: projectPath,
       origin: vcsOriginDetails
     });
@@ -171,7 +171,7 @@ describe('project scaffolder', () => {
 
     await scaffold();
 
-    expect(gitScaffolder.initialize)
+    expect(scaffoldGit)
       .toHaveBeenCalledWith(gitRepoShouldBeInitialized, projectPath, projectName, {}, undefined, undefined);
   });
 
@@ -180,7 +180,7 @@ describe('project scaffolder', () => {
     when(optionsValidator.validate).calledWith(emptyOptions).mockReturnValue({});
     when(prompts.promptForBaseDetails).calledWith(projectPath, undefined, undefined).mockResolvedValue({});
     languagePrompt.default.mockResolvedValue({});
-    gitScaffolder.initialize.mockResolvedValue({});
+    scaffoldGit.mockResolvedValue({});
 
     await scaffold(emptyOptions);
   });
@@ -218,7 +218,7 @@ describe('project scaffolder', () => {
 
     await scaffold(options);
 
-    expect(gitScaffolder.scaffold).toHaveBeenCalledWith({projectRoot: projectPath, origin: vcsOriginDetails});
+    expect(liftGit).toHaveBeenCalledWith({projectRoot: projectPath, origin: vcsOriginDetails});
     expect(scaffoldReadme).toHaveBeenCalledWith({projectName, projectRoot: projectPath, description});
   });
 
@@ -227,11 +227,11 @@ describe('project scaffolder', () => {
     prompts.promptForBaseDetails.mockResolvedValue({[questionNames.GIT_REPO]: false});
     languagePrompt.default.mockResolvedValue({});
     scaffoldReadme.mockResolvedValue();
-    gitScaffolder.initialize.mockResolvedValue(undefined);
+    scaffoldGit.mockResolvedValue(undefined);
 
     await scaffold(options);
 
-    expect(gitScaffolder.scaffold).not.toHaveBeenCalled();
+    expect(liftGit).not.toHaveBeenCalled();
     expect(vcsHostScaffolder.default).not.toHaveBeenCalled();
     expect(dependencyUpdaterScaffolder.default).not.toHaveBeenCalled();
   });
@@ -260,8 +260,8 @@ describe('project scaffolder', () => {
     when(optionsValidator.validate)
       .calledWith(options)
       .mockReturnValue({languages: languageScaffolders, vcsHosts, decisions});
-    gitScaffolder.initialize.mockResolvedValue(vcs);
-    gitScaffolder.scaffold.mockResolvedValue({nextSteps: gitNextSteps});
+    scaffoldGit.mockResolvedValue(vcs);
+    liftGit.mockResolvedValue({nextSteps: gitNextSteps});
     prompts.promptForBaseDetails.mockResolvedValue({
       [coreQuestionNames.PROJECT_NAME]: projectName,
       [coreQuestionNames.VISIBILITY]: visibility,
@@ -299,7 +299,7 @@ describe('project scaffolder', () => {
 
     await scaffold(options);
 
-    expect(gitScaffolder.scaffold).toHaveBeenCalledWith({projectRoot: projectPath, origin: vcsOriginDetails});
+    expect(liftGit).toHaveBeenCalledWith({projectRoot: projectPath, origin: vcsOriginDetails});
     expect(scaffoldReadme).toHaveBeenCalledWith({projectName, projectRoot: projectPath, description});
     expect(execaPipe).toHaveBeenCalledWith(process.stdout);
     expect(resultsReporter.reportResults).toHaveBeenCalledWith({nextSteps: [...gitNextSteps, ...languageNextSteps]});
@@ -309,7 +309,7 @@ describe('project scaffolder', () => {
     when(optionsValidator.validate)
       .calledWith(options)
       .mockReturnValue({languages: languageScaffolders, vcsHosts, decisions});
-    gitScaffolder.initialize.mockResolvedValue(vcs);
+    scaffoldGit.mockResolvedValue(vcs);
     prompts.promptForBaseDetails.mockResolvedValue({
       [coreQuestionNames.PROJECT_NAME]: projectName,
       [coreQuestionNames.VISIBILITY]: visibility,
@@ -328,7 +328,7 @@ describe('project scaffolder', () => {
 
     await scaffold(options);
 
-    expect(gitScaffolder.scaffold).toHaveBeenCalledWith({projectRoot: projectPath, origin: vcsOriginDetails});
+    expect(liftGit).toHaveBeenCalledWith({projectRoot: projectPath, origin: vcsOriginDetails});
     expect(scaffoldReadme).toHaveBeenCalledWith({projectName, projectRoot: projectPath, description});
     expect(execa).not.toHaveBeenCalled();
   });
@@ -337,7 +337,7 @@ describe('project scaffolder', () => {
     when(optionsValidator.validate).calledWith(options).mockReturnValue({});
     prompts.promptForBaseDetails.mockResolvedValue({});
     languagePrompt.default.mockResolvedValue({[questionNames.PROJECT_LANGUAGE]: projectLanguage});
-    gitScaffolder.initialize.mockResolvedValue({});
+    scaffoldGit.mockResolvedValue({});
 
     await scaffold(options);
 
@@ -359,7 +359,7 @@ describe('project scaffolder', () => {
     when(optionsValidator.validate).calledWith(options).mockReturnValue({});
     prompts.promptForBaseDetails.mockResolvedValue({});
     languagePrompt.default.mockResolvedValue({});
-    gitScaffolder.initialize.mockResolvedValue({});
+    scaffoldGit.mockResolvedValue({});
     languageScaffolder.default.mockResolvedValue({badges: {}, projectDetails: {}});
 
     await scaffold(options);
