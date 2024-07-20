@@ -9,7 +9,7 @@ export default function ({vcs}) {
         consumer: {
           license: {
             link: 'LICENSE',
-            img: `https://img.shields.io/github/license/${vcs.owner}/${vcs.name}.svg`,
+            img: `https://img.shields.io/github/license/${vcs.owner}/${vcs.name}.svg?logo=opensourceinitiative`,
             text: 'license'
           }
         }

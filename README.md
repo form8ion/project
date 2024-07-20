@@ -236,7 +236,7 @@ $ npm test
 
 [license-link]: LICENSE
 
-[license-badge]: https://img.shields.io/github/license/form8ion/project.svg
+[license-badge]: https://img.shields.io/github/license/form8ion/project.svg?logo=opensourceinitiative
 
 [commit-convention-link]: https://conventionalcommits.org
 

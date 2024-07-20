@@ -16,7 +16,7 @@ function getLicenseBadgeDetails({vcs}) {
     label: 'license-link',
     imageReferenceLabel: 'license-badge',
     imageAltText: 'license',
-    imageSrc: `https://img.shields.io/github/license/${vcs.owner}/${vcs.name}.svg`,
+    imageSrc: `https://img.shields.io/github/license/${vcs.owner}/${vcs.name}.svg?logo=opensourceinitiative`,
     link: 'LICENSE'
   };
 }

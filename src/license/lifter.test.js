@@ -11,7 +11,7 @@ describe('license lifter', () => {
 
     expect(badges.consumer.license).toEqual({
       link: 'LICENSE',
-      img: `https://img.shields.io/github/license/${vcsOwner}/${vcsName}.svg`,
+      img: `https://img.shields.io/github/license/${vcsOwner}/${vcsName}.svg?logo=opensourceinitiative`,
       text: 'license'
     });
   });
