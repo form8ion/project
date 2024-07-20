@@ -11,6 +11,16 @@ import any from '@travi/any';
 
 import {questionNames} from '../../../../src/prompts/question-names.js';
 
+function getLicenseBadgeDetails({vcs}) {
+  return {
+    label: 'license-link',
+    imageReferenceLabel: 'license-badge',
+    imageAltText: 'license',
+    imageSrc: `https://img.shields.io/github/license/${vcs.owner}/${vcs.name}.svg`,
+    link: 'LICENSE'
+  };
+}
+
 function getBadgesFromZone(tree, badgeGroupName) {
   let badges;
 
@@ -58,7 +68,9 @@ function assertBadgesSectionExists(tree, badgeSection) {
 }
 
 function assertGroupContainsBadge(badgeGroup, references, badgeDetails) {
-  const badgeFromGroup = badgeGroup[badgeDetails.link ? badgeDetails.label : badgeDetails.imageReferenceLabel];
+  const badgeDescriptor = badgeDetails.link ? badgeDetails.label : badgeDetails.imageReferenceLabel;
+  const badgeFromGroup = badgeGroup[badgeDescriptor];
+  assert.isDefined(badgeFromGroup, `${badgeDescriptor} not found in group badge group`);
   const imageReference = badgeDetails.link ? badgeFromGroup.children[0] : badgeFromGroup;
 
   assert.equal(imageReference.type, 'imageReference');
@@ -298,11 +310,11 @@ Then('the README includes the core details', async function () {
 });
 
 Then('{string} details are included in the README', async function (visibility) {
-  const readmeContent = await fs.readFile(`${process.cwd()}/README.md`, 'utf8');
+  const readmeContent = await fs.readFile(`${this.projectRoot}/README.md`, 'utf8');
   const readmeTree = parse(readmeContent);
   const badgeGroups = groupBadges(readmeTree);
   const references = extractReferences(readmeTree.children);
-  const PrsWelcomeDetails = {
+  const prsWelcomeDetails = {
     label: 'PRs-link',
     imageReferenceLabel: 'PRs-badge',
     imageAltText: 'PRs Welcome',
@@ -310,8 +322,8 @@ Then('{string} details are included in the README', async function (visibility) 
     link: 'https://makeapullrequest.com'
   };
 
-  if ('Public' === visibility) assertGroupContainsBadge(badgeGroups.contribution, references, PrsWelcomeDetails);
-  else assertGroupDoesNotContainBadge(badgeGroups.contribution, references, 'PRs-link');
+  if ('Public' === visibility) assertGroupContainsBadge(badgeGroups.contribution, references, prsWelcomeDetails);
+  else assertGroupDoesNotContainBadge(badgeGroups.contribution, references, prsWelcomeDetails);
 });
 
 Then('the README includes the language details', async function () {
@@ -507,5 +519,31 @@ ${
     : ''
 }
 `
+  );
+});
+
+Then('the license badge is added to the readme', async function () {
+  const readmeContent = await fs.readFile(`${this.projectRoot}/README.md`, 'utf8');
+  const readmeTree = parse(readmeContent);
+  const badgeGroups = groupBadges(readmeTree);
+  const references = extractReferences(readmeTree.children);
+
+  assertGroupContainsBadge(
+    badgeGroups.consumer,
+    references,
+    getLicenseBadgeDetails({vcs: {owner: this.vcsOwner, name: this.vcsName}})
+  );
+});
+
+Then('the license badge is not added to the readme', async function () {
+  const readmeContent = await fs.readFile(`${this.projectRoot}/README.md`, 'utf8');
+  const readmeTree = parse(readmeContent);
+  const badgeGroups = groupBadges(readmeTree);
+  const references = extractReferences(readmeTree.children);
+
+  assertGroupDoesNotContainBadge(
+    badgeGroups.consumer,
+    references,
+    getLicenseBadgeDetails({vcs: {owner: this.vcsOwner, name: this.vcsName}})
   );
 });

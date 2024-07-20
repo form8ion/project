@@ -114,7 +114,7 @@ describe('project scaffolder', () => {
       .mockResolvedValue(vcs);
     liftGit.mockResolvedValue({nextSteps: gitNextSteps});
     when(licenseScaffolder.default)
-      .calledWith({projectRoot: projectPath, license, copyright, vcs})
+      .calledWith({projectRoot: projectPath, license, copyright})
       .mockResolvedValue(licenseResults);
     when(vcsHostScaffolder.default)
       .calledWith(

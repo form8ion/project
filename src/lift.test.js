@@ -7,6 +7,7 @@ import {afterEach, describe, expect, it, vi} from 'vitest';
 import any from '@travi/any';
 import {when} from 'jest-when';
 
+import * as licensePlugin from './license/index.js';
 import lift from './lift.js';
 
 vi.mock('deepmerge');
@@ -29,7 +30,7 @@ describe('lift', () => {
     when(core.applyEnhancers)
       .calledWith({
         results,
-        enhancers: {...enhancers, gitPlugin},
+        enhancers: {...enhancers, gitPlugin, licensePlugin},
         options: {projectRoot, vcs},
         dependencies
       })

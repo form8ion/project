@@ -5,7 +5,7 @@ import mustache from 'mustache';
 import spdxLicenseList from 'spdx-license-list/full.js';
 import {info} from '@travi/cli-messages';
 
-export default async function ({projectRoot, license, copyright, vcs}) {
+export default async function ({projectRoot, license, copyright}) {
   if (license) {
     info('Generating License');
 
@@ -18,20 +18,6 @@ export default async function ({projectRoot, license, copyright, vcs}) {
         {width: 80, indent: ''}
       )}\n`
     );
-
-    return {
-      ...vcs && 'github' === vcs.host && {
-        badges: {
-          consumer: {
-            license: {
-              img: `https://img.shields.io/github/license/${vcs.owner}/${vcs.name}.svg`,
-              text: `${license} license`,
-              link: 'LICENSE'
-            }
-          }
-        }
-      }
-    };
   }
 
   return {};

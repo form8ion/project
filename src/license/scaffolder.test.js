@@ -57,32 +57,4 @@ describe('license', () => {
       )}\n`
     );
   });
-
-  it('should return badge information if the vcs is hosted at github', async () => {
-    const vcs = {host: 'github', owner: any.word(), name: any.word()};
-
-    expect(await scaffoldLicense({projectRoot, license, copyright, vcs})).toEqual({
-      badges: {
-        consumer: {
-          license: {
-            img: `https://img.shields.io/github/license/${vcs.owner}/${vcs.name}.svg`,
-            text: `${license} license`,
-            link: 'LICENSE'
-          }
-        }
-      }
-    });
-  });
-
-  it('should not return badge information when no license was chosen', async () => {
-    expect(await scaffoldLicense({projectRoot, copyright, vcs: {host: 'github'}})).toEqual({});
-  });
-
-  it('should not return badge information if the vcs is hosted somewhere other than github', async () => {
-    expect(await scaffoldLicense({projectRoot, license, copyright, vcs: {host: any.simpleObject()}})).toEqual({});
-  });
-
-  it('should not return badge information if the project will not be versioned', async () => {
-    expect(await scaffoldLicense({projectRoot, license, copyright, vcs: undefined})).toEqual({});
-  });
 });

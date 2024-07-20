@@ -32,23 +32,21 @@ export async function scaffold(options) {
   } = await promptForBaseDetails(projectRoot, decisions);
   const copyright = {year: copyrightYear, holder: copyHolder};
 
-  const [vcs, contributing] = await Promise.all([
+  const [vcs, contributing, license] = await Promise.all([
     scaffoldGit(gitRepo, projectRoot, projectName, vcsHosts, visibility, decisions),
     scaffoldContributing({visibility}),
+    scaffoldLicense({projectRoot, license: chosenLicense, copyright}),
     scaffoldReadme({projectName, projectRoot, description}),
     scaffoldEditorConfig({projectRoot})
   ]);
 
   const {[questionNames.PROJECT_LANGUAGE]: projectLanguage} = await promptForLanguageDetails(languages, decisions);
 
-  const [license, language] = await Promise.all([
-    scaffoldLicense({projectRoot, license: chosenLicense, copyright, vcs}),
-    scaffoldLanguage(
-      languages,
-      projectLanguage,
-      {projectRoot, projectName, vcs, visibility, license: chosenLicense || 'UNLICENSED', description}
-    )
-  ]);
+  const language = await scaffoldLanguage(
+    languages,
+    projectLanguage,
+    {projectRoot, projectName, vcs, visibility, license: chosenLicense || 'UNLICENSED', description}
+  );
 
   const dependencyUpdaterResults = vcs && await scaffoldDependencyUpdater(
     dependencyUpdaters,

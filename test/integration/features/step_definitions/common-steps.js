@@ -21,6 +21,7 @@ const projectTemplatePath = [...projectPath, 'templates'];
 const stubbedNodeModules = stubbedFs.load(resolve(...projectPath, 'node_modules'));
 
 Before({timeout: 20 * 1000}, async function () {
+  this.projectRoot = process.cwd();
   this.git = await td.replaceEsm('simple-git');
 
   // eslint-disable-next-line import/no-extraneous-dependencies,import/no-unresolved
@@ -101,8 +102,12 @@ When('the project is lifted', async function () {
   ]);
 
   await lift({
-    projectRoot: process.cwd(),
-    vcs: {},
+    projectRoot: this.projectRoot,
+    vcs: {
+      owner: this.vcsOwner,
+      name: this.vcsName,
+      ...this.repoHost && {host: this.repoHost.toLowerCase()}
+    },
     results: {
       badges: this.badgesFromResults,
       ...(this.vcsIgnoreDirectories || this.vcsIgnoreFiles) && {
