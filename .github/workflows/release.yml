@@ -12,7 +12,6 @@ jobs:
       id-token: write
       issues: write
       pull-requests: write
-    uses: >-
-      form8ion/.github/.github/workflows/release-package-semantic-release-19.yml@d7062208039222450ac7926b68f3a30d32285f26
+    uses: form8ion/.github/.github/workflows/release-package.yml@master
     secrets:
       NPM_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
