@@ -1,5 +1,5 @@
 import joi from 'joi';
-import {validateOptions, form8ionPlugin} from '@form8ion/core';
+import {validateOptions, optionsSchemas} from '@form8ion/core';
 
 import {describe, expect, it, beforeEach, afterEach, vi} from 'vitest';
 import any from '@travi/any';
@@ -14,6 +14,8 @@ import {validate} from './options-validator.js';
 vi.mock('@form8ion/core');
 
 describe('options validator', () => {
+  const {form8ionPlugin} = optionsSchemas;
+
   beforeEach(() => {
     vi.spyOn(joi, 'object');
     vi.spyOn(joi, 'string');
