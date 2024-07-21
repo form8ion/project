@@ -62,6 +62,13 @@ When(/^the project is scaffolded$/, async function () {
         }
       }
     },
+    plugins: {
+      ...this.updaterScaffolderDetails && {
+        dependencyUpdaters: {
+          [chosenUpdater]: {...this.updaterScaffolderDetails, scaffold: this.updaterScaffolderDetails.scaffolder}
+        }
+      }
+    },
     ...this.updaterScaffolderDetails && {dependencyUpdaters: {[chosenUpdater]: this.updaterScaffolderDetails}},
     ...vcsHost && {
       vcsHosts: {

@@ -1,4 +1,4 @@
-import {validateOptions} from '@form8ion/core';
+import {validateOptions, form8ionPlugin} from '@form8ion/core';
 import joi from 'joi';
 
 import languagePluginsSchema from './language/schema.js';
@@ -11,6 +11,8 @@ export function validate(options) {
     languages: languagePluginsSchema,
     vcsHosts: vcsHostPluginsSchema,
     decisions: decisionsSchema,
-    dependencyUpdaters: dependencyUpdaterPluginsSchema
+    dependencyUpdaters: dependencyUpdaterPluginsSchema,
+    plugins: joi.object({dependencyUpdaters: joi.object().pattern(joi.string(), form8ionPlugin)})
+    // plugins: joi.object({dependencyUpdaters: joi.object().pattern(form8ionPlugin)})
   }), options) || {};
 }
