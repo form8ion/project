@@ -94,7 +94,7 @@ describe('project scaffolder', () => {
     const contributingResults = any.simpleObject();
     when(optionsValidator.validate)
       .calledWith(options)
-      .mockReturnValue({languages: languageScaffolders, vcsHosts, decisions, dependencyUpdaters});
+      .mockReturnValue({languages: languageScaffolders, vcsHosts, decisions, plugins: {dependencyUpdaters}});
     when(prompts.promptForBaseDetails)
       .calledWith(projectPath, decisions)
       .mockResolvedValue({
@@ -160,7 +160,7 @@ describe('project scaffolder', () => {
 
   it('should consider all options to be optional', async () => {
     const gitRepoShouldBeInitialized = any.boolean();
-    optionsValidator.validate.mockReturnValue({});
+    optionsValidator.validate.mockReturnValue({plugins: {}});
     when(prompts.promptForBaseDetails)
       .calledWith(projectPath, undefined)
       .mockResolvedValue({
@@ -175,9 +175,9 @@ describe('project scaffolder', () => {
       .toHaveBeenCalledWith(gitRepoShouldBeInitialized, projectPath, projectName, {}, undefined, undefined);
   });
 
-  it('should consider each option optional', async () => {
+  it('should consider each option except the plugins map optional', async () => {
     const emptyOptions = {};
-    when(optionsValidator.validate).calledWith(emptyOptions).mockReturnValue({});
+    when(optionsValidator.validate).calledWith(emptyOptions).mockReturnValue({plugins: {}});
     when(prompts.promptForBaseDetails).calledWith(projectPath, undefined, undefined).mockResolvedValue({});
     languagePrompt.default.mockResolvedValue({});
     scaffoldGit.mockResolvedValue({});
@@ -223,7 +223,7 @@ describe('project scaffolder', () => {
   });
 
   it('should not scaffold the git repo if not requested', async () => {
-    when(optionsValidator.validate).calledWith(options).mockReturnValue({});
+    when(optionsValidator.validate).calledWith(options).mockReturnValue({plugins: {}});
     prompts.promptForBaseDetails.mockResolvedValue({[questionNames.GIT_REPO]: false});
     languagePrompt.default.mockResolvedValue({});
     scaffoldReadme.mockResolvedValue();
@@ -259,7 +259,7 @@ describe('project scaffolder', () => {
     };
     when(optionsValidator.validate)
       .calledWith(options)
-      .mockReturnValue({languages: languageScaffolders, vcsHosts, decisions});
+      .mockReturnValue({languages: languageScaffolders, vcsHosts, decisions, plugins: {}});
     scaffoldGit.mockResolvedValue(vcs);
     liftGit.mockResolvedValue({nextSteps: gitNextSteps});
     prompts.promptForBaseDetails.mockResolvedValue({
@@ -308,7 +308,7 @@ describe('project scaffolder', () => {
   it('should consider the language details to be optional', async () => {
     when(optionsValidator.validate)
       .calledWith(options)
-      .mockReturnValue({languages: languageScaffolders, vcsHosts, decisions});
+      .mockReturnValue({languages: languageScaffolders, vcsHosts, decisions, plugins: {}});
     scaffoldGit.mockResolvedValue(vcs);
     prompts.promptForBaseDetails.mockResolvedValue({
       [coreQuestionNames.PROJECT_NAME]: projectName,
@@ -334,7 +334,7 @@ describe('project scaffolder', () => {
   });
 
   it('should pass the license to the language scaffolder as `UNLICENSED` when no license was chosen', async () => {
-    when(optionsValidator.validate).calledWith(options).mockReturnValue({});
+    when(optionsValidator.validate).calledWith(options).mockReturnValue({plugins: {}});
     prompts.promptForBaseDetails.mockResolvedValue({});
     languagePrompt.default.mockResolvedValue({[questionNames.PROJECT_LANGUAGE]: projectLanguage});
     scaffoldGit.mockResolvedValue({});
@@ -356,7 +356,7 @@ describe('project scaffolder', () => {
   });
 
   it('should not run a verification command when one is not provided', async () => {
-    when(optionsValidator.validate).calledWith(options).mockReturnValue({});
+    when(optionsValidator.validate).calledWith(options).mockReturnValue({plugins: {}});
     prompts.promptForBaseDetails.mockResolvedValue({});
     languagePrompt.default.mockResolvedValue({});
     scaffoldGit.mockResolvedValue({});

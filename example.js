@@ -24,6 +24,11 @@ import {lift, questionNames, scaffold} from './lib/index.js';
     },
     languages: {
       foo: options => options
+    },
+    plugins: {
+      dependencyUpdaters: {
+        bar: {scaffold: options => options}
+      }
     }
   });
 

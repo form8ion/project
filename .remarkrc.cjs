@@ -1,5 +1,5 @@
 exports.settings = {
-  listItemIndent: 1,
+  listItemIndent: 'one',
   emphasis: '_',
   strong: '_',
   bullet: '*',

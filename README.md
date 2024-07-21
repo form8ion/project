@@ -90,6 +90,11 @@ import {lift, questionNames, scaffold} from '@form8ion/project';
     },
     languages: {
       foo: options => options
+    },
+    plugins: {
+      dependencyUpdaters: {
+        bar: {scaffold: options => options}
+      }
     }
   });
 

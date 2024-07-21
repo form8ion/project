@@ -19,7 +19,7 @@ import lift from './lift.js';
 
 export async function scaffold(options) {
   const projectRoot = process.cwd();
-  const {languages = {}, vcsHosts = {}, decisions, dependencyUpdaters} = validate(options);
+  const {languages = {}, vcsHosts = {}, decisions, plugins: {dependencyUpdaters}} = validate(options);
 
   const {
     [coreQuestionNames.PROJECT_NAME]: projectName,
