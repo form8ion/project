@@ -334,7 +334,7 @@ describe('project scaffolder', () => {
   });
 
   it('should pass the license to the language scaffolder as `UNLICENSED` when no license was chosen', async () => {
-    when(optionsValidator.validate).calledWith(options).mockReturnValue({plugins: {}});
+    when(optionsValidator.validate).calledWith(options).mockReturnValue({plugins: {languages}});
     prompts.promptForBaseDetails.mockResolvedValue({});
     languagePrompt.default.mockResolvedValue({[questionNames.PROJECT_LANGUAGE]: projectLanguage});
     scaffoldGit.mockResolvedValue({});
@@ -342,7 +342,7 @@ describe('project scaffolder', () => {
     await scaffold(options);
 
     expect(languageScaffolder.default).toHaveBeenCalledWith(
-      {},
+      languages,
       projectLanguage,
       {
         license: 'UNLICENSED',
