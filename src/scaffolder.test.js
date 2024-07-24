@@ -11,7 +11,7 @@ import {when} from 'jest-when';
 import {scaffold as liftGit, initialize as scaffoldGit} from './vcs/git/git.js';
 import * as vcsHostScaffolder from './vcs/host/scaffolder.js';
 import * as licenseScaffolder from './license/scaffolder.js';
-import * as languageScaffolder from './language/scaffolder.js';
+import scaffoldLanguage from './language/scaffolder.js';
 import * as languagePrompt from './language/prompt.js';
 import * as dependencyUpdaterScaffolder from './dependency-updater/scaffolder.js';
 import * as optionsValidator from './options-validator.js';
@@ -130,7 +130,7 @@ describe('project scaffolder', () => {
         }
       )
       .mockResolvedValue(vcsOriginDetails);
-    languageScaffolder.default.mockResolvedValue(languageResults);
+    scaffoldLanguage.mockResolvedValue(languageResults);
     when(dependencyUpdaterScaffolder.default)
       .calledWith(dependencyUpdaters, decisions, {projectRoot: projectPath, vcs})
       .mockResolvedValue(dependencyUpdaterResults);
@@ -211,7 +211,7 @@ describe('project scaffolder', () => {
       .calledWith(projectPath, undefined, undefined)
       .mockResolvedValue({[coreQuestionNames.VISIBILITY]: visibility});
     when(scaffoldContributing).calledWith({visibility}).mockReturnValue({badges: contributingBadges});
-    languageScaffolder.default.mockResolvedValue(languageResults);
+    scaffoldLanguage.mockResolvedValue(languageResults);
     vcsHostScaffolder.default.mockResolvedValue(vcsOriginDetails);
     dependencyUpdaterScaffolder.default.mockResolvedValue({badges: dependencyUpdaterBadges});
     licenseScaffolder.default.mockResolvedValue({badges: licenseBadges});
@@ -272,7 +272,7 @@ describe('project scaffolder', () => {
     when(languagePrompt.default)
       .calledWith(languages, decisions)
       .mockResolvedValue({[questionNames.PROJECT_LANGUAGE]: projectLanguage});
-    when(languageScaffolder.default).calledWith(languages, projectLanguage, {
+    when(scaffoldLanguage).calledWith(languages, projectLanguage, {
       projectName,
       projectRoot: projectPath,
       visibility,
@@ -321,7 +321,7 @@ describe('project scaffolder', () => {
       .calledWith(languages, decisions)
       .mockResolvedValue({[questionNames.PROJECT_LANGUAGE]: projectLanguage});
     vcsHostScaffolder.default.mockResolvedValue(vcsOriginDetails);
-    languageScaffolder.default.mockResolvedValue({});
+    scaffoldLanguage.mockResolvedValue({});
     dependencyUpdaterScaffolder.default.mockResolvedValue({});
     licenseScaffolder.default.mockResolvedValue({});
     scaffoldContributing.mockResolvedValue({});
@@ -341,7 +341,7 @@ describe('project scaffolder', () => {
 
     await scaffold(options);
 
-    expect(languageScaffolder.default).toHaveBeenCalledWith(
+    expect(scaffoldLanguage).toHaveBeenCalledWith(
       languages,
       projectLanguage,
       {
@@ -360,7 +360,7 @@ describe('project scaffolder', () => {
     prompts.promptForBaseDetails.mockResolvedValue({});
     languagePrompt.default.mockResolvedValue({});
     scaffoldGit.mockResolvedValue({});
-    languageScaffolder.default.mockResolvedValue({badges: {}, projectDetails: {}});
+    scaffoldLanguage.mockResolvedValue({badges: {}, projectDetails: {}});
 
     await scaffold(options);
 
