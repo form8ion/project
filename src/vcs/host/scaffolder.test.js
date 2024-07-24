@@ -10,7 +10,7 @@ describe('vcs host scaffolder', () => {
     const otherOptions = any.simpleObject();
     const results = any.simpleObject();
     const chosenHostScaffolder = vi.fn();
-    const hostScaffolders = {...any.simpleObject(), [chosenHost]: {scaffolder: chosenHostScaffolder}};
+    const hostScaffolders = {...any.simpleObject(), [chosenHost]: {scaffold: chosenHostScaffolder}};
     when(chosenHostScaffolder).calledWith(otherOptions).mockResolvedValue(results);
 
     expect(await scaffoldVcsHost(hostScaffolders, {...otherOptions, host: chosenHost.toLowerCase()})).toEqual(results);

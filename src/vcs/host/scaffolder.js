@@ -5,7 +5,7 @@ export default function (hosts, options) {
   const {host: chosenHost, ...rest} = options;
   const host = lowercasedHosts[chosenHost];
 
-  if (host) return host.scaffolder(rest);
+  if (host) return host.scaffold(rest);
 
   return {};
 }

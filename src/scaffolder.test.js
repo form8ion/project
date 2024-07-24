@@ -94,7 +94,7 @@ describe('project scaffolder', () => {
     const contributingResults = any.simpleObject();
     when(optionsValidator.validate)
       .calledWith(options)
-      .mockReturnValue({vcsHosts, decisions, plugins: {dependencyUpdaters, languages}});
+      .mockReturnValue({decisions, plugins: {dependencyUpdaters, languages, vcsHosts}});
     when(prompts.promptForBaseDetails)
       .calledWith(projectPath, decisions)
       .mockResolvedValue({
@@ -259,7 +259,7 @@ describe('project scaffolder', () => {
     };
     when(optionsValidator.validate)
       .calledWith(options)
-      .mockReturnValue({vcsHosts, decisions, plugins: {languages}});
+      .mockReturnValue({decisions, plugins: {languages, vcsHosts}});
     scaffoldGit.mockResolvedValue(vcs);
     liftGit.mockResolvedValue({nextSteps: gitNextSteps});
     prompts.promptForBaseDetails.mockResolvedValue({

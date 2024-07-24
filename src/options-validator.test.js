@@ -1,5 +1,5 @@
 import joi from 'joi';
-import {validateOptions} from '@form8ion/core';
+import * as core from '@form8ion/core';
 
 import {afterEach, beforeEach, describe, expect, it, vi} from 'vitest';
 import any from '@travi/any';
@@ -11,7 +11,11 @@ import vcsHostPluginsSchema from './vcs/host/schema.js';
 import dependencyUpdaterPluginsSchema from './dependency-updater/schema.js';
 import {validate} from './options-validator.js';
 
-vi.mock('@form8ion/core');
+vi.mock('@form8ion/core', async () => ({
+  validateOptions: vi.fn(),
+  optionsSchemas: {form8ionPlugin: joi.object()}
+}));
+vi.mock('./vcs/host/schema.js');
 
 describe('options validator', () => {
   beforeEach(() => {
@@ -29,14 +33,17 @@ describe('options validator', () => {
     const fullSchema = any.simpleObject();
     const validatedOptions = any.simpleObject();
     when(joi.object)
-      .calledWith({dependencyUpdaters: dependencyUpdaterPluginsSchema, languages: languagePluginsSchema})
+      .calledWith({
+        dependencyUpdaters: dependencyUpdaterPluginsSchema,
+        languages: languagePluginsSchema,
+        vcsHosts: vcsHostPluginsSchema
+      })
       .mockReturnValue(pluginsSchema);
     when(joi.object).calledWith({
-      vcsHosts: vcsHostPluginsSchema,
       decisions: decisionsSchema,
       plugins: pluginsSchema
     }).mockReturnValue(fullSchema);
-    when(validateOptions).calledWith(fullSchema, options).mockReturnValue(validatedOptions);
+    when(core.validateOptions).calledWith(fullSchema, options).mockReturnValue(validatedOptions);
 
     expect(validate(options)).toEqual(validatedOptions);
   });
