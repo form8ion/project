@@ -8,9 +8,8 @@ import {decisionsSchema} from './options-schemas.js';
 
 export function validate(options) {
   return validateOptions(joi.object({
-    languages: languagePluginsSchema,
     vcsHosts: vcsHostPluginsSchema,
     decisions: decisionsSchema,
-    plugins: joi.object({dependencyUpdaters: dependencyUpdaterPluginsSchema})
+    plugins: joi.object({dependencyUpdaters: dependencyUpdaterPluginsSchema, languages: languagePluginsSchema})
   }), options) || {};
 }

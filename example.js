@@ -22,12 +22,12 @@ import {lift, questionNames, scaffold} from './lib/index.js';
       [questionNames.COPYRIGHT_YEAR]: '2022',
       [questionNames.PROJECT_LANGUAGE]: 'foo'
     },
-    languages: {
-      foo: options => options
-    },
     plugins: {
       dependencyUpdaters: {
         bar: {scaffold: options => options}
+      },
+      languages: {
+        foo: {scaffold: options => options}
       }
     }
   });

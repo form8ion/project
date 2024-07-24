@@ -1,7 +1,7 @@
-export default function (scaffolders, chosenLanguage, options) {
-  const scaffolder = scaffolders[chosenLanguage];
+export default function (languagePlugins, chosenLanguage, options) {
+  const plugin = languagePlugins[chosenLanguage];
 
-  if (scaffolder) return scaffolder(options);
+  if (plugin) return plugin.scaffold(options);
 
   return undefined;
 }

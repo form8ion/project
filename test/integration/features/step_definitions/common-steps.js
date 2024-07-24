@@ -53,19 +53,21 @@ When(/^the project is scaffolded$/, async function () {
   this.projectDescription = any.sentence();
 
   await scaffold({
-    languages: {
-      ...'Other' !== chosenLanguage && {
-        [chosenLanguage]: ({projectName}) => {
-          info(`Scaffolding ${chosenLanguage} language details for ${projectName}`);
-
-          return this.languageScaffolderResults;
-        }
-      }
-    },
     plugins: {
       ...this.updaterScaffolderDetails && {
         dependencyUpdaters: {
           [chosenUpdater]: {...this.updaterScaffolderDetails, scaffold: this.updaterScaffolderDetails.scaffolder}
+        }
+      },
+      languages: {
+        ...'Other' !== chosenLanguage && {
+          [chosenLanguage]: {
+            scaffold: ({projectName}) => {
+              info(`Scaffolding ${chosenLanguage} language details for ${projectName}`);
+
+              return this.languageScaffolderResults;
+            }
+          }
         }
       }
     },

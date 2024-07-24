@@ -28,9 +28,10 @@ describe('options validator', () => {
     const pluginsSchema = any.simpleObject();
     const fullSchema = any.simpleObject();
     const validatedOptions = any.simpleObject();
-    when(joi.object).calledWith({dependencyUpdaters: dependencyUpdaterPluginsSchema}).mockReturnValue(pluginsSchema);
+    when(joi.object)
+      .calledWith({dependencyUpdaters: dependencyUpdaterPluginsSchema, languages: languagePluginsSchema})
+      .mockReturnValue(pluginsSchema);
     when(joi.object).calledWith({
-      languages: languagePluginsSchema,
       vcsHosts: vcsHostPluginsSchema,
       decisions: decisionsSchema,
       plugins: pluginsSchema

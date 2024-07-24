@@ -10,10 +10,10 @@ describe('language scaffolder', () => {
     const chosenLanguage = any.word();
     const scaffolderResult = any.simpleObject();
     const chosenLanguageScaffolder = vi.fn();
-    const scaffolders = {...any.simpleObject(), [chosenLanguage]: chosenLanguageScaffolder};
+    const plugins = {...any.simpleObject(), [chosenLanguage]: {scaffold: chosenLanguageScaffolder}};
     when(chosenLanguageScaffolder).calledWith(options).mockResolvedValue(scaffolderResult);
 
-    expect(await scaffold(scaffolders, chosenLanguage, options)).toEqual(scaffolderResult);
+    expect(await scaffold(plugins, chosenLanguage, options)).toEqual(scaffolderResult);
   });
 
   it('should not result in an error when choosing a language without a defined scaffolder', async () => {

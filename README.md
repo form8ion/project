@@ -88,12 +88,12 @@ import {lift, questionNames, scaffold} from '@form8ion/project';
       [questionNames.COPYRIGHT_YEAR]: '2022',
       [questionNames.PROJECT_LANGUAGE]: 'foo'
     },
-    languages: {
-      foo: options => options
-    },
     plugins: {
       dependencyUpdaters: {
         bar: {scaffold: options => options}
+      },
+      languages: {
+        foo: {scaffold: options => options}
       }
     }
   });

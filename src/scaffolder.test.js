@@ -48,7 +48,7 @@ describe('project scaffolder', () => {
   const license = any.string();
   const projectLanguage = any.word();
   const licenseBadge = any.url();
-  const languageScaffolders = any.simpleObject();
+  const languages = any.simpleObject();
   const vcsHosts = any.simpleObject();
   const documentation = any.simpleObject();
   const vcs = any.simpleObject();
@@ -94,7 +94,7 @@ describe('project scaffolder', () => {
     const contributingResults = any.simpleObject();
     when(optionsValidator.validate)
       .calledWith(options)
-      .mockReturnValue({languages: languageScaffolders, vcsHosts, decisions, plugins: {dependencyUpdaters}});
+      .mockReturnValue({vcsHosts, decisions, plugins: {dependencyUpdaters, languages}});
     when(prompts.promptForBaseDetails)
       .calledWith(projectPath, decisions)
       .mockResolvedValue({
@@ -107,7 +107,7 @@ describe('project scaffolder', () => {
         [coreQuestionNames.VISIBILITY]: visibility
       });
     when(languagePrompt.default)
-      .calledWith(languageScaffolders, decisions)
+      .calledWith(languages, decisions)
       .mockResolvedValue({[questionNames.PROJECT_LANGUAGE]: projectLanguage});
     when(scaffoldGit)
       .calledWith(gitRepoShouldBeInitialized, projectPath, projectName, vcsHosts, visibility, decisions)
@@ -259,7 +259,7 @@ describe('project scaffolder', () => {
     };
     when(optionsValidator.validate)
       .calledWith(options)
-      .mockReturnValue({languages: languageScaffolders, vcsHosts, decisions, plugins: {}});
+      .mockReturnValue({vcsHosts, decisions, plugins: {languages}});
     scaffoldGit.mockResolvedValue(vcs);
     liftGit.mockResolvedValue({nextSteps: gitNextSteps});
     prompts.promptForBaseDetails.mockResolvedValue({
@@ -270,9 +270,9 @@ describe('project scaffolder', () => {
       [coreQuestionNames.DESCRIPTION]: description
     });
     when(languagePrompt.default)
-      .calledWith(languageScaffolders, decisions)
+      .calledWith(languages, decisions)
       .mockResolvedValue({[questionNames.PROJECT_LANGUAGE]: projectLanguage});
-    when(languageScaffolder.default).calledWith(languageScaffolders, projectLanguage, {
+    when(languageScaffolder.default).calledWith(languages, projectLanguage, {
       projectName,
       projectRoot: projectPath,
       visibility,
@@ -308,7 +308,7 @@ describe('project scaffolder', () => {
   it('should consider the language details to be optional', async () => {
     when(optionsValidator.validate)
       .calledWith(options)
-      .mockReturnValue({languages: languageScaffolders, vcsHosts, decisions, plugins: {}});
+      .mockReturnValue({vcsHosts, decisions, plugins: {languages}});
     scaffoldGit.mockResolvedValue(vcs);
     prompts.promptForBaseDetails.mockResolvedValue({
       [coreQuestionNames.PROJECT_NAME]: projectName,
@@ -318,7 +318,7 @@ describe('project scaffolder', () => {
       [coreQuestionNames.DESCRIPTION]: description
     });
     when(languagePrompt.default)
-      .calledWith(languageScaffolders, decisions)
+      .calledWith(languages, decisions)
       .mockResolvedValue({[questionNames.PROJECT_LANGUAGE]: projectLanguage});
     vcsHostScaffolder.default.mockResolvedValue(vcsOriginDetails);
     languageScaffolder.default.mockResolvedValue({});
