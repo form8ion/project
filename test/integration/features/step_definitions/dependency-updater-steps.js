@@ -12,7 +12,7 @@ After(function () {
 });
 
 Given('a dependency updater can be chosen', async function () {
-  this.updaterScaffolderDetails = {scaffolder: foo => updaterScaffolder(foo)};
+  this.updatePlugin = {scaffold: foo => updaterScaffolder(foo)};
 });
 
 Then('the dependency updater was executed', async function () {

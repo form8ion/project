@@ -54,9 +54,9 @@ When(/^the project is scaffolded$/, async function () {
 
   await scaffold({
     plugins: {
-      ...this.updaterScaffolderDetails && {
+      ...this.updatePlugin && {
         dependencyUpdaters: {
-          [chosenUpdater]: {...this.updaterScaffolderDetails, scaffold: this.updaterScaffolderDetails.scaffolder}
+          [chosenUpdater]: this.updatePlugin
         }
       },
       languages: {
@@ -92,7 +92,7 @@ When(/^the project is scaffolded$/, async function () {
       [questionNames.GIT_REPO]: repoShouldBeCreated ?? false,
       ...repoShouldBeCreated && {[questionNames.REPO_HOST]: vcsHost},
       [questionNames.PROJECT_LANGUAGE]: chosenLanguage,
-      ...this.updaterScaffolderDetails && {[questionNames.DEPENDENCY_UPDATER]: chosenUpdater}
+      ...this.updatePlugin && {[questionNames.DEPENDENCY_UPDATER]: chosenUpdater}
     }
   });
 });
