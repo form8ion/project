@@ -1,3 +1,6 @@
 extends:
   - '@form8ion'
   - '@form8ion/cucumber'
+
+parserOptions:
+  ecmaVersion: 2022

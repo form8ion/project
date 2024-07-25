@@ -151,7 +151,8 @@ describe('project scaffolder', () => {
     expect(scaffoldEditorconfig).toHaveBeenCalledWith({projectRoot: projectPath});
     expect(lift).toHaveBeenCalledWith({
       projectRoot: projectPath,
-      results: deepmerge.all([licenseResults, languageResults, dependencyUpdaterResults, contributingResults])
+      results: deepmerge.all([licenseResults, languageResults, dependencyUpdaterResults, contributingResults]),
+      enhancers: dependencyUpdaters
     });
     expect(resultsReporter.reportResults).toHaveBeenCalledWith({
       nextSteps: [...gitNextSteps, ...dependencyUpdaterNextSteps]
