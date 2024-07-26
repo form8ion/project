@@ -94,6 +94,12 @@ await scaffold({
     },
     languages: {
       foo: {scaffold: options => options}
+    },
+    vcsHosts: {
+      baz: {
+        scaffold: options => options,
+        prompt: () => ({repoOwner: 'form8ion'})
+      }
     }
   }
 });

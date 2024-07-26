@@ -72,7 +72,7 @@ export async function scaffold(options) {
     nextSteps: contributedTasks
   });
 
-  await lift({projectRoot, results: deepmerge.all(contributors), enhancers: dependencyUpdaters});
+  await lift({projectRoot, results: deepmerge.all(contributors), enhancers: {...dependencyUpdaters, ...vcsHosts}});
 
   const gitResults = gitRepo && await liftGit({projectRoot, origin: vcsHostResults});
 

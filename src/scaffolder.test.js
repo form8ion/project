@@ -152,7 +152,7 @@ describe('project scaffolder', () => {
     expect(lift).toHaveBeenCalledWith({
       projectRoot: projectPath,
       results: deepmerge.all([licenseResults, languageResults, dependencyUpdaterResults, contributingResults]),
-      enhancers: dependencyUpdaters
+      enhancers: {...dependencyUpdaters, ...vcsHosts}
     });
     expect(resultsReporter.reportResults).toHaveBeenCalledWith({
       nextSteps: [...gitNextSteps, ...dependencyUpdaterNextSteps]
