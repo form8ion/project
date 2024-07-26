@@ -40,6 +40,24 @@ export async function scaffold(options) {
     scaffoldEditorConfig({projectRoot})
   ]);
 
+  const [vcsHostResults, dependencyUpdaterResults] = vcs
+    ? await Promise.all([
+      scaffoldVcsHost(vcsHosts, {
+        ...vcs,
+        projectRoot,
+        description,
+        visibility
+      }),
+      scaffoldDependencyUpdater(
+        dependencyUpdaters,
+        decisions,
+        {projectRoot, vcs}
+      )
+    ])
+    : [];
+
+  const gitResults = gitRepo && await liftGit({projectRoot, origin: vcsHostResults});
+
   const {[questionNames.PROJECT_LANGUAGE]: projectLanguage} = await promptForLanguageDetails(languages, decisions);
 
   const language = await scaffoldLanguage(
@@ -48,33 +66,9 @@ export async function scaffold(options) {
     {projectRoot, projectName, vcs, visibility, license: chosenLicense || 'UNLICENSED', description}
   );
 
-  const dependencyUpdaterResults = vcs && await scaffoldDependencyUpdater(
-    dependencyUpdaters,
-    decisions,
-    {projectRoot, vcs}
-  );
-
-  const contributors = [license, language, dependencyUpdaterResults, contributing].filter(Boolean);
-  const contributedTasks = contributors
-    .map(contributor => contributor.nextSteps)
-    .filter(Boolean)
-    .reduce((acc, contributedNextSteps) => ([...acc, ...contributedNextSteps]), []);
-
-  const vcsHostResults = vcs && await scaffoldVcsHost(vcsHosts, {
-    ...vcs,
-    projectRoot,
-    description,
-    visibility,
-    ...language && {
-      homepage: language.projectDetails && language.projectDetails.homepage,
-      tags: language.tags
-    },
-    nextSteps: contributedTasks
-  });
+  const contributors = [license, language, dependencyUpdaterResults, contributing, gitResults].filter(Boolean);
 
   await lift({projectRoot, vcs, results: deepmerge.all(contributors), enhancers: {...dependencyUpdaters, ...vcsHosts}});
-
-  const gitResults = gitRepo && await liftGit({projectRoot, origin: vcsHostResults});
 
   if (language && language.verificationCommand) {
     info('Verifying the generated project');
@@ -84,10 +78,10 @@ export async function scaffold(options) {
     await subprocess;
   }
 
-  reportResults({
-    nextSteps: [
-      ...(gitResults && gitResults.nextSteps) ? gitResults.nextSteps : [],
-      ...contributedTasks
-    ]
-  });
+  const contributedTasks = contributors
+    .map(contributor => contributor.nextSteps)
+    .filter(Boolean)
+    .reduce((acc, contributedNextSteps) => ([...acc, ...contributedNextSteps]), []);
+
+  reportResults({nextSteps: contributedTasks});
 }

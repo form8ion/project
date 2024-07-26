@@ -91,6 +91,7 @@ describe('project scaffolder', () => {
       tags
     };
     const licenseResults = {badges: {consumer: {license: licenseBadge}}};
+    const gitResults = {nextSteps: gitNextSteps};
     const contributingResults = any.simpleObject();
     when(optionsValidator.validate)
       .calledWith(options)
@@ -112,7 +113,7 @@ describe('project scaffolder', () => {
     when(scaffoldGit)
       .calledWith(gitRepoShouldBeInitialized, projectPath, projectName, vcsHosts, visibility, decisions)
       .mockResolvedValue(vcs);
-    liftGit.mockResolvedValue({nextSteps: gitNextSteps});
+    liftGit.mockResolvedValue(gitResults);
     when(licenseScaffolder.default)
       .calledWith({projectRoot: projectPath, license, copyright})
       .mockResolvedValue(licenseResults);
@@ -123,10 +124,7 @@ describe('project scaffolder', () => {
           ...vcs,
           projectRoot: projectPath,
           description,
-          visibility,
-          homepage: undefined,
-          nextSteps: [...dependencyUpdaterNextSteps],
-          tags
+          visibility
         }
       )
       .mockResolvedValue(vcsOriginDetails);
@@ -152,11 +150,17 @@ describe('project scaffolder', () => {
     expect(lift).toHaveBeenCalledWith({
       projectRoot: projectPath,
       vcs,
-      results: deepmerge.all([licenseResults, languageResults, dependencyUpdaterResults, contributingResults]),
+      results: deepmerge.all([
+        licenseResults,
+        languageResults,
+        dependencyUpdaterResults,
+        contributingResults,
+        gitResults
+      ]),
       enhancers: {...dependencyUpdaters, ...vcsHosts}
     });
     expect(resultsReporter.reportResults).toHaveBeenCalledWith({
-      nextSteps: [...gitNextSteps, ...dependencyUpdaterNextSteps]
+      nextSteps: [...dependencyUpdaterNextSteps, ...gitNextSteps]
     });
   });
 
@@ -259,11 +263,12 @@ describe('project scaffolder', () => {
       nextSteps: languageNextSteps,
       tags
     };
+    const gitResults = {nextSteps: gitNextSteps};
     when(optionsValidator.validate)
       .calledWith(options)
       .mockReturnValue({decisions, plugins: {languages, vcsHosts}});
     scaffoldGit.mockResolvedValue(vcs);
-    liftGit.mockResolvedValue({nextSteps: gitNextSteps});
+    liftGit.mockResolvedValue(gitResults);
     prompts.promptForBaseDetails.mockResolvedValue({
       [coreQuestionNames.PROJECT_NAME]: projectName,
       [coreQuestionNames.VISIBILITY]: visibility,
@@ -304,7 +309,7 @@ describe('project scaffolder', () => {
     expect(liftGit).toHaveBeenCalledWith({projectRoot: projectPath, origin: vcsOriginDetails});
     expect(scaffoldReadme).toHaveBeenCalledWith({projectName, projectRoot: projectPath, description});
     expect(execaPipe).toHaveBeenCalledWith(process.stdout);
-    expect(resultsReporter.reportResults).toHaveBeenCalledWith({nextSteps: [...gitNextSteps, ...languageNextSteps]});
+    expect(resultsReporter.reportResults).toHaveBeenCalledWith({nextSteps: [...languageNextSteps, ...gitNextSteps]});
   });
 
   it('should consider the language details to be optional', async () => {
