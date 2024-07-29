@@ -91,7 +91,7 @@ describe('git', () => {
     it('should scaffold the git repo', async () => {
       listRemote.mockRejectedValue(new Error('fatal: No remote configured to list refs from.\n'));
 
-      const result = await scaffold({projectRoot, origin: {}, results});
+      const result = await scaffold({projectRoot, vcs: {}, results});
 
       expect(result.nextSteps).toEqual([{summary: 'Commit scaffolded files'}]);
     });
@@ -109,7 +109,7 @@ describe('git', () => {
       // gitBranch.lookup.withArgs(repository, 'master', gitBranch.BRANCH.LOCAL).resolves(branch);
       listRemote.mockResolvedValue(any.listOf(any.word));
 
-      const result = await scaffold({projectRoot, origin: {sshUrl}});
+      const result = await scaffold({projectRoot, vcs: {sshUrl}});
 
       expect(addRemote).toHaveBeenCalledWith('origin', sshUrl);
       expect(result.nextSteps).toEqual([

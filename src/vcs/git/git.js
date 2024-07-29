@@ -18,7 +18,7 @@ async function getExistingRemotes(git) {
   }
 }
 
-async function defineRemoteOrigin(projectRoot, origin) {
+async function defineRemoteOrigin(projectRoot, vcs) {
   const git = simpleGit({baseDir: projectRoot});
   const existingRemotes = await getExistingRemotes(git);
 
@@ -28,10 +28,10 @@ async function defineRemoteOrigin(projectRoot, origin) {
     return {nextSteps: []};
   }
 
-  if (origin.sshUrl) {
-    info(`Setting remote origin to ${origin.sshUrl}`, {level: 'secondary'});
+  if (vcs.sshUrl) {
+    info(`Setting remote origin to ${vcs.sshUrl}`, {level: 'secondary'});
 
-    await git.addRemote('origin', origin.sshUrl);
+    await git.addRemote('origin', vcs.sshUrl);
 
     // info('Setting the local `master` branch to track `origin/master`');
     //
@@ -82,10 +82,10 @@ export async function initialize(
   return undefined;
 }
 
-export async function scaffold({projectRoot, origin}) {
+export async function scaffold({projectRoot, vcs}) {
   info('Finishing Git Configuration');
 
-  const remoteOriginResults = await defineRemoteOrigin(projectRoot, origin);
+  const remoteOriginResults = await defineRemoteOrigin(projectRoot, vcs);
 
   return {nextSteps: [{summary: 'Commit scaffolded files'}, ...remoteOriginResults.nextSteps]};
 }

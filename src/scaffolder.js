@@ -5,7 +5,7 @@ import {reportResults} from '@form8ion/results-reporter';
 import {scaffold as scaffoldReadme} from '@form8ion/readme';
 import {info} from '@travi/cli-messages';
 
-import {scaffold as scaffoldLanguage, prompt as promptForLanguageDetails} from './language/index.js';
+import {prompt as promptForLanguageDetails, scaffold as scaffoldLanguage} from './language/index.js';
 import {initialize as scaffoldGit, scaffold as liftGit} from './vcs/git/git.js';
 import {scaffold as scaffoldLicense} from './license/index.js';
 import {scaffold as scaffoldVcsHost} from './vcs/host/index.js';
@@ -56,7 +56,7 @@ export async function scaffold(options) {
     ])
     : [];
 
-  const gitResults = gitRepo && await liftGit({projectRoot, origin: vcsHostResults});
+  const gitResults = gitRepo && await liftGit({projectRoot, vcs: vcsHostResults.vcs});
 
   const {[questionNames.PROJECT_LANGUAGE]: projectLanguage} = await promptForLanguageDetails(languages, decisions);
 
@@ -66,9 +66,15 @@ export async function scaffold(options) {
     {projectRoot, projectName, vcs, visibility, license: chosenLicense || 'UNLICENSED', description}
   );
 
-  const contributors = [license, language, dependencyUpdaterResults, contributing, gitResults].filter(Boolean);
+  const mergedResults = deepmerge.all([
+    license,
+    language,
+    dependencyUpdaterResults,
+    contributing,
+    gitResults
+  ].filter(Boolean));
 
-  await lift({projectRoot, vcs, results: deepmerge.all(contributors), enhancers: {...dependencyUpdaters, ...vcsHosts}});
+  await lift({projectRoot, vcs, results: mergedResults, enhancers: {...dependencyUpdaters, ...vcsHosts}});
 
   if (language && language.verificationCommand) {
     info('Verifying the generated project');
@@ -78,10 +84,5 @@ export async function scaffold(options) {
     await subprocess;
   }
 
-  const contributedTasks = contributors
-    .map(contributor => contributor.nextSteps)
-    .filter(Boolean)
-    .reduce((acc, contributedNextSteps) => ([...acc, ...contributedNextSteps]), []);
-
-  reportResults({nextSteps: contributedTasks});
+  reportResults({nextSteps: mergedResults.nextSteps});
 }
