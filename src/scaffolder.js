@@ -44,6 +44,7 @@ export async function scaffold(options) {
     ? await Promise.all([
       scaffoldVcsHost(vcsHosts, {
         ...vcs,
+        projectName,
         projectRoot,
         description,
         visibility

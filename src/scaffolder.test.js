@@ -124,6 +124,7 @@ describe('project scaffolder', () => {
         {
           ...vcs,
           projectRoot: projectPath,
+          projectName,
           description,
           visibility
         }
@@ -183,6 +184,7 @@ describe('project scaffolder', () => {
         {
           ...vcs,
           projectRoot: projectPath,
+          projectName,
           description: undefined,
           visibility: undefined
         }
@@ -245,6 +247,7 @@ describe('project scaffolder', () => {
         {
           ...vcs,
           projectRoot: projectPath,
+          projectName,
           description,
           visibility
         }
@@ -325,6 +328,7 @@ describe('project scaffolder', () => {
       {
         ...vcs,
         projectRoot: projectPath,
+        projectName,
         description,
         visibility
       }
