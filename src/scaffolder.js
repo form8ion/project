@@ -5,7 +5,7 @@ import {reportResults} from '@form8ion/results-reporter';
 import {scaffold as scaffoldReadme} from '@form8ion/readme';
 import {info} from '@travi/cli-messages';
 
-import {prompt as promptForLanguageDetails, scaffold as scaffoldLanguage} from './language/index.js';
+import {scaffold as scaffoldLanguage} from './language/index.js';
 import {scaffold as scaffoldGit} from './vcs/git/git.js';
 import {scaffold as scaffoldLicense} from './license/index.js';
 import scaffoldDependencyUpdater from './dependency-updater/scaffolder.js';
@@ -45,11 +45,9 @@ export async function scaffold(options) {
     {projectRoot, vcs: vcsResults.vcs}
   );
 
-  const {[questionNames.PROJECT_LANGUAGE]: projectLanguage} = await promptForLanguageDetails(languages, decisions);
-
   const language = await scaffoldLanguage(
     languages,
-    projectLanguage,
+    decisions,
     {projectRoot, projectName, vcs: vcsResults.vcs, visibility, license: chosenLicense || 'UNLICENSED', description}
   );
 
