@@ -8,7 +8,6 @@ import {info} from '@travi/cli-messages';
 import {prompt as promptForLanguageDetails, scaffold as scaffoldLanguage} from './language/index.js';
 import {initialize as scaffoldGit, scaffold as liftGit} from './vcs/git/git.js';
 import {scaffold as scaffoldLicense} from './license/index.js';
-import {scaffold as scaffoldVcsHost} from './vcs/host/index.js';
 import scaffoldDependencyUpdater from './dependency-updater/scaffolder.js';
 import {promptForBaseDetails} from './prompts/questions.js';
 import {validate} from './options-validator.js';
@@ -32,39 +31,28 @@ export async function scaffold(options) {
   } = await promptForBaseDetails(projectRoot, decisions);
   const copyright = {year: copyrightYear, holder: copyHolder};
 
-  const [vcs, contributing, license] = await Promise.all([
-    scaffoldGit(gitRepo, projectRoot, projectName, vcsHosts, visibility, decisions),
+  const [vcsResults, contributing, license] = await Promise.all([
+    scaffoldGit(gitRepo, projectRoot, projectName, description, vcsHosts, visibility, decisions),
     scaffoldContributing({visibility}),
     scaffoldLicense({projectRoot, license: chosenLicense, copyright}),
     scaffoldReadme({projectName, projectRoot, description}),
     scaffoldEditorConfig({projectRoot})
   ]);
 
-  const [vcsHostResults, dependencyUpdaterResults] = vcs
-    ? await Promise.all([
-      scaffoldVcsHost(vcsHosts, {
-        ...vcs,
-        projectName,
-        projectRoot,
-        description,
-        visibility
-      }),
-      scaffoldDependencyUpdater(
-        dependencyUpdaters,
-        decisions,
-        {projectRoot, vcs}
-      )
-    ])
-    : [];
+  const dependencyUpdaterResults = vcsResults.vcs && await scaffoldDependencyUpdater(
+    dependencyUpdaters,
+    decisions,
+    {projectRoot, vcs: vcsResults.vcs}
+  );
 
-  const gitResults = gitRepo && await liftGit({projectRoot, vcs: vcsHostResults.vcs});
+  const gitResults = gitRepo && await liftGit({projectRoot, vcs: vcsResults.vcs});
 
   const {[questionNames.PROJECT_LANGUAGE]: projectLanguage} = await promptForLanguageDetails(languages, decisions);
 
   const language = await scaffoldLanguage(
     languages,
     projectLanguage,
-    {projectRoot, projectName, vcs, visibility, license: chosenLicense || 'UNLICENSED', description}
+    {projectRoot, projectName, vcs: vcsResults.vcs, visibility, license: chosenLicense || 'UNLICENSED', description}
   );
 
   const mergedResults = deepmerge.all([
@@ -75,7 +63,12 @@ export async function scaffold(options) {
     gitResults
   ].filter(Boolean));
 
-  await lift({projectRoot, vcs, results: mergedResults, enhancers: {...dependencyUpdaters, ...vcsHosts}});
+  await lift({
+    projectRoot,
+    vcs: vcsResults.vcs,
+    results: mergedResults,
+    enhancers: {...dependencyUpdaters, ...vcsHosts}
+  });
 
   if (language && language.verificationCommand) {
     info('Verifying the generated project');

@@ -5,6 +5,7 @@ import {scaffold as scaffoldGit} from '@form8ion/git';
 
 import promptForVcsHostDetails from '../host/prompt.js';
 import {questionNames} from '../../prompts/question-names.js';
+import {scaffold as scaffoldVcsHost} from '../host/index.js';
 
 async function getExistingRemotes(git) {
   try {
@@ -52,6 +53,7 @@ export async function initialize(
   gitRepoShouldBeInitialized,
   projectRoot,
   projectName,
+  description,
   vcsHosts,
   visibility,
   decisions
@@ -72,14 +74,17 @@ export async function initialize(
       scaffoldGit({projectRoot})
     ]);
 
-    return {
-      host: answers[questionNames.REPO_HOST].toLowerCase(),
+    return scaffoldVcsHost(vcsHosts, {
+      chosenHost: answers[questionNames.REPO_HOST].toLowerCase(),
       owner: answers[questionNames.REPO_OWNER],
-      name: projectName
-    };
+      projectName,
+      projectRoot,
+      description,
+      visibility
+    });
   }
 
-  return undefined;
+  return {};
 }
 
 export async function scaffold({projectRoot, vcs}) {

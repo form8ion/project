@@ -7,6 +7,7 @@ import any from '@travi/any';
 import {when} from 'jest-when';
 
 import promptForVcsHostDetails from '../host/prompt.js';
+import {scaffold as scaffoldVcsHost} from '../host/index.js';
 import {questionNames} from '../../prompts/question-names.js';
 import {initialize, scaffold} from './git.js';
 
@@ -15,6 +16,7 @@ vi.mock('hosted-git-info');
 vi.mock('simple-git');
 vi.mock('@form8ion/git');
 vi.mock('../host/prompt');
+vi.mock('../host/index.js');
 vi.mock('./ignore/index.js');
 
 describe('git', () => {
@@ -43,18 +45,39 @@ describe('git', () => {
     const repoOwner = any.word();
     const githubAccount = any.word();
     const projectName = any.word();
+    const description = any.sentence();
 
     it('should initialize the git repo', async () => {
       const vcsHosts = any.simpleObject();
       when(checkIsRepo).calledWith('root').mockResolvedValue(false);
+      const vcsHostResults = any.simpleObject();
       when(promptForVcsHostDetails)
         .calledWith(vcsHosts, visibility, decisions)
         .mockResolvedValue({[questionNames.REPO_HOST]: repoHost, [questionNames.REPO_OWNER]: repoOwner});
+      when(scaffoldVcsHost)
+        .calledWith(
+          vcsHosts,
+          {
+            chosenHost: repoHost.toLowerCase(),
+            owner: repoOwner,
+            projectName,
+            projectRoot,
+            description,
+            visibility
+          }
+        )
+        .mockResolvedValue(vcsHostResults);
 
-      const hostDetails = await initialize(true, projectRoot, projectName, vcsHosts, visibility, decisions);
-
+      expect(await initialize(
+        true,
+        projectRoot,
+        projectName,
+        description,
+        vcsHosts,
+        visibility,
+        decisions
+      )).toEqual(vcsHostResults);
       expect(scaffoldGit).toHaveBeenCalledWith({projectRoot});
-      expect(hostDetails).toEqual({host: repoHost.toLowerCase(), owner: repoOwner, name: projectName});
     });
 
     it('should not initialize the git repo if the project will not be versioned', async () => {
@@ -66,7 +89,7 @@ describe('git', () => {
       const hostDetails = await initialize(false, projectRoot, projectName, githubAccount, visibility, decisions);
 
       expect(scaffoldGit).not.toHaveBeenCalled();
-      expect(hostDetails).toBe(undefined);
+      expect(hostDetails).toEqual({});
     });
 
     it('should return the git details from an existing account', async () => {

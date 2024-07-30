@@ -9,7 +9,6 @@ import any from '@travi/any';
 import {when} from 'jest-when';
 
 import {scaffold as liftGit, initialize as scaffoldGit} from './vcs/git/git.js';
-import {scaffold as scaffoldVcsHost} from './vcs/host/index.js';
 import * as licenseScaffolder from './license/scaffolder.js';
 import scaffoldLanguage from './language/scaffolder.js';
 import * as languagePrompt from './language/prompt.js';
@@ -27,7 +26,6 @@ vi.mock('@form8ion/execa-wrapper');
 vi.mock('@form8ion/results-reporter');
 vi.mock('./readme');
 vi.mock('./vcs/git/git.js');
-vi.mock('./vcs/host/index.js');
 vi.mock('./license/scaffolder');
 vi.mock('./language/scaffolder');
 vi.mock('./language/prompt');
@@ -52,8 +50,7 @@ describe('project scaffolder', () => {
   const vcsHosts = any.simpleObject();
   const documentation = any.simpleObject();
   const vcs = any.simpleObject();
-  const vcsOriginDetails = any.simpleObject();
-  const vcsHostResults = {...any.simpleObject(), vcs: vcsOriginDetails};
+  const vcsResults = {...any.simpleObject(), vcs};
   const tags = any.listOf(any.word);
   const visibility = any.word();
   const vcsIgnore = any.simpleObject();
@@ -112,24 +109,12 @@ describe('project scaffolder', () => {
       .calledWith(languages, decisions)
       .mockResolvedValue({[questionNames.PROJECT_LANGUAGE]: projectLanguage});
     when(scaffoldGit)
-      .calledWith(gitRepoShouldBeInitialized, projectPath, projectName, vcsHosts, visibility, decisions)
-      .mockResolvedValue(vcs);
+      .calledWith(gitRepoShouldBeInitialized, projectPath, projectName, description, vcsHosts, visibility, decisions)
+      .mockResolvedValue(vcsResults);
     liftGit.mockResolvedValue(gitResults);
     when(licenseScaffolder.default)
       .calledWith({projectRoot: projectPath, license, copyright})
       .mockResolvedValue(licenseResults);
-    when(scaffoldVcsHost)
-      .calledWith(
-        vcsHosts,
-        {
-          ...vcs,
-          projectRoot: projectPath,
-          projectName,
-          description,
-          visibility
-        }
-      )
-      .mockResolvedValue(vcsHostResults);
     scaffoldLanguage.mockResolvedValue(languageResults);
     when(dependencyUpdaterScaffolder.default)
       .calledWith(dependencyUpdaters, decisions, {projectRoot: projectPath, vcs})
@@ -138,10 +123,7 @@ describe('project scaffolder', () => {
 
     await scaffold(options);
 
-    expect(liftGit).toHaveBeenCalledWith({
-      projectRoot: projectPath,
-      vcs: vcsOriginDetails
-    });
+    expect(liftGit).toHaveBeenCalledWith({projectRoot: projectPath, vcs});
     expect(scaffoldReadme).toHaveBeenCalledWith({projectName, projectRoot: projectPath, description});
     expect(dependencyUpdaterScaffolder.default).toHaveBeenCalledWith(
       dependencyUpdaters,
@@ -175,26 +157,13 @@ describe('project scaffolder', () => {
         [coreQuestionNames.PROJECT_NAME]: projectName,
         [questionNames.GIT_REPO]: gitRepoShouldBeInitialized
       });
-
-    when(scaffoldGit).mockResolvedValue(vcs);
+    when(scaffoldGit).mockResolvedValue(vcsResults);
     languagePrompt.default.mockResolvedValue({});
-    when(scaffoldVcsHost)
-      .calledWith(
-        {},
-        {
-          ...vcs,
-          projectRoot: projectPath,
-          projectName,
-          description: undefined,
-          visibility: undefined
-        }
-      )
-      .mockResolvedValue(vcsHostResults);
 
     await scaffold();
 
     expect(scaffoldGit)
-      .toHaveBeenCalledWith(gitRepoShouldBeInitialized, projectPath, projectName, {}, undefined, undefined);
+      .toHaveBeenCalledWith(gitRepoShouldBeInitialized, projectPath, projectName, undefined, {}, undefined, undefined);
   });
 
   it('should consider each option except the plugins map optional', async () => {
@@ -203,7 +172,6 @@ describe('project scaffolder', () => {
     when(prompts.promptForBaseDetails).calledWith(projectPath, undefined).mockResolvedValue({});
     languagePrompt.default.mockResolvedValue({});
     scaffoldGit.mockResolvedValue({});
-    scaffoldVcsHost.mockResolvedValue(vcsHostResults);
 
     await scaffold(emptyOptions);
   });
@@ -241,26 +209,14 @@ describe('project scaffolder', () => {
       });
     when(scaffoldContributing).calledWith({visibility}).mockReturnValue({badges: contributingBadges});
     scaffoldLanguage.mockResolvedValue(languageResults);
-    when(scaffoldVcsHost)
-      .calledWith(
-        vcsHosts,
-        {
-          ...vcs,
-          projectRoot: projectPath,
-          projectName,
-          description,
-          visibility
-        }
-      )
-      .mockResolvedValue(vcsHostResults);
     dependencyUpdaterScaffolder.default.mockResolvedValue({badges: dependencyUpdaterBadges});
     licenseScaffolder.default.mockResolvedValue({badges: licenseBadges});
     languagePrompt.default.mockResolvedValue({});
-    when(scaffoldGit).mockResolvedValue(vcs);
+    when(scaffoldGit).mockResolvedValue(vcsResults);
 
     await scaffold(options);
 
-    expect(liftGit).toHaveBeenCalledWith({projectRoot: projectPath, vcs: vcsOriginDetails});
+    expect(liftGit).toHaveBeenCalledWith({projectRoot: projectPath, vcs});
     expect(scaffoldReadme).toHaveBeenCalledWith({projectName, projectRoot: projectPath, description});
   });
 
@@ -269,12 +225,11 @@ describe('project scaffolder', () => {
     prompts.promptForBaseDetails.mockResolvedValue({[questionNames.GIT_REPO]: false});
     languagePrompt.default.mockResolvedValue({});
     scaffoldReadme.mockResolvedValue();
-    scaffoldGit.mockResolvedValue(undefined);
+    scaffoldGit.mockResolvedValue({});
 
     await scaffold(options);
 
     expect(liftGit).not.toHaveBeenCalled();
-    expect(scaffoldVcsHost).not.toHaveBeenCalled();
     expect(dependencyUpdaterScaffolder.default).not.toHaveBeenCalled();
   });
 
@@ -303,7 +258,7 @@ describe('project scaffolder', () => {
     when(optionsValidator.validate)
       .calledWith(options)
       .mockReturnValue({decisions, plugins: {languages, vcsHosts}});
-    scaffoldGit.mockResolvedValue(vcs);
+    scaffoldGit.mockResolvedValue(vcsResults);
     liftGit.mockResolvedValue(gitResults);
     prompts.promptForBaseDetails.mockResolvedValue({
       [coreQuestionNames.PROJECT_NAME]: projectName,
@@ -323,16 +278,6 @@ describe('project scaffolder', () => {
       vcs,
       description
     }).mockResolvedValue(languageResults);
-    when(scaffoldVcsHost).calledWith(
-      vcsHosts,
-      {
-        ...vcs,
-        projectRoot: projectPath,
-        projectName,
-        description,
-        visibility
-      }
-    ).mockResolvedValue(vcsHostResults);
     when(execa).calledWith(verificationCommand, {shell: true}).mockReturnValue({stdout: {pipe: execaPipe}});
     dependencyUpdaterScaffolder.default.mockResolvedValue({});
     licenseScaffolder.default.mockResolvedValue({});
@@ -340,7 +285,7 @@ describe('project scaffolder', () => {
 
     await scaffold(options);
 
-    expect(liftGit).toHaveBeenCalledWith({projectRoot: projectPath, vcs: vcsOriginDetails});
+    expect(liftGit).toHaveBeenCalledWith({projectRoot: projectPath, vcs});
     expect(scaffoldReadme).toHaveBeenCalledWith({projectName, projectRoot: projectPath, description});
     expect(execaPipe).toHaveBeenCalledWith(process.stdout);
     expect(resultsReporter.reportResults).toHaveBeenCalledWith({nextSteps: [...languageNextSteps, ...gitNextSteps]});
@@ -350,7 +295,7 @@ describe('project scaffolder', () => {
     when(optionsValidator.validate)
       .calledWith(options)
       .mockReturnValue({vcsHosts, decisions, plugins: {languages}});
-    scaffoldGit.mockResolvedValue(vcs);
+    scaffoldGit.mockResolvedValue(vcsResults);
     prompts.promptForBaseDetails.mockResolvedValue({
       [coreQuestionNames.PROJECT_NAME]: projectName,
       [coreQuestionNames.VISIBILITY]: visibility,
@@ -361,7 +306,6 @@ describe('project scaffolder', () => {
     when(languagePrompt.default)
       .calledWith(languages, decisions)
       .mockResolvedValue({[questionNames.PROJECT_LANGUAGE]: projectLanguage});
-    scaffoldVcsHost.mockResolvedValue(vcsHostResults);
     scaffoldLanguage.mockResolvedValue({});
     dependencyUpdaterScaffolder.default.mockResolvedValue({});
     licenseScaffolder.default.mockResolvedValue({});
@@ -369,7 +313,7 @@ describe('project scaffolder', () => {
 
     await scaffold(options);
 
-    expect(liftGit).toHaveBeenCalledWith({projectRoot: projectPath, vcs: vcsOriginDetails});
+    expect(liftGit).toHaveBeenCalledWith({projectRoot: projectPath, vcs});
     expect(scaffoldReadme).toHaveBeenCalledWith({projectName, projectRoot: projectPath, description});
     expect(execa).not.toHaveBeenCalled();
   });
@@ -378,7 +322,7 @@ describe('project scaffolder', () => {
     when(optionsValidator.validate).calledWith(options).mockReturnValue({plugins: {languages}});
     prompts.promptForBaseDetails.mockResolvedValue({});
     languagePrompt.default.mockResolvedValue({[questionNames.PROJECT_LANGUAGE]: projectLanguage});
-    scaffoldGit.mockResolvedValue({});
+    scaffoldGit.mockResolvedValue(vcsResults);
 
     await scaffold(options);
 
@@ -390,7 +334,7 @@ describe('project scaffolder', () => {
         description: undefined,
         projectName: undefined,
         projectRoot: projectPath,
-        vcs: {},
+        vcs,
         visibility: undefined
       }
     );

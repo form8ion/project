@@ -70,10 +70,12 @@ When(/^the project is scaffolded$/, async function () {
           }
         }
       },
-      ...vcsHost && {
+      ...vcsHost && 'Other' !== vcsHost && {
         vcsHosts: {
           [vcsHost]: {
-            scaffold: ({projectName, owner}) => ({vcs: {sshUrl: this.remoteOriginUrl, name: projectName, owner}}),
+            scaffold: ({projectName, owner}) => ({
+              vcs: {sshUrl: this.remoteOriginUrl, name: projectName, owner, host: vcsHost}
+            }),
             prompt: () => undefined
           }
         }
