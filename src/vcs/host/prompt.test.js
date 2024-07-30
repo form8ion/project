@@ -23,14 +23,8 @@ describe('vcs host details prompt', () => {
   it('should prompt for the vcs hosting details', async () => {
     const host = any.string();
     const hostNames = [...any.listOf(any.string), host];
-    const hostPrompt = vi.fn();
-    const hosts = any.objectWithKeys(
-      hostNames,
-      {factory: key => ({prompt: host === key ? hostPrompt : () => undefined})}
-    );
+    const hosts = any.objectWithKeys(hostNames, {factory: () => ({})});
     const answersWithHostChoice = {...answers, [questionNames.REPO_HOST]: host};
-    const hostAnswers = any.simpleObject();
-    when(hostPrompt).calledWith({decisions}).mockResolvedValue(hostAnswers);
     when(conditionals.filterChoicesByVisibility).calledWith(hosts, null).mockReturnValue(filteredHostChoices);
     when(prompts.prompt).calledWith([{
       name: questionNames.REPO_HOST,
@@ -39,7 +33,7 @@ describe('vcs host details prompt', () => {
       choices: filteredHostChoices
     }], decisions).mockResolvedValue(answersWithHostChoice);
 
-    expect(await promptForVcsHostDetails(hosts, null, decisions)).toEqual({...answersWithHostChoice, ...hostAnswers});
+    expect(await promptForVcsHostDetails(hosts, null, decisions)).toEqual(answersWithHostChoice);
   });
 
   it('should not throw an error when `Other` is chosen as the host', async () => {

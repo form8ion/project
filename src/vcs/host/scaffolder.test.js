@@ -26,12 +26,9 @@ describe('vcs host scaffolder', () => {
     when(promptForVcsHostDetails)
       .calledWith(hostPlugins, visibility, decisions)
       .mockResolvedValue({[questionNames.REPO_HOST]: chosenHost, [questionNames.REPO_OWNER]: owner});
-    when(chosenHostScaffolder)
-      .calledWith({...options, owner}, {prompt: terminalPrompt})
-      .mockResolvedValue(results);
+    when(chosenHostScaffolder).calledWith(options, {prompt: terminalPrompt}).mockResolvedValue(results);
 
-    expect(await scaffoldVcsHost(hostPlugins, visibility, decisions, options))
-      .toEqual(results);
+    expect(await scaffoldVcsHost(hostPlugins, visibility, decisions, options)).toEqual(results);
   });
 
   it('should return empty `vcs` results when no matching host is available', async () => {

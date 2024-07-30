@@ -44,16 +44,6 @@ describe('vcs-host plugins schema', () => {
       .toThrowError(`"${key}.scaffold" must have an arity of 1`);
   });
 
-  it('should require a `prompt` property', () => {
-    expect(() => validateOptions(vcsHostSchema, {[key]: {scaffold: foo => foo}}))
-      .toThrowError(`"${key}.prompt" is required`);
-  });
-
-  it('should require the `prompt` to be a function', () => {
-    expect(() => validateOptions(vcsHostSchema, {[key]: {scaffold: foo => foo, prompt: any.word()}}))
-      .toThrowError(`"${key}.prompt" must be of type function`);
-  });
-
   it('should require the `public` property to be a boolean', () => {
     expect(() => validateOptions(
       vcsHostSchema,

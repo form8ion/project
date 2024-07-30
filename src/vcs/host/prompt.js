@@ -12,5 +12,5 @@ export default async function (hosts, visibility, decisions) {
   }], decisions);
   const host = hosts[answers[questionNames.REPO_HOST]];
 
-  return {...answers, ...host && await host.prompt({decisions})};
+  return {...answers, ...host};
 }
