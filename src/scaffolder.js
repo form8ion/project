@@ -76,5 +76,5 @@ export async function scaffold(options) {
     await subprocess;
   }
 
-  reportResults({nextSteps: mergedResults.nextSteps});
+  reportResults(mergedResults);
 }

@@ -90,6 +90,13 @@ describe('project scaffolder', () => {
     };
     const licenseResults = {badges: {consumer: {license: licenseBadge}}};
     const contributingResults = any.simpleObject();
+    const mergedResults = deepmerge.all([
+      licenseResults,
+      languageResults,
+      dependencyUpdaterResults,
+      contributingResults,
+      vcsResults
+    ]);
     when(optionsValidator.validate)
       .calledWith(options)
       .mockReturnValue({decisions, plugins: {dependencyUpdaters, languages, vcsHosts}});
@@ -131,18 +138,10 @@ describe('project scaffolder', () => {
     expect(lift).toHaveBeenCalledWith({
       projectRoot: projectPath,
       vcs,
-      results: deepmerge.all([
-        licenseResults,
-        languageResults,
-        dependencyUpdaterResults,
-        contributingResults,
-        vcsResults
-      ]),
+      results: mergedResults,
       enhancers: {...dependencyUpdaters, ...vcsHosts}
     });
-    expect(resultsReporter.reportResults).toHaveBeenCalledWith({
-      nextSteps: [...dependencyUpdaterNextSteps, ...gitNextSteps]
-    });
+    expect(resultsReporter.reportResults).toHaveBeenCalledWith(mergedResults);
   });
 
   it('should consider all options to be optional', async () => {
@@ -279,7 +278,7 @@ describe('project scaffolder', () => {
 
     expect(scaffoldReadme).toHaveBeenCalledWith({projectName, projectRoot: projectPath, description});
     expect(execaPipe).toHaveBeenCalledWith(process.stdout);
-    expect(resultsReporter.reportResults).toHaveBeenCalledWith({nextSteps: [...languageNextSteps, ...gitNextSteps]});
+    expect(resultsReporter.reportResults).toHaveBeenCalledWith(deepmerge.all([languageResults, vcsResults]));
   });
 
   it('should consider the language details to be optional', async () => {
