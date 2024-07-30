@@ -8,7 +8,7 @@ import {afterEach, beforeEach, describe, expect, it, vi} from 'vitest';
 import any from '@travi/any';
 import {when} from 'jest-when';
 
-import {scaffold as liftGit, initialize as scaffoldGit} from './vcs/git/git.js';
+import {scaffold as scaffoldGit} from './vcs/git/git.js';
 import * as licenseScaffolder from './license/scaffolder.js';
 import scaffoldLanguage from './language/scaffolder.js';
 import * as languagePrompt from './language/prompt.js';
@@ -50,7 +50,8 @@ describe('project scaffolder', () => {
   const vcsHosts = any.simpleObject();
   const documentation = any.simpleObject();
   const vcs = any.simpleObject();
-  const vcsResults = {...any.simpleObject(), vcs};
+  const gitNextSteps = any.listOf(any.simpleObject);
+  const vcsResults = {...any.simpleObject(), vcs, nextSteps: gitNextSteps};
   const tags = any.listOf(any.word);
   const visibility = any.word();
   const vcsIgnore = any.simpleObject();
@@ -74,7 +75,6 @@ describe('project scaffolder', () => {
     const copyright = {year, holder};
     const gitRepoShouldBeInitialized = true;
     const dependencyUpdaters = any.simpleObject();
-    const gitNextSteps = any.listOf(any.simpleObject);
     const dependencyUpdaterNextSteps = any.listOf(any.simpleObject);
     const dependencyUpdaterContributionBadges = any.simpleObject();
     const dependencyUpdaterResults = {
@@ -89,7 +89,6 @@ describe('project scaffolder', () => {
       tags
     };
     const licenseResults = {badges: {consumer: {license: licenseBadge}}};
-    const gitResults = {nextSteps: gitNextSteps};
     const contributingResults = any.simpleObject();
     when(optionsValidator.validate)
       .calledWith(options)
@@ -111,7 +110,6 @@ describe('project scaffolder', () => {
     when(scaffoldGit)
       .calledWith(gitRepoShouldBeInitialized, projectPath, projectName, description, vcsHosts, visibility, decisions)
       .mockResolvedValue(vcsResults);
-    liftGit.mockResolvedValue(gitResults);
     when(licenseScaffolder.default)
       .calledWith({projectRoot: projectPath, license, copyright})
       .mockResolvedValue(licenseResults);
@@ -123,7 +121,6 @@ describe('project scaffolder', () => {
 
     await scaffold(options);
 
-    expect(liftGit).toHaveBeenCalledWith({projectRoot: projectPath, vcs});
     expect(scaffoldReadme).toHaveBeenCalledWith({projectName, projectRoot: projectPath, description});
     expect(dependencyUpdaterScaffolder.default).toHaveBeenCalledWith(
       dependencyUpdaters,
@@ -139,7 +136,7 @@ describe('project scaffolder', () => {
         languageResults,
         dependencyUpdaterResults,
         contributingResults,
-        gitResults
+        vcsResults
       ]),
       enhancers: {...dependencyUpdaters, ...vcsHosts}
     });
@@ -216,7 +213,6 @@ describe('project scaffolder', () => {
 
     await scaffold(options);
 
-    expect(liftGit).toHaveBeenCalledWith({projectRoot: projectPath, vcs});
     expect(scaffoldReadme).toHaveBeenCalledWith({projectName, projectRoot: projectPath, description});
   });
 
@@ -229,12 +225,10 @@ describe('project scaffolder', () => {
 
     await scaffold(options);
 
-    expect(liftGit).not.toHaveBeenCalled();
     expect(dependencyUpdaterScaffolder.default).not.toHaveBeenCalled();
   });
 
   it('should scaffold the details of the chosen language plugin', async () => {
-    const gitNextSteps = any.listOf(any.simpleObject);
     const languageConsumerBadges = any.simpleObject();
     const languageContributionBadges = any.simpleObject();
     const languageStatusBadges = any.simpleObject();
@@ -254,12 +248,10 @@ describe('project scaffolder', () => {
       nextSteps: languageNextSteps,
       tags
     };
-    const gitResults = {nextSteps: gitNextSteps};
     when(optionsValidator.validate)
       .calledWith(options)
       .mockReturnValue({decisions, plugins: {languages, vcsHosts}});
     scaffoldGit.mockResolvedValue(vcsResults);
-    liftGit.mockResolvedValue(gitResults);
     prompts.promptForBaseDetails.mockResolvedValue({
       [coreQuestionNames.PROJECT_NAME]: projectName,
       [coreQuestionNames.VISIBILITY]: visibility,
@@ -285,7 +277,6 @@ describe('project scaffolder', () => {
 
     await scaffold(options);
 
-    expect(liftGit).toHaveBeenCalledWith({projectRoot: projectPath, vcs});
     expect(scaffoldReadme).toHaveBeenCalledWith({projectName, projectRoot: projectPath, description});
     expect(execaPipe).toHaveBeenCalledWith(process.stdout);
     expect(resultsReporter.reportResults).toHaveBeenCalledWith({nextSteps: [...languageNextSteps, ...gitNextSteps]});
@@ -313,7 +304,6 @@ describe('project scaffolder', () => {
 
     await scaffold(options);
 
-    expect(liftGit).toHaveBeenCalledWith({projectRoot: projectPath, vcs});
     expect(scaffoldReadme).toHaveBeenCalledWith({projectName, projectRoot: projectPath, description});
     expect(execa).not.toHaveBeenCalled();
   });

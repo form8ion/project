@@ -6,7 +6,7 @@ import {scaffold as scaffoldReadme} from '@form8ion/readme';
 import {info} from '@travi/cli-messages';
 
 import {prompt as promptForLanguageDetails, scaffold as scaffoldLanguage} from './language/index.js';
-import {initialize as scaffoldGit, scaffold as liftGit} from './vcs/git/git.js';
+import {scaffold as scaffoldGit} from './vcs/git/git.js';
 import {scaffold as scaffoldLicense} from './license/index.js';
 import scaffoldDependencyUpdater from './dependency-updater/scaffolder.js';
 import {promptForBaseDetails} from './prompts/questions.js';
@@ -45,8 +45,6 @@ export async function scaffold(options) {
     {projectRoot, vcs: vcsResults.vcs}
   );
 
-  const gitResults = gitRepo && await liftGit({projectRoot, vcs: vcsResults.vcs});
-
   const {[questionNames.PROJECT_LANGUAGE]: projectLanguage} = await promptForLanguageDetails(languages, decisions);
 
   const language = await scaffoldLanguage(
@@ -60,7 +58,7 @@ export async function scaffold(options) {
     language,
     dependencyUpdaterResults,
     contributing,
-    gitResults
+    vcsResults
   ].filter(Boolean));
 
   await lift({

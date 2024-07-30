@@ -9,7 +9,7 @@ import {when} from 'jest-when';
 import promptForVcsHostDetails from '../host/prompt.js';
 import {scaffold as scaffoldVcsHost} from '../host/index.js';
 import {questionNames} from '../../prompts/question-names.js';
-import {initialize, scaffold} from './git.js';
+import {scaffold} from './git.js';
 
 vi.mock('node:fs');
 vi.mock('hosted-git-info');
@@ -24,6 +24,15 @@ describe('git', () => {
   const projectRoot = any.string();
   const visibility = any.word();
   const decisions = any.simpleObject();
+  const vcsHost = `F${any.word()})O${any.word()}O`;
+  const vcsHostAccount = any.word();
+  const repositoryName = any.word();
+  const githubAccount = any.word();
+  const projectName = any.word();
+  const description = any.sentence();
+  const sshUrl = any.url();
+  const vcsDetails = {name: repositoryName, owner: vcsHostAccount, host: vcsHost, sshUrl};
+  const vcsHostResults = {...any.simpleObject(), vcs: vcsDetails};
 
   beforeEach(() => {
     checkIsRepo = vi.fn();
@@ -40,117 +49,94 @@ describe('git', () => {
     vi.clearAllMocks();
   });
 
-  describe('initialization', () => {
-    const repoHost = `F${any.word()})O${any.word()}O`;
-    const repoOwner = any.word();
-    const githubAccount = any.word();
-    const projectName = any.word();
-    const description = any.sentence();
-
-    it('should initialize the git repo', async () => {
-      const vcsHosts = any.simpleObject();
-      when(checkIsRepo).calledWith('root').mockResolvedValue(false);
-      const vcsHostResults = any.simpleObject();
-      when(promptForVcsHostDetails)
-        .calledWith(vcsHosts, visibility, decisions)
-        .mockResolvedValue({[questionNames.REPO_HOST]: repoHost, [questionNames.REPO_OWNER]: repoOwner});
-      when(scaffoldVcsHost)
-        .calledWith(
-          vcsHosts,
-          {
-            chosenHost: repoHost.toLowerCase(),
-            owner: repoOwner,
-            projectName,
-            projectRoot,
-            description,
-            visibility
-          }
-        )
-        .mockResolvedValue(vcsHostResults);
-
-      expect(await initialize(
-        true,
-        projectRoot,
-        projectName,
-        description,
+  it('should initialize the git repo', async () => {
+    const vcsHosts = any.simpleObject();
+    when(checkIsRepo).calledWith('root').mockResolvedValue(false);
+    when(promptForVcsHostDetails)
+      .calledWith(vcsHosts, visibility, decisions)
+      .mockResolvedValue({[questionNames.REPO_HOST]: vcsHost, [questionNames.REPO_OWNER]: vcsHostAccount});
+    when(scaffoldVcsHost)
+      .calledWith(
         vcsHosts,
-        visibility,
-        decisions
-      )).toEqual(vcsHostResults);
-      expect(scaffoldGit).toHaveBeenCalledWith({projectRoot});
-    });
+        {
+          chosenHost: vcsHost.toLowerCase(),
+          owner: vcsHostAccount,
+          projectName,
+          projectRoot,
+          description,
+          visibility
+        }
+      )
+      .mockResolvedValue(vcsHostResults);
+    listRemote.mockResolvedValue(any.listOf(any.word));
 
-    it('should not initialize the git repo if the project will not be versioned', async () => {
-      when(checkIsRepo).calledWith('root').mockResolvedValue(false);
-      when(promptForVcsHostDetails)
-        .calledWith(githubAccount, visibility, decisions)
-        .mockResolvedValue({[questionNames.REPO_HOST]: repoHost, [questionNames.REPO_OWNER]: repoOwner});
-
-      const hostDetails = await initialize(false, projectRoot, projectName, githubAccount, visibility, decisions);
-
-      expect(scaffoldGit).not.toHaveBeenCalled();
-      expect(hostDetails).toEqual({});
-    });
-
-    it('should return the git details from an existing account', async () => {
-      const repoName = any.word();
-      const remoteOrigin = any.url();
-      when(checkIsRepo).calledWith('root').mockResolvedValue(true);
-      when(remote).calledWith(['get-url', 'origin']).mockResolvedValue(remoteOrigin);
-      when(hostedGitInfo.fromUrl)
-        .calledWith(remoteOrigin)
-        .mockReturnValue({user: repoOwner, project: repoName, type: repoHost.toLowerCase()});
-
-      const hostDetails = await initialize(true, projectRoot, projectName, githubAccount, visibility);
-
-      expect(scaffoldGit).not.toHaveBeenCalled();
-      expect(hostDetails).toEqual({host: repoHost.toLowerCase(), owner: repoOwner, name: repoName});
-    });
-  });
-
-  describe('scaffold', () => {
-    const results = any.simpleObject();
-
-    it('should scaffold the git repo', async () => {
-      listRemote.mockRejectedValue(new Error('fatal: No remote configured to list refs from.\n'));
-
-      const result = await scaffold({projectRoot, vcs: {}, results});
-
-      expect(result.nextSteps).toEqual([{summary: 'Commit scaffolded files'}]);
-    });
-
-    it('throws git errors that are not a lack of defined remotes', async () => {
-      const error = new Error(any.sentence());
-      listRemote.mockRejectedValue(error);
-
-      await expect(scaffold({projectRoot, origin: {}})).rejects.toThrow(error);
-    });
-
-    it('should define the remote origin when an ssl-url is provided for the remote', async () => {
-      const sshUrl = any.url();
-      // const branch = any.simpleObject();
-      // gitBranch.lookup.withArgs(repository, 'master', gitBranch.BRANCH.LOCAL).resolves(branch);
-      listRemote.mockResolvedValue(any.listOf(any.word));
-
-      const result = await scaffold({projectRoot, vcs: {sshUrl}});
-
-      expect(addRemote).toHaveBeenCalledWith('origin', sshUrl);
-      expect(result.nextSteps).toEqual([
+    expect(await scaffold(
+      true,
+      projectRoot,
+      projectName,
+      description,
+      vcsHosts,
+      visibility,
+      decisions
+    )).toEqual({
+      vcs: {owner: vcsHostAccount, name: repositoryName, host: vcsHost},
+      nextSteps: [
         {summary: 'Commit scaffolded files'},
         {summary: 'Set local `master` branch to track upstream `origin/master`'}
-      ]);
-      // assert.calledWith(gitBranch.setUpstream, branch, 'origin/master');
+      ]
     });
+    expect(scaffoldGit).toHaveBeenCalledWith({projectRoot});
+    expect(addRemote).toHaveBeenCalledWith('origin', sshUrl);
+  });
 
-    it('should not define the remote origin if it already exists', async () => {
-      const sshUrl = any.url();
-      listRemote.mockResolvedValue(['origin']);
+  it('should not initialize the git repo if the project will not be versioned', async () => {
+    when(checkIsRepo).calledWith('root').mockResolvedValue(false);
+    when(promptForVcsHostDetails)
+      .calledWith(githubAccount, visibility, decisions)
+      .mockResolvedValue({[questionNames.REPO_HOST]: vcsHost, [questionNames.REPO_OWNER]: vcsHostAccount});
 
-      await scaffold({projectRoot, origin: {sshUrl}});
+    const hostDetails = await scaffold(false, projectRoot, projectName, githubAccount, visibility, decisions);
 
-      expect(addRemote).not.toHaveBeenCalled();
-      // assert.notCalled(gitBranch.lookup);
-      // assert.notCalled(gitBranch.setUpstream);
-    });
+    expect(scaffoldGit).not.toHaveBeenCalled();
+    expect(hostDetails).toEqual({});
+  });
+
+  it('should return the git details from an existing remote', async () => {
+    const repoName = any.word();
+    const remoteOrigin = any.url();
+    when(checkIsRepo).calledWith('root').mockResolvedValue(true);
+    when(remote).calledWith(['get-url', 'origin']).mockResolvedValue(remoteOrigin);
+    when(hostedGitInfo.fromUrl)
+      .calledWith(remoteOrigin)
+      .mockReturnValue({user: vcsHostAccount, project: repoName, type: vcsHost.toLowerCase()});
+
+    const hostDetails = await scaffold(true, projectRoot, projectName, githubAccount, visibility);
+
+    expect(scaffoldGit).not.toHaveBeenCalled();
+    expect(hostDetails).toEqual({vcs: {host: vcsHost.toLowerCase(), owner: vcsHostAccount, name: repoName}});
+  });
+
+  it('should throw git errors that are not a lack of defined remotes', async () => {
+    const error = new Error(any.sentence());
+    when(checkIsRepo).calledWith('root').mockResolvedValue(false);
+    when(promptForVcsHostDetails)
+      .mockResolvedValue({[questionNames.REPO_HOST]: vcsHost, [questionNames.REPO_OWNER]: vcsHostAccount});
+    when(scaffoldVcsHost).mockResolvedValue(vcsHostResults);
+    listRemote.mockRejectedValue(error);
+
+    await expect(scaffold(true, projectRoot)).rejects.toThrow(error);
+  });
+
+  it('should not define the remote origin if it already exists', async () => {
+    when(checkIsRepo).calledWith('root').mockResolvedValue(false);
+    when(promptForVcsHostDetails)
+      .mockResolvedValue({[questionNames.REPO_HOST]: vcsHost, [questionNames.REPO_OWNER]: vcsHostAccount});
+    when(scaffoldVcsHost).mockResolvedValue(vcsHostResults);
+    listRemote.mockResolvedValue(['origin']);
+
+    const result = await scaffold(true, projectRoot);
+
+    expect(addRemote).not.toHaveBeenCalled();
+    expect(result.nextSteps).toEqual([{summary: 'Commit scaffolded files'}]);
   });
 });
