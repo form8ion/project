@@ -3,25 +3,37 @@ import any from '@travi/any';
 import {when} from 'jest-when';
 
 import scaffoldVcsHost from './scaffolder.js';
+import promptForVcsHostDetails from './prompt.js';
+import {questionNames} from '../../prompts/question-names.js';
+
+vi.mock('./prompt');
 
 describe('vcs host scaffolder', () => {
-  const otherOptions = any.simpleObject();
+  const options = any.simpleObject();
+  const visibility = any.word();
+  const decisions = any.simpleObject();
 
   it('should scaffold the chosen vcs host', async () => {
     const chosenHost = `${any.word()}CAPITAL${any.word()}`;
     const results = any.simpleObject();
     const chosenHostScaffolder = vi.fn();
-    const hostPlugins = {...any.simpleObject(), [chosenHost]: {scaffold: chosenHostScaffolder}};
-    when(chosenHostScaffolder).calledWith(otherOptions).mockResolvedValue(results);
+    const hostPlugins = {...any.simpleObject(), [chosenHost.toLowerCase()]: {scaffold: chosenHostScaffolder}};
+    const owner = any.word;
+    when(promptForVcsHostDetails)
+      .calledWith(hostPlugins, visibility, decisions)
+      .mockResolvedValue({[questionNames.REPO_HOST]: chosenHost, [questionNames.REPO_OWNER]: owner});
+    when(chosenHostScaffolder).calledWith({...options, owner}).mockResolvedValue(results);
 
-    expect(await scaffoldVcsHost(hostPlugins, {...otherOptions, chosenHost: chosenHost.toLowerCase()}))
+    expect(await scaffoldVcsHost(hostPlugins, visibility, decisions, options))
       .toEqual(results);
   });
 
   it('should return empty `vcs` results when no matching host is available', async () => {
     const hostPlugins = any.simpleObject();
+    when(promptForVcsHostDetails)
+      .calledWith(hostPlugins, visibility, decisions)
+      .mockResolvedValue({[questionNames.REPO_HOST]: any.word()});
 
-    expect(await scaffoldVcsHost(hostPlugins, {...otherOptions, chosenHost: any.word()}))
-      .toEqual({vcs: {}});
+    expect(await scaffoldVcsHost(hostPlugins, visibility, decisions, options)).toEqual({vcs: {}});
   });
 });

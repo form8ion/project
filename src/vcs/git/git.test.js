@@ -6,16 +6,13 @@ import {afterEach, beforeEach, describe, expect, it, vi} from 'vitest';
 import any from '@travi/any';
 import {when} from 'jest-when';
 
-import promptForVcsHostDetails from '../host/prompt.js';
 import {scaffold as scaffoldVcsHost} from '../host/index.js';
-import {questionNames} from '../../prompts/question-names.js';
 import {scaffold} from './git.js';
 
 vi.mock('node:fs');
 vi.mock('hosted-git-info');
 vi.mock('simple-git');
 vi.mock('@form8ion/git');
-vi.mock('../host/prompt');
 vi.mock('../host/index.js');
 vi.mock('./ignore/index.js');
 
@@ -52,21 +49,8 @@ describe('git', () => {
   it('should initialize the git repo', async () => {
     const vcsHosts = any.simpleObject();
     when(checkIsRepo).calledWith('root').mockResolvedValue(false);
-    when(promptForVcsHostDetails)
-      .calledWith(vcsHosts, visibility, decisions)
-      .mockResolvedValue({[questionNames.REPO_HOST]: vcsHost, [questionNames.REPO_OWNER]: vcsHostAccount});
     when(scaffoldVcsHost)
-      .calledWith(
-        vcsHosts,
-        {
-          chosenHost: vcsHost.toLowerCase(),
-          owner: vcsHostAccount,
-          projectName,
-          projectRoot,
-          description,
-          visibility
-        }
-      )
+      .calledWith(vcsHosts, visibility, decisions, {projectName, projectRoot, description, visibility})
       .mockResolvedValue(vcsHostResults);
     listRemote.mockResolvedValue(any.listOf(any.word));
 
@@ -91,9 +75,6 @@ describe('git', () => {
 
   it('should not initialize the git repo if the project will not be versioned', async () => {
     when(checkIsRepo).calledWith('root').mockResolvedValue(false);
-    when(promptForVcsHostDetails)
-      .calledWith(githubAccount, visibility, decisions)
-      .mockResolvedValue({[questionNames.REPO_HOST]: vcsHost, [questionNames.REPO_OWNER]: vcsHostAccount});
 
     const hostDetails = await scaffold(false, projectRoot, projectName, githubAccount, visibility, decisions);
 
@@ -119,8 +100,6 @@ describe('git', () => {
   it('should throw git errors that are not a lack of defined remotes', async () => {
     const error = new Error(any.sentence());
     when(checkIsRepo).calledWith('root').mockResolvedValue(false);
-    when(promptForVcsHostDetails)
-      .mockResolvedValue({[questionNames.REPO_HOST]: vcsHost, [questionNames.REPO_OWNER]: vcsHostAccount});
     when(scaffoldVcsHost).mockResolvedValue(vcsHostResults);
     listRemote.mockRejectedValue(error);
 
@@ -129,8 +108,6 @@ describe('git', () => {
 
   it('should not define the remote origin if it already exists', async () => {
     when(checkIsRepo).calledWith('root').mockResolvedValue(false);
-    when(promptForVcsHostDetails)
-      .mockResolvedValue({[questionNames.REPO_HOST]: vcsHost, [questionNames.REPO_OWNER]: vcsHostAccount});
     when(scaffoldVcsHost).mockResolvedValue(vcsHostResults);
     listRemote.mockResolvedValue(['origin']);
 

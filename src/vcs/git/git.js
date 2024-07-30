@@ -3,8 +3,6 @@ import hostedGitInfo from 'hosted-git-info';
 import {info, warn} from '@travi/cli-messages';
 import {scaffold as scaffoldGit} from '@form8ion/git';
 
-import promptForVcsHostDetails from '../host/prompt.js';
-import {questionNames} from '../../prompts/question-names.js';
 import {scaffold as scaffoldVcsHost} from '../host/index.js';
 
 async function getExistingRemotes(git) {
@@ -69,19 +67,10 @@ export async function scaffold(
       return {vcs: {owner: user, name: project, host: type}};
     }
 
-    const [answers] = await Promise.all([
-      promptForVcsHostDetails(vcsHosts, visibility, decisions),
+    const [{vcs: {host, owner, name, sshUrl}}] = await Promise.all([
+      scaffoldVcsHost(vcsHosts, visibility, decisions, {projectName, projectRoot, description, visibility}),
       scaffoldGit({projectRoot})
     ]);
-
-    const {vcs: {host, owner, name, sshUrl}} = await scaffoldVcsHost(vcsHosts, {
-      chosenHost: answers[questionNames.REPO_HOST].toLowerCase(),
-      owner: answers[questionNames.REPO_OWNER],
-      projectName,
-      projectRoot,
-      description,
-      visibility
-    });
 
     const remoteOriginResults = await defineRemoteOrigin(projectRoot, sshUrl);
 
