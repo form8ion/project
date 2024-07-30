@@ -5,6 +5,7 @@ import {when} from 'jest-when';
 import scaffoldVcsHost from './scaffolder.js';
 import promptForVcsHostDetails from './prompt.js';
 import {questionNames} from '../../prompts/question-names.js';
+import terminalPrompt from '../../prompts/terminal-prompt.js';
 
 vi.mock('./prompt');
 
@@ -22,7 +23,7 @@ describe('vcs host scaffolder', () => {
     when(promptForVcsHostDetails)
       .calledWith(hostPlugins, visibility, decisions)
       .mockResolvedValue({[questionNames.REPO_HOST]: chosenHost, [questionNames.REPO_OWNER]: owner});
-    when(chosenHostScaffolder).calledWith({...options, owner}).mockResolvedValue(results);
+    when(chosenHostScaffolder).calledWith({...options, owner}, {prompt: terminalPrompt}).mockResolvedValue(results);
 
     expect(await scaffoldVcsHost(hostPlugins, visibility, decisions, options))
       .toEqual(results);
