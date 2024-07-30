@@ -53,21 +53,30 @@ When(/^the project is scaffolded$/, async function () {
   this.projectDescription = any.sentence();
 
   await scaffold({
-    languages: {
-      ...'Other' !== chosenLanguage && {
-        [chosenLanguage]: ({projectName}) => {
-          info(`Scaffolding ${chosenLanguage} language details for ${projectName}`);
-
-          return this.languageScaffolderResults;
+    plugins: {
+      ...this.updatePlugin && {
+        dependencyUpdaters: {
+          [chosenUpdater]: this.updatePlugin
         }
-      }
-    },
-    ...this.updaterScaffolderDetails && {dependencyUpdaters: {[chosenUpdater]: this.updaterScaffolderDetails}},
-    ...vcsHost && {
-      vcsHosts: {
-        [vcsHost]: {
-          scaffolder: ({name, owner}) => ({sshUrl: this.remoteOriginUrl, name, owner}),
-          prompt: () => undefined
+      },
+      languages: {
+        ...'Other' !== chosenLanguage && {
+          [chosenLanguage]: {
+            scaffold: ({projectName}) => {
+              info(`Scaffolding ${chosenLanguage} language details for ${projectName}`);
+
+              return this.languageScaffolderResults;
+            }
+          }
+        }
+      },
+      ...vcsHost && 'Other' !== vcsHost && {
+        vcsHosts: {
+          [vcsHost]: {
+            scaffold: ({projectName, owner}) => ({
+              vcs: {sshUrl: this.remoteOriginUrl, name: projectName, owner, host: vcsHost}
+            })
+          }
         }
       }
     },
@@ -84,7 +93,7 @@ When(/^the project is scaffolded$/, async function () {
       [questionNames.GIT_REPO]: repoShouldBeCreated ?? false,
       ...repoShouldBeCreated && {[questionNames.REPO_HOST]: vcsHost},
       [questionNames.PROJECT_LANGUAGE]: chosenLanguage,
-      ...this.updaterScaffolderDetails && {[questionNames.DEPENDENCY_UPDATER]: chosenUpdater}
+      ...this.updatePlugin && {[questionNames.DEPENDENCY_UPDATER]: chosenUpdater}
     }
   });
 });

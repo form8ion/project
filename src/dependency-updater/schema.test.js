@@ -11,7 +11,7 @@ describe('dependency-updater plugins schema', () => {
   it('should return the validated options', () => {
     const options = any.objectWithKeys(
       any.listOf(any.string),
-      {factory: () => ({scaffolder: foo => foo})}
+      {factory: () => ({scaffold: foo => foo})}
     );
 
     expect(validateOptions(dependencyUpdaterPluginsSchema, options)).toEqual(options);
@@ -22,19 +22,19 @@ describe('dependency-updater plugins schema', () => {
       .toThrowError(`"${key}" must be of type object`);
   });
 
-  it('should require a `scaffolder` to be included', () => {
+  it('should require a `scaffold` property to be included', () => {
     expect(() => validateOptions(dependencyUpdaterPluginsSchema, {[key]: {}}))
-      .toThrowError(`"${key}.scaffolder" is required`);
+      .toThrowError(`"${key}.scaffold" is required`);
   });
 
-  it('should require `scaffolder` to be a function', () => {
-    expect(() => validateOptions(dependencyUpdaterPluginsSchema, {[key]: {scaffolder: any.word()}}))
-      .toThrowError(`"${key}.scaffolder" must be of type function`);
+  it('should require `scaffold` to be a function', () => {
+    expect(() => validateOptions(dependencyUpdaterPluginsSchema, {[key]: {scaffold: any.word()}}))
+      .toThrowError(`"${key}.scaffold" must be of type function`);
   });
 
   it('should require the scaffolder to accept a single argument', () => {
-    expect(() => validateOptions(dependencyUpdaterPluginsSchema, {[key]: {scaffolder: () => undefined}}))
-      .toThrowError(`"${key}.scaffolder" must have an arity of 1`);
+    expect(() => validateOptions(dependencyUpdaterPluginsSchema, {[key]: {scaffold: () => undefined}}))
+      .toThrowError(`"${key}.scaffold" must have an arity of 1`);
   });
 
   it('should default to an empty map when no updaters are provided', () => {

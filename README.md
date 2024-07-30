@@ -77,28 +77,39 @@ import {lift, questionNames, scaffold} from '@form8ion/project';
 #### Execute
 
 ```javascript
-  await scaffold({
-    decisions: {
-      [questionNames.PROJECT_NAME]: 'my-project',
-      [questionNames.LICENSE]: 'MIT',
-      [questionNames.VISIBILITY]: 'Public',
-      [questionNames.DESCRIPTION]: 'My project',
-      [questionNames.GIT_REPO]: false,
-      [questionNames.COPYRIGHT_HOLDER]: 'John Smith',
-      [questionNames.COPYRIGHT_YEAR]: '2022',
-      [questionNames.PROJECT_LANGUAGE]: 'foo'
+await scaffold({
+  decisions: {
+    [questionNames.PROJECT_NAME]: 'my-project',
+    [questionNames.LICENSE]: 'MIT',
+    [questionNames.VISIBILITY]: 'Public',
+    [questionNames.DESCRIPTION]: 'My project',
+    [questionNames.GIT_REPO]: false,
+    [questionNames.COPYRIGHT_HOLDER]: 'John Smith',
+    [questionNames.COPYRIGHT_YEAR]: '2022',
+    [questionNames.PROJECT_LANGUAGE]: 'foo'
+  },
+  plugins: {
+    dependencyUpdaters: {
+      bar: {scaffold: options => options}
     },
     languages: {
-      foo: options => options
+      foo: {scaffold: options => options}
+    },
+    vcsHosts: {
+      baz: {
+        scaffold: options => options,
+        prompt: () => ({repoOwner: 'form8ion'})
+      }
     }
-  });
+  }
+});
 
-  await lift({
-    projectRoot: process.cwd(),
-    results: {},
-    enhancers: {foo: {test: () => true, lift: () => ({})}},
-    vcs: {}
-  });
+await lift({
+  projectRoot: process.cwd(),
+  results: {},
+  enhancers: {foo: {test: () => true, lift: () => ({})}},
+  vcs: {}
+});
 ```
 
 ### API
