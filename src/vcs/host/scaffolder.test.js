@@ -2,11 +2,12 @@ import {describe, expect, it, vi} from 'vitest';
 import any from '@travi/any';
 import {when} from 'jest-when';
 
-import scaffoldVcsHost from './scaffolder.js';
-import promptForVcsHostDetails from './prompt.js';
 import {questionNames} from '../../prompts/question-names.js';
-import terminalPrompt from '../../prompts/terminal-prompt.js';
+import terminalPromptFactory from '../../prompts/terminal-prompt.js';
+import promptForVcsHostDetails from './prompt.js';
+import scaffoldVcsHost from './scaffolder.js';
 
+vi.mock('../../prompts/terminal-prompt.js');
 vi.mock('./prompt');
 
 describe('vcs host scaffolder', () => {
@@ -20,10 +21,14 @@ describe('vcs host scaffolder', () => {
     const chosenHostScaffolder = vi.fn();
     const hostPlugins = {...any.simpleObject(), [chosenHost.toLowerCase()]: {scaffold: chosenHostScaffolder}};
     const owner = any.word;
+    const terminalPrompt = () => undefined;
+    when(terminalPromptFactory).calledWith(decisions).mockReturnValue(terminalPrompt);
     when(promptForVcsHostDetails)
       .calledWith(hostPlugins, visibility, decisions)
       .mockResolvedValue({[questionNames.REPO_HOST]: chosenHost, [questionNames.REPO_OWNER]: owner});
-    when(chosenHostScaffolder).calledWith({...options, owner}, {prompt: terminalPrompt}).mockResolvedValue(results);
+    when(chosenHostScaffolder)
+      .calledWith({...options, owner}, {prompt: terminalPrompt})
+      .mockResolvedValue(results);
 
     expect(await scaffoldVcsHost(hostPlugins, visibility, decisions, options))
       .toEqual(results);

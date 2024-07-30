@@ -15,6 +15,6 @@ describe('terminal prompt', () => {
     const answers = any.simpleObject();
     when(promptWithInquirer).calledWith(questions, decisions).mockResolvedValue(answers);
 
-    expect(await prompt({questions, decisions})).toEqual(answers);
+    expect(await prompt(decisions)({questions})).toEqual(answers);
   });
 });

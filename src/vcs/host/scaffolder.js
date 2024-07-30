@@ -1,5 +1,5 @@
 import {questionNames} from '../../prompts/question-names.js';
-import terminalPrompt from '../../prompts/terminal-prompt.js';
+import terminalPromptFactory from '../../prompts/terminal-prompt.js';
 import promptForVcsHostDetails from './prompt.js';
 
 export default async function (hosts, visibility, decisions, options) {
@@ -13,7 +13,7 @@ export default async function (hosts, visibility, decisions, options) {
   );
   const host = lowercasedHosts[chosenHost.toLowerCase()];
 
-  if (host) return host.scaffold({...options, owner}, {prompt: terminalPrompt});
+  if (host) return host.scaffold({...options, owner}, {prompt: terminalPromptFactory(decisions)});
 
   return {vcs: {}};
 }

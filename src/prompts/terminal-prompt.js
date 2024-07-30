@@ -1,5 +1,5 @@
 import {prompt} from '@form8ion/overridable-prompts';
 
-export default function ({questions, decisions}) {
-  return prompt(questions, decisions);
+export default function (decisions) {
+  return ({questions}) => prompt(questions, decisions);
 }
