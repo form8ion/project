@@ -19,14 +19,14 @@ describe('dependency-updater scaffolder', () => {
     const options = any.simpleObject();
     const chosenUpdater = any.word();
     const chosenUpdaterScaffolder = vi.fn();
-    const scaffolders = {...any.simpleObject(), [chosenUpdater]: {scaffolder: chosenUpdaterScaffolder}};
+    const plugins = {...any.simpleObject(), [chosenUpdater]: {scaffold: chosenUpdaterScaffolder}};
     const scaffolderResult = any.simpleObject();
     when(prompt.promptForDependencyUpdaterChoice)
-      .calledWith(scaffolders, decisions)
+      .calledWith(plugins, decisions)
       .mockResolvedValue({[questionNames.DEPENDENCY_UPDATER]: chosenUpdater});
     when(chosenUpdaterScaffolder).calledWith(options).mockResolvedValue(scaffolderResult);
 
-    expect(await scaffoldUpdater(scaffolders, decisions, options)).toEqual(scaffolderResult);
+    expect(await scaffoldUpdater(plugins, decisions, options)).toEqual(scaffolderResult);
   });
 
   it('should not present a prompt if no updaters are registered', async () => {

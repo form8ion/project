@@ -5,10 +5,9 @@ import {reportResults} from '@form8ion/results-reporter';
 import {scaffold as scaffoldReadme} from '@form8ion/readme';
 import {info} from '@travi/cli-messages';
 
-import {scaffold as scaffoldLanguage, prompt as promptForLanguageDetails} from './language/index.js';
-import {initialize as scaffoldGit, scaffold as liftGit} from './vcs/git/git.js';
+import {scaffold as scaffoldLanguage} from './language/index.js';
+import {scaffold as scaffoldGit} from './vcs/git/git.js';
 import {scaffold as scaffoldLicense} from './license/index.js';
-import {scaffold as scaffoldVcsHost} from './vcs/host/index.js';
 import scaffoldDependencyUpdater from './dependency-updater/scaffolder.js';
 import {promptForBaseDetails} from './prompts/questions.js';
 import {validate} from './options-validator.js';
@@ -19,7 +18,7 @@ import lift from './lift.js';
 
 export async function scaffold(options) {
   const projectRoot = process.cwd();
-  const {languages = {}, vcsHosts = {}, decisions, dependencyUpdaters} = validate(options);
+  const {decisions, plugins: {dependencyUpdaters, languages, vcsHosts = {}}} = validate(options);
 
   const {
     [coreQuestionNames.PROJECT_NAME]: projectName,
@@ -32,49 +31,40 @@ export async function scaffold(options) {
   } = await promptForBaseDetails(projectRoot, decisions);
   const copyright = {year: copyrightYear, holder: copyHolder};
 
-  const [vcs, contributing, license] = await Promise.all([
-    scaffoldGit(gitRepo, projectRoot, projectName, vcsHosts, visibility, decisions),
+  const [vcsResults, contributing, license] = await Promise.all([
+    scaffoldGit(gitRepo, projectRoot, projectName, description, vcsHosts, visibility, decisions),
     scaffoldContributing({visibility}),
     scaffoldLicense({projectRoot, license: chosenLicense, copyright}),
     scaffoldReadme({projectName, projectRoot, description}),
     scaffoldEditorConfig({projectRoot})
   ]);
 
-  const {[questionNames.PROJECT_LANGUAGE]: projectLanguage} = await promptForLanguageDetails(languages, decisions);
+  const dependencyUpdaterResults = vcsResults.vcs && await scaffoldDependencyUpdater(
+    dependencyUpdaters,
+    decisions,
+    {projectRoot, vcs: vcsResults.vcs}
+  );
 
   const language = await scaffoldLanguage(
     languages,
-    projectLanguage,
-    {projectRoot, projectName, vcs, visibility, license: chosenLicense || 'UNLICENSED', description}
-  );
-
-  const dependencyUpdaterResults = vcs && await scaffoldDependencyUpdater(
-    dependencyUpdaters,
     decisions,
-    {projectRoot, vcs}
+    {projectRoot, projectName, vcs: vcsResults.vcs, visibility, license: chosenLicense || 'UNLICENSED', description}
   );
 
-  const contributors = [license, language, dependencyUpdaterResults, contributing].filter(Boolean);
-  const contributedTasks = contributors
-    .map(contributor => contributor.nextSteps)
-    .filter(Boolean)
-    .reduce((acc, contributedNextSteps) => ([...acc, ...contributedNextSteps]), []);
+  const mergedResults = deepmerge.all([
+    license,
+    language,
+    dependencyUpdaterResults,
+    contributing,
+    vcsResults
+  ].filter(Boolean));
 
-  const vcsHostResults = vcs && await scaffoldVcsHost(vcsHosts, {
-    ...vcs,
+  await lift({
     projectRoot,
-    description,
-    visibility,
-    ...language && {
-      homepage: language.projectDetails && language.projectDetails.homepage,
-      tags: language.tags
-    },
-    nextSteps: contributedTasks
+    vcs: vcsResults.vcs,
+    results: mergedResults,
+    enhancers: {...dependencyUpdaters, ...vcsHosts}
   });
-
-  await lift({projectRoot, results: deepmerge.all(contributors)});
-
-  const gitResults = gitRepo && await liftGit({projectRoot, origin: vcsHostResults});
 
   if (language && language.verificationCommand) {
     info('Verifying the generated project');
@@ -84,10 +74,5 @@ export async function scaffold(options) {
     await subprocess;
   }
 
-  reportResults({
-    nextSteps: [
-      ...(gitResults && gitResults.nextSteps) ? gitResults.nextSteps : [],
-      ...contributedTasks
-    ]
-  });
+  reportResults(mergedResults);
 }

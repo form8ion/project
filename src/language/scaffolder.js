@@ -1,7 +1,12 @@
-export default function (scaffolders, chosenLanguage, options) {
-  const scaffolder = scaffolders[chosenLanguage];
+import {questionNames} from '../prompts/question-names.js';
+import promptForLanguageDetails from './prompt.js';
 
-  if (scaffolder) return scaffolder(options);
+export default async function (languagePlugins, decisions, options) {
+  const {[questionNames.PROJECT_LANGUAGE]: chosenLanguage} = await promptForLanguageDetails(languagePlugins, decisions);
+
+  const plugin = languagePlugins[chosenLanguage];
+
+  if (plugin) return plugin.scaffold(options);
 
   return undefined;
 }

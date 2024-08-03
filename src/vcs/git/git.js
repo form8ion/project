@@ -3,8 +3,7 @@ import hostedGitInfo from 'hosted-git-info';
 import {info, warn} from '@travi/cli-messages';
 import {scaffold as scaffoldGit} from '@form8ion/git';
 
-import promptForVcsHostDetails from '../host/prompt.js';
-import {questionNames} from '../../prompts/question-names.js';
+import {scaffold as scaffoldVcsHost} from '../host/index.js';
 
 async function getExistingRemotes(git) {
   try {
@@ -18,7 +17,7 @@ async function getExistingRemotes(git) {
   }
 }
 
-async function defineRemoteOrigin(projectRoot, origin) {
+async function defineRemoteOrigin(projectRoot, sshUrl) {
   const git = simpleGit({baseDir: projectRoot});
   const existingRemotes = await getExistingRemotes(git);
 
@@ -28,10 +27,10 @@ async function defineRemoteOrigin(projectRoot, origin) {
     return {nextSteps: []};
   }
 
-  if (origin.sshUrl) {
-    info(`Setting remote origin to ${origin.sshUrl}`, {level: 'secondary'});
+  if (sshUrl) {
+    info(`Setting remote origin to ${sshUrl}`, {level: 'secondary'});
 
-    await git.addRemote('origin', origin.sshUrl);
+    await git.addRemote('origin', sshUrl);
 
     // info('Setting the local `master` branch to track `origin/master`');
     //
@@ -48,10 +47,11 @@ async function defineRemoteOrigin(projectRoot, origin) {
   return {nextSteps: []};
 }
 
-export async function initialize(
+export async function scaffold(
   gitRepoShouldBeInitialized,
   projectRoot,
   projectName,
+  description,
   vcsHosts,
   visibility,
   decisions
@@ -64,28 +64,21 @@ export async function initialize(
       const remoteOrigin = await git.remote(['get-url', 'origin']);
       const {user, project, type} = hostedGitInfo.fromUrl(remoteOrigin);
 
-      return {owner: user, name: project, host: type};
+      return {vcs: {owner: user, name: project, host: type}};
     }
 
-    const [answers] = await Promise.all([
-      promptForVcsHostDetails(vcsHosts, visibility, decisions),
+    const [{vcs: {host, owner, name, sshUrl}}] = await Promise.all([
+      scaffoldVcsHost(vcsHosts, visibility, decisions, {projectName, projectRoot, description, visibility}),
       scaffoldGit({projectRoot})
     ]);
 
+    const remoteOriginResults = await defineRemoteOrigin(projectRoot, sshUrl);
+
     return {
-      host: answers[questionNames.REPO_HOST].toLowerCase(),
-      owner: answers[questionNames.REPO_OWNER],
-      name: projectName
+      vcs: {host, owner, name},
+      nextSteps: [{summary: 'Commit scaffolded files'}, ...remoteOriginResults.nextSteps]
     };
   }
 
-  return undefined;
-}
-
-export async function scaffold({projectRoot, origin}) {
-  info('Finishing Git Configuration');
-
-  const remoteOriginResults = await defineRemoteOrigin(projectRoot, origin);
-
-  return {nextSteps: [{summary: 'Commit scaffolded files'}, ...remoteOriginResults.nextSteps]};
+  return {};
 }
