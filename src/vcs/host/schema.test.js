@@ -43,18 +43,4 @@ describe('vcs-host plugins schema', () => {
     expect(() => validateOptions(vcsHostSchema, {[key]: {scaffold: () => undefined}}))
       .toThrowError(`"${key}.scaffold" must have an arity of 1`);
   });
-
-  it('should require the `public` property to be a boolean', () => {
-    expect(() => validateOptions(
-      vcsHostSchema,
-      {[key]: {scaffold: foo => foo, prompt: bar => bar, public: any.word()}}
-    )).toThrowError(`"${key}.public" must be a boolean`);
-  });
-
-  it('should require the `private` property to be a boolean', () => {
-    expect(() => validateOptions(
-      vcsHostSchema,
-      {[key]: {scaffold: foo => foo, prompt: bar => bar, private: any.word()}}
-    )).toThrowError(`"${key}.private" must be a boolean`);
-  });
 });

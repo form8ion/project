@@ -1,12 +1,9 @@
-import {Separator} from '@form8ion/overridable-prompts';
-
 import {describe, expect, it} from 'vitest';
 import any from '@travi/any';
 
 import {questionNames} from './question-names.js';
 import {
   copyrightInformationShouldBeRequested,
-  filterChoicesByVisibility,
   licenseChoicesShouldBePresented,
   unlicensedConfirmationShouldBePresented
 } from './conditionals.js';
@@ -49,34 +46,6 @@ describe('prompt conditionals', () => {
 
     it('should not request the copyright information when the project is not licensed', () => {
       expect(copyrightInformationShouldBeRequested({[questionNames.LICENSE]: undefined})).toBe(false);
-    });
-  });
-
-  describe('choices by project visibility', () => {
-    const publicChoices = any.objectWithKeys(
-      any.listOf(any.word),
-      {factory: () => ({...any.simpleObject(), public: true})}
-    );
-    const privateChoices = any.objectWithKeys(
-      any.listOf(any.word),
-      {factory: () => ({...any.simpleObject(), private: true})}
-    );
-    const choices = {...publicChoices, ...privateChoices};
-
-    it('should list the public hosts for `Public` projects', () => {
-      expect(filterChoicesByVisibility(choices, 'Public')).toEqual([
-        ...Object.keys(publicChoices),
-        new Separator(),
-        'Other'
-      ]);
-    });
-
-    it('should list the private hosts for `Private` projects', () => {
-      expect(filterChoicesByVisibility(choices, 'Private')).toEqual([
-        ...Object.keys(privateChoices),
-        new Separator(),
-        'Other'
-      ]);
     });
   });
 });
