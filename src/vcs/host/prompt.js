@@ -7,7 +7,7 @@ export default async function (hosts, visibility, decisions) {
     name: questionNames.REPO_HOST,
     type: 'list',
     message: 'Where will the repository be hosted?',
-    choices: hosts
+    choices: Object.keys(hosts)
   }], decisions);
   const host = hosts[answers[questionNames.REPO_HOST]];
 

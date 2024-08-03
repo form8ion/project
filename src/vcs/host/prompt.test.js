@@ -27,23 +27,22 @@ describe('vcs host details prompt', () => {
       name: questionNames.REPO_HOST,
       type: 'list',
       message: 'Where will the repository be hosted?',
-      choices: hosts
+      choices: hostNames
     }], decisions).mockResolvedValue(answersWithHostChoice);
 
     expect(await promptForVcsHostDetails(hosts, null, decisions)).toEqual(answersWithHostChoice);
   });
 
   it('should not throw an error when `Other` is chosen as the host', async () => {
-    const hosts = {};
     const visibility = any.word();
     const answersWithHostChoice = {...answers, [questionNames.REPO_HOST]: 'Other'};
     when(prompts.prompt).calledWith([{
       name: questionNames.REPO_HOST,
       type: 'list',
       message: 'Where will the repository be hosted?',
-      choices: hosts
+      choices: []
     }], decisions).mockResolvedValue(answersWithHostChoice);
 
-    expect(await promptForVcsHostDetails(hosts, visibility, decisions)).toEqual(answersWithHostChoice);
+    expect(await promptForVcsHostDetails({}, visibility, decisions)).toEqual(answersWithHostChoice);
   });
 });
