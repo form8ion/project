@@ -37,8 +37,8 @@ opinionated scaffolder for new projects
 * scaffolds [VCS](https://en.wikipedia.org/wiki/VCS) details if [git](https://git-scm.com/)
   is chosen
 * scaffolds the chosen [VCS](https://en.wikipedia.org/wiki/VCS) Host details
-* scaffolds the chosen [CI](https://en.wikipedia.org/wiki/Continuous_integration) service
-  config
+* scaffolds the chosen [CI](https://en.wikipedia.org/wiki/Continuous_integration)
+  service config
 * scaffolds the project `README.md`
 * scaffolds language specific details by delegating to
   [provided scaffolder functions](#languages-optional)
