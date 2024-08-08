@@ -41,6 +41,6 @@ describe('vcs-host plugins schema', () => {
 
   it('should require the scaffolder to accept a single argument', () => {
     expect(() => validateOptions(vcsHostSchema, {[key]: {scaffold: () => undefined}}))
-      .toThrowError(`"${key}.scaffold" must have an arity of 1`);
+      .toThrowError(`"${key}.scaffold" must have an arity greater or equal to 1`);
   });
 });

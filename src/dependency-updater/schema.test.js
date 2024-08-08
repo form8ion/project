@@ -34,7 +34,7 @@ describe('dependency-updater plugins schema', () => {
 
   it('should require the scaffolder to accept a single argument', () => {
     expect(() => validateOptions(dependencyUpdaterPluginsSchema, {[key]: {scaffold: () => undefined}}))
-      .toThrowError(`"${key}.scaffold" must have an arity of 1`);
+      .toThrowError(`"${key}.scaffold" must have an arity greater or equal to 1`);
   });
 
   it('should default to an empty map when no updaters are provided', () => {
