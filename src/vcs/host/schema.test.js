@@ -29,17 +29,17 @@ describe('vcs-host plugins schema', () => {
       .toThrowError(`"${key}" must be of type object`);
   });
 
-  it('should require a `scaffolder` to be included', () => {
+  it('should require a `scaffold` to be included', () => {
     expect(() => validateOptions(vcsHostSchema, {[key]: {}}))
       .toThrowError(`"${key}.scaffold" is required`);
   });
 
-  it('should require `scaffolder` to be a function', () => {
+  it('should require `scaffold` to be a function', () => {
     expect(() => validateOptions(vcsHostSchema, {[key]: {scaffold: any.word()}}))
       .toThrowError(`"${key}.scaffold" must be of type function`);
   });
 
-  it('should require the scaffolder to accept a single argument', () => {
+  it('should require the scaffold to accept a single argument', () => {
     expect(() => validateOptions(vcsHostSchema, {[key]: {scaffold: () => undefined}}))
       .toThrowError(`"${key}.scaffold" must have an arity greater or equal to 1`);
   });
