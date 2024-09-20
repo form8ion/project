@@ -1,6 +1,40 @@
 _extends: .github
+
 repository:
   name: project
   description: opinionated scaffolder for new projects
   homepage: https://npm.im/@form8ion/project
   private: false
+
+rulesets:
+  - name: prevent destruction of the default branch
+    target: branch
+    enforcement: active
+    conditions:
+      ref_name:
+        include:
+          - "~DEFAULT_BRANCH"
+    rules:
+      - type: deletion
+      - type: non_fast_forward
+
+  - name: verification must pass
+    target: branch
+    enforcement: active
+    conditions:
+      ref_name:
+        include:
+          - "~DEFAULT_BRANCH"
+    rules:
+      - type: required_status_checks
+        parameters:
+          required_status_checks:
+            - context: workflow-result
+              integration_id: 15368
+    bypass_actors:
+      - actor_id: 5
+        actor_type: RepositoryRole
+        bypass_mode: pull_request
+      - actor_id: 3208999
+        actor_type: Team
+        bypass_mode: always
