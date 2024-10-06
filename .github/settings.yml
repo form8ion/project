@@ -6,6 +6,10 @@ repository:
   homepage: https://npm.im/@form8ion/project
   private: false
 
+branches:
+  - name: master
+    protection:
+
 rulesets:
   - name: prevent destruction of the default branch
     target: branch
