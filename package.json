@@ -31,7 +31,7 @@
     "test": "npm-run-all --print-label build --parallel lint:* --parallel test:*",
     "test:unit:base": "DEBUG=any vitest run",
     "test:unit": "cross-env NODE_ENV=test c8 run-s test:unit:base",
-    "test:integration:base": "NODE_OPTIONS=\"--loader=testdouble --enable-source-maps\" cucumber-js test/integration",
+    "test:integration:base": "NODE_OPTIONS=--enable-source-maps cucumber-js test/integration",
     "test:integration:wip": "run-s 'test:integration:base -- --profile wip'",
     "test:integration:focus": "run-s 'test:integration:base -- --profile focus'",
     "pretest:integration:base": "run-s build",
