@@ -59,7 +59,6 @@
   },
   "dependencies": {
     "@form8ion/core": "^4.6.0",
-    "@form8ion/execa-wrapper": "^1.0.0",
     "@form8ion/git": "^1.2.0",
     "@form8ion/overridable-prompts": "^1.1.0",
     "@form8ion/readme": "3.1.0",
@@ -67,6 +66,7 @@
     "@hapi/hoek": "^11.0.2",
     "@travi/cli-messages": "1.1.1",
     "deepmerge": "^4.2.2",
+    "execa": "^9.5.1",
     "filedirname": "^3.0.0",
     "hosted-git-info": "^8.0.0",
     "joi": "^17.1.1",

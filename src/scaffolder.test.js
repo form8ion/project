@@ -1,5 +1,5 @@
 import deepmerge from 'deepmerge';
-import execa from '@form8ion/execa-wrapper';
+import {execa} from 'execa';
 import {questionNames as coreQuestionNames} from '@form8ion/core';
 import {scaffold as scaffoldReadme} from '@form8ion/readme';
 import * as resultsReporter from '@form8ion/results-reporter';
@@ -20,8 +20,8 @@ import {scaffold as scaffoldContributing} from './contributing/index.js';
 import lift from './lift.js';
 import {scaffold} from './scaffolder.js';
 
+vi.mock('execa');
 vi.mock('@form8ion/readme');
-vi.mock('@form8ion/execa-wrapper');
 vi.mock('@form8ion/results-reporter');
 vi.mock('./readme');
 vi.mock('./vcs/git/git.js');
