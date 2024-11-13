@@ -42,7 +42,8 @@
     "build": "run-s clean build:*",
     "watch": "run-s 'build:js -- --watch'",
     "prepack": "run-s build",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "lint:js:fix": "run-s 'lint:js -- --fix'"
   },
   "files": [
     "lib/",
