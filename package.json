@@ -24,7 +24,7 @@
     "lint:js": "eslint . --cache",
     "lint:gherkin": "gherkin-lint",
     "lint:md": "remark --quiet . --frail",
-    "lint:lockfile": "lockfile-lint --path package-lock.json --type npm --validate-https --allowed-hosts npm",
+    "lint:lockfile": "lockfile-lint",
     "lint:engines": "ls-engines",
     "lint:peer": "npm ls >/dev/null",
     "lint:publish": "publint --strict",
