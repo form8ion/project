@@ -5,7 +5,7 @@
   "version": "0.0.0-semantically-released",
   "type": "module",
   "engines": {
-    "node": "^18.17 || >=20.6.1"
+    "node": "^18.19.0 || ^20.6.1 || >=22"
   },
   "author": "Matt Travi <npm@travi.org> (https://matt.travi.org/)",
   "contributors": [
@@ -31,7 +31,7 @@
     "test": "npm-run-all --print-label build --parallel lint:* --parallel test:*",
     "test:unit:base": "DEBUG=any vitest run",
     "test:unit": "cross-env NODE_ENV=test c8 run-s test:unit:base",
-    "test:integration:base": "NODE_OPTIONS=\"--loader=testdouble --enable-source-maps\" cucumber-js test/integration",
+    "test:integration:base": "NODE_OPTIONS=--enable-source-maps cucumber-js test/integration",
     "test:integration:wip": "run-s 'test:integration:base -- --profile wip'",
     "test:integration:focus": "run-s 'test:integration:base -- --profile focus'",
     "pretest:integration:base": "run-s build",
@@ -59,7 +59,6 @@
   },
   "dependencies": {
     "@form8ion/core": "^4.6.0",
-    "@form8ion/execa-wrapper": "^1.0.0",
     "@form8ion/git": "^1.2.0",
     "@form8ion/overridable-prompts": "^1.1.0",
     "@form8ion/readme": "3.1.0",
@@ -67,6 +66,7 @@
     "@hapi/hoek": "^11.0.2",
     "@travi/cli-messages": "1.1.1",
     "deepmerge": "^4.2.2",
+    "execa": "^9.5.1",
     "filedirname": "^3.0.0",
     "hosted-git-info": "^8.0.0",
     "joi": "^17.1.1",
