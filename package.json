@@ -84,7 +84,7 @@
     "@form8ion/eslint-config": "7.0.12",
     "@form8ion/eslint-config-cucumber": "1.4.1",
     "@form8ion/remark-lint-preset": "6.0.5",
-    "@rollup/plugin-node-resolve": "15.3.0",
+    "@rollup/plugin-node-resolve": "15.3.1",
     "@travi/any": "3.1.2",
     "c8": "10.1.3",
     "chai": "5.1.2",
