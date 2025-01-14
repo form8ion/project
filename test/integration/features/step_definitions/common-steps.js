@@ -52,6 +52,8 @@ When(/^the project is scaffolded$/, async function () {
   this.projectName = 'project-name';
   this.projectDescription = any.sentence();
 
+  this.languageLiftResults = any.simpleObject();
+
   await scaffold({
     plugins: {
       ...this.updatePlugin && {
@@ -66,6 +68,16 @@ When(/^the project is scaffolded$/, async function () {
               info(`Scaffolding ${chosenLanguage} language details for ${projectName}`);
 
               return this.languageScaffolderResults;
+            },
+            test: ({projectRoot}) => {
+              info(`Determining if project at ${projectRoot} uses the ${chosenLanguage} language`);
+
+              return true;
+            },
+            lift: ({projectRoot}) => {
+              info(`Applying the ${chosenLanguage} language lifter to the project at ${projectRoot}`);
+
+              return this.languageLiftResults;
             }
           }
         }

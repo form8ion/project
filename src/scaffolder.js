@@ -63,7 +63,7 @@ export async function scaffold(options) {
     projectRoot,
     vcs: vcsResults.vcs,
     results: mergedResults,
-    enhancers: {...dependencyUpdaters, ...vcsHosts}
+    enhancers: {...dependencyUpdaters, ...vcsHosts, ...languages}
   });
 
   if (language && language.verificationCommand) {
