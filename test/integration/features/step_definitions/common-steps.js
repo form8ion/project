@@ -51,8 +51,9 @@ When(/^the project is scaffolded$/, async function () {
 
   this.projectName = 'project-name';
   this.projectDescription = any.sentence();
+  this.projectHomepage = any.url();
 
-  this.languageLiftResults = any.simpleObject();
+  this.languageLiftResults = {...any.simpleObject(), homepage: this.projectHomepage};
 
   await scaffold({
     plugins: {
@@ -85,9 +86,23 @@ When(/^the project is scaffolded$/, async function () {
       ...vcsHost && 'Other' !== vcsHost && {
         vcsHosts: {
           [vcsHost]: {
-            scaffold: ({projectName, owner}) => ({
-              vcs: {sshUrl: this.remoteOriginUrl, name: projectName, owner, host: vcsHost}
-            })
+            scaffold: ({projectName, owner}) => {
+              this.hostedVcsDetails = {name: projectName, host: vcsHost};
+
+              return ({
+                vcs: {sshUrl: this.remoteOriginUrl, name: projectName, owner, host: vcsHost}
+              });
+            },
+            test: ({projectRoot}) => {
+              info(`Determining if project at ${projectRoot} uses the ${vcsHost} VCS host`);
+
+              return true;
+            },
+            lift: ({results}) => {
+              this.vcsHostProjectHomepage = results.homepage;
+
+              return results;
+            }
           }
         }
       }
