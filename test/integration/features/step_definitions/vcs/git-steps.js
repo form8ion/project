@@ -1,7 +1,6 @@
 import {promises as fs} from 'node:fs';
 
 import {GitError} from 'simple-git';
-import makeDir from 'make-dir';
 import {fileExists} from '@form8ion/core';
 
 import {Before, Given, Then} from '@cucumber/cucumber';
@@ -34,7 +33,7 @@ Given('the project root is already initialized as a git repository', async funct
   this.existingVcsIgnoredFiles = any.listOf(any.word);
   this.existingVcsIgnoredDirectories = any.listOf(any.word);
 
-  await makeDir(`${process.cwd()}/.git`);
+  await fs.mkdir(`${process.cwd()}/.git`, {recursive: true});
   await fs.writeFile(
     `${process.cwd()}/.gitignore`,
     `${this.existingVcsIgnoredDirectories.join('\n')}\n\n${this.existingVcsIgnoredFiles.join('\n')}`
