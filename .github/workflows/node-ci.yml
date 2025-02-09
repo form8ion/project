@@ -34,9 +34,8 @@ jobs:
       matrix:
         node:
           - 18.19.0
-          - 20.6.1
-          - 22.0.0
-          - 22
+          - 20.9.0
+          - 22.11.0
           - 23
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
