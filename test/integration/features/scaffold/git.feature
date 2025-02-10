@@ -16,8 +16,10 @@ Feature: Git Repository
   Scenario: to be versioned and hosted
     Given the project should be versioned in git
     And the git repository will be hosted
+    And a language scaffolder is chosen
     When the project is scaffolded
     Then the remote origin is defined
+    And the project repository is hosted on the chosen host
 
   Scenario: already versioned
     Given the project root is already initialized as a git repository

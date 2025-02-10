@@ -5,7 +5,7 @@
   "version": "0.0.0-semantically-released",
   "type": "module",
   "engines": {
-    "node": "^18.19.0 || ^20.6.1 || >=22"
+    "node": "^18.19.0 || ^20.9.0 || >=22.11.0"
   },
   "author": "Matt Travi <npm@travi.org> (https://matt.travi.org/)",
   "contributors": [
@@ -95,7 +95,6 @@
     "jest-when": "3.7.0",
     "lockfile-lint": "4.14.0",
     "ls-engines": "0.9.3",
-    "make-dir": "4.0.0",
     "mdast-util-from-markdown": "2.0.2",
     "mdast-util-heading-range": "4.0.0",
     "mdast-zone": "6.1.0",

@@ -133,7 +133,7 @@ describe('project scaffolder', () => {
       projectRoot: projectPath,
       vcs,
       results: mergedResults,
-      enhancers: {...dependencyUpdaters, ...vcsHosts}
+      enhancers: {...dependencyUpdaters, ...vcsHosts, ...languages}
     });
     expect(resultsReporter.reportResults).toHaveBeenCalledWith(mergedResults);
   });

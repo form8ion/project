@@ -1,4 +1,3 @@
-import deepmerge from 'deepmerge';
 import * as core from '@form8ion/core';
 import * as readme from '@form8ion/readme';
 import * as gitPlugin from '@form8ion/git';
@@ -26,7 +25,6 @@ describe('lift', () => {
     const vcs = any.simpleObject();
     const results = any.simpleObject();
     const enhancerResults = any.simpleObject();
-    const mergedResults = any.simpleObject();
     when(core.applyEnhancers)
       .calledWith({
         results,
@@ -35,9 +33,8 @@ describe('lift', () => {
         dependencies
       })
       .mockResolvedValue(enhancerResults);
-    when(deepmerge.all).calledWith([results, enhancerResults]).mockReturnValue(mergedResults);
 
     expect(await lift({projectRoot, results, enhancers, vcs, dependencies})).toEqual(enhancerResults);
-    expect(readme.lift).toHaveBeenCalledWith({projectRoot, results: mergedResults});
+    expect(readme.lift).toHaveBeenCalledWith({projectRoot, results: enhancerResults});
   });
 });
