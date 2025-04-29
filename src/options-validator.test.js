@@ -3,7 +3,7 @@ import * as core from '@form8ion/core';
 
 import {afterEach, beforeEach, describe, expect, it, vi} from 'vitest';
 import any from '@travi/any';
-import {when} from 'jest-when';
+import {when} from 'vitest-when';
 
 import languagePluginsSchema from './language/schema.js';
 import {decisionsSchema} from './options-schemas.js';
@@ -38,12 +38,12 @@ describe('options validator', () => {
         languages: languagePluginsSchema,
         vcsHosts: vcsHostPluginsSchema
       })
-      .mockReturnValue(pluginsSchema);
+      .thenReturn(pluginsSchema);
     when(joi.object).calledWith({
       decisions: decisionsSchema,
       plugins: pluginsSchema
-    }).mockReturnValue(fullSchema);
-    when(core.validateOptions).calledWith(fullSchema, options).mockReturnValue(validatedOptions);
+    }).thenReturn(fullSchema);
+    when(core.validateOptions).calledWith(fullSchema, options).thenReturn(validatedOptions);
 
     expect(validate(options)).toEqual(validatedOptions);
   });

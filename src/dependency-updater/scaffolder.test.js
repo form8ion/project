@@ -1,6 +1,6 @@
 import {afterEach, describe, expect, it, vi} from 'vitest';
 import any from '@travi/any';
-import {when} from 'jest-when';
+import {when} from 'vitest-when';
 
 import * as prompt from './prompt.js';
 import scaffoldUpdater from './scaffolder.js';
@@ -23,8 +23,8 @@ describe('dependency-updater scaffolder', () => {
     const scaffolderResult = any.simpleObject();
     when(prompt.promptForDependencyUpdaterChoice)
       .calledWith(plugins, decisions)
-      .mockResolvedValue({[questionNames.DEPENDENCY_UPDATER]: chosenUpdater});
-    when(chosenUpdaterScaffolder).calledWith(options).mockResolvedValue(scaffolderResult);
+      .thenResolve({[questionNames.DEPENDENCY_UPDATER]: chosenUpdater});
+    when(chosenUpdaterScaffolder).calledWith(options).thenResolve(scaffolderResult);
 
     expect(await scaffoldUpdater(plugins, decisions, options)).toEqual(scaffolderResult);
   });

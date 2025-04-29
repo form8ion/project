@@ -1,6 +1,6 @@
 import {describe, expect, it, vi} from 'vitest';
 import any from '@travi/any';
-import {when} from 'jest-when';
+import {when} from 'vitest-when';
 
 import * as languagePrompt from './prompt.js';
 import {questionNames} from '../prompts/question-names.js';
@@ -18,14 +18,14 @@ describe('language scaffolder', () => {
     const plugins = {...any.simpleObject(), [chosenLanguage]: {scaffold: chosenLanguageScaffolder}};
     when(languagePrompt.default)
       .calledWith(plugins, decisions)
-      .mockResolvedValue({[questionNames.PROJECT_LANGUAGE]: chosenLanguage});
-    when(chosenLanguageScaffolder).calledWith(options).mockResolvedValue(scaffolderResult);
+      .thenResolve({[questionNames.PROJECT_LANGUAGE]: chosenLanguage});
+    when(chosenLanguageScaffolder).calledWith(options).thenResolve(scaffolderResult);
 
     expect(await scaffold(plugins, decisions, options)).toEqual(scaffolderResult);
   });
 
   it('should not result in an error when choosing a language without a defined scaffolder', async () => {
-    when(languagePrompt.default).mockResolvedValue({[questionNames.PROJECT_LANGUAGE]: any.word()});
+    languagePrompt.default.mockResolvedValue({[questionNames.PROJECT_LANGUAGE]: any.word()});
 
     await scaffold(any.simpleObject(), any.simpleObject(), any.simpleObject());
   });

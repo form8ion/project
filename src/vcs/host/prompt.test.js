@@ -2,7 +2,7 @@ import * as prompts from '@form8ion/overridable-prompts';
 
 import {afterEach, describe, expect, it, vi} from 'vitest';
 import any from '@travi/any';
-import {when} from 'jest-when';
+import {when} from 'vitest-when';
 
 import {questionNames} from '../../prompts/question-names.js';
 import promptForVcsHostDetails from './prompt.js';
@@ -28,7 +28,7 @@ describe('vcs host details prompt', () => {
       type: 'list',
       message: 'Where will the repository be hosted?',
       choices: hostNames
-    }], decisions).mockResolvedValue(answersWithHostChoice);
+    }], decisions).thenResolve(answersWithHostChoice);
 
     expect(await promptForVcsHostDetails(hosts, null, decisions)).toEqual(answersWithHostChoice);
   });
@@ -41,7 +41,7 @@ describe('vcs host details prompt', () => {
       type: 'list',
       message: 'Where will the repository be hosted?',
       choices: []
-    }], decisions).mockResolvedValue(answersWithHostChoice);
+    }], decisions).thenResolve(answersWithHostChoice);
 
     expect(await promptForVcsHostDetails({}, visibility, decisions)).toEqual(answersWithHostChoice);
   });

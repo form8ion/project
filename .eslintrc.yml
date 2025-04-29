@@ -1,5 +1,6 @@
 extends:
   - '@form8ion'
+  - '@form8ion/vitest'
   - '@form8ion/cucumber'
 
 parserOptions:

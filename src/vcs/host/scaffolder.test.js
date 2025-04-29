@@ -1,6 +1,6 @@
 import {describe, expect, it, vi} from 'vitest';
 import any from '@travi/any';
-import {when} from 'jest-when';
+import {when} from 'vitest-when';
 
 import {questionNames} from '../../prompts/question-names.js';
 import terminalPromptFactory from '../../prompts/terminal-prompt.js';
@@ -22,11 +22,11 @@ describe('vcs host scaffolder', () => {
     const hostPlugins = {...any.simpleObject(), [chosenHost.toLowerCase()]: {scaffold: chosenHostScaffolder}};
     const owner = any.word;
     const terminalPrompt = () => undefined;
-    when(terminalPromptFactory).calledWith(decisions).mockReturnValue(terminalPrompt);
+    when(terminalPromptFactory).calledWith(decisions).thenReturn(terminalPrompt);
     when(promptForVcsHostDetails)
       .calledWith(hostPlugins, visibility, decisions)
-      .mockResolvedValue({[questionNames.REPO_HOST]: chosenHost, [questionNames.REPO_OWNER]: owner});
-    when(chosenHostScaffolder).calledWith(options, {prompt: terminalPrompt}).mockResolvedValue(results);
+      .thenResolve({[questionNames.REPO_HOST]: chosenHost, [questionNames.REPO_OWNER]: owner});
+    when(chosenHostScaffolder).calledWith(options, {prompt: terminalPrompt}).thenResolve(results);
 
     expect(await scaffoldVcsHost(hostPlugins, visibility, decisions, options)).toEqual(results);
   });
@@ -35,7 +35,7 @@ describe('vcs host scaffolder', () => {
     const hostPlugins = any.simpleObject();
     when(promptForVcsHostDetails)
       .calledWith(hostPlugins, visibility, decisions)
-      .mockResolvedValue({[questionNames.REPO_HOST]: any.word()});
+      .thenResolve({[questionNames.REPO_HOST]: any.word()});
 
     expect(await scaffoldVcsHost(hostPlugins, visibility, decisions, options)).toEqual({vcs: {}});
   });

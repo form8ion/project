@@ -2,7 +2,7 @@ import {prompt} from '@form8ion/overridable-prompts';
 
 import {afterEach, describe, expect, it, vi} from 'vitest';
 import any from '@travi/any';
-import {when} from 'jest-when';
+import {when} from 'vitest-when';
 
 import {questionNames} from '../prompts/question-names.js';
 import promptForLanguageDetails from './prompt.js';
@@ -23,7 +23,7 @@ describe('language prompt', () => {
       type: 'list',
       message: 'What type of project is this?',
       choices: [...Object.keys(languages), 'Other']
-    }], decisions).mockResolvedValue(answers);
+    }], decisions).thenResolve(answers);
 
     expect(await promptForLanguageDetails(languages, decisions)).toEqual(answers);
   });

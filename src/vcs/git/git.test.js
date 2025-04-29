@@ -4,7 +4,7 @@ import {scaffold as scaffoldGit} from '@form8ion/git';
 
 import {afterEach, beforeEach, describe, expect, it, vi} from 'vitest';
 import any from '@travi/any';
-import {when} from 'jest-when';
+import {when} from 'vitest-when';
 
 import {scaffold as scaffoldVcsHost} from '../host/index.js';
 import {scaffold} from './git.js';
@@ -39,7 +39,7 @@ describe('git', () => {
 
     when(simpleGit.simpleGit)
       .calledWith({baseDir: projectRoot})
-      .mockReturnValue({checkIsRepo, remote, listRemote, addRemote});
+      .thenReturn({checkIsRepo, remote, listRemote, addRemote});
   });
 
   afterEach(() => {
@@ -48,10 +48,10 @@ describe('git', () => {
 
   it('should initialize the git repo', async () => {
     const vcsHosts = any.simpleObject();
-    when(checkIsRepo).calledWith('root').mockResolvedValue(false);
+    when(checkIsRepo).calledWith('root').thenResolve(false);
     when(scaffoldVcsHost)
       .calledWith(vcsHosts, visibility, decisions, {projectName, projectRoot, description, visibility})
-      .mockResolvedValue(vcsHostResults);
+      .thenResolve(vcsHostResults);
     listRemote.mockResolvedValue(any.listOf(any.word));
 
     expect(await scaffold(
@@ -74,7 +74,7 @@ describe('git', () => {
   });
 
   it('should not initialize the git repo if the project will not be versioned', async () => {
-    when(checkIsRepo).calledWith('root').mockResolvedValue(false);
+    when(checkIsRepo).calledWith('root').thenResolve(false);
 
     const hostDetails = await scaffold(false, projectRoot, projectName, githubAccount, visibility, decisions);
 
@@ -85,11 +85,11 @@ describe('git', () => {
   it('should return the git details from an existing remote', async () => {
     const repoName = any.word();
     const remoteOrigin = any.url();
-    when(checkIsRepo).calledWith('root').mockResolvedValue(true);
-    when(remote).calledWith(['get-url', 'origin']).mockResolvedValue(remoteOrigin);
+    when(checkIsRepo).calledWith('root').thenResolve(true);
+    when(remote).calledWith(['get-url', 'origin']).thenResolve(remoteOrigin);
     when(hostedGitInfo.fromUrl)
       .calledWith(remoteOrigin)
-      .mockReturnValue({user: vcsHostAccount, project: repoName, type: vcsHost.toLowerCase()});
+      .thenReturn({user: vcsHostAccount, project: repoName, type: vcsHost.toLowerCase()});
 
     const hostDetails = await scaffold(true, projectRoot, projectName, githubAccount, visibility);
 
@@ -99,16 +99,16 @@ describe('git', () => {
 
   it('should throw git errors that are not a lack of defined remotes', async () => {
     const error = new Error(any.sentence());
-    when(checkIsRepo).calledWith('root').mockResolvedValue(false);
-    when(scaffoldVcsHost).mockResolvedValue(vcsHostResults);
+    when(checkIsRepo).calledWith('root').thenResolve(false);
+    scaffoldVcsHost.mockResolvedValue(vcsHostResults);
     listRemote.mockRejectedValue(error);
 
     await expect(scaffold(true, projectRoot)).rejects.toThrow(error);
   });
 
   it('should not define the remote origin if it already exists', async () => {
-    when(checkIsRepo).calledWith('root').mockResolvedValue(false);
-    when(scaffoldVcsHost).mockResolvedValue(vcsHostResults);
+    when(checkIsRepo).calledWith('root').thenResolve(false);
+    scaffoldVcsHost.mockResolvedValue(vcsHostResults);
     listRemote.mockResolvedValue(['origin']);
 
     const result = await scaffold(true, projectRoot);

@@ -3,7 +3,7 @@ import * as prompts from '@form8ion/overridable-prompts';
 
 import {afterEach, describe, expect, it, vi} from 'vitest';
 import any from '@travi/any';
-import {when} from 'jest-when';
+import {when} from 'vitest-when';
 
 import {questionNames} from './question-names.js';
 import {promptForBaseDetails} from './questions.js';
@@ -22,7 +22,7 @@ describe('base details prompt', () => {
   });
 
   it('should prompt for the necessary details', async () => {
-    when(core.questionsForBaseDetails).calledWith(decisions, projectPath).mockReturnValue(questions);
+    when(core.questionsForBaseDetails).calledWith(decisions, projectPath).thenReturn(questions);
     when(prompts.prompt).calledWith([
       ...questions,
       {
@@ -31,7 +31,7 @@ describe('base details prompt', () => {
         default: true,
         message: 'Should a git repository be initialized?'
       }
-    ], decisions).mockResolvedValue(answers);
+    ], decisions).thenResolve(answers);
 
     expect(await promptForBaseDetails(projectPath, decisions)).toEqual(answers);
   });

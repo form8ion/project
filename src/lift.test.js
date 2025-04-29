@@ -4,7 +4,7 @@ import * as gitPlugin from '@form8ion/git';
 
 import {afterEach, describe, expect, it, vi} from 'vitest';
 import any from '@travi/any';
-import {when} from 'jest-when';
+import {when} from 'vitest-when';
 
 import * as licensePlugin from './license/index.js';
 import lift from './lift.js';
@@ -32,7 +32,7 @@ describe('lift', () => {
         options: {projectRoot, vcs},
         dependencies
       })
-      .mockResolvedValue(enhancerResults);
+      .thenResolve(enhancerResults);
 
     expect(await lift({projectRoot, results, enhancers, vcs, dependencies})).toEqual(enhancerResults);
     expect(readme.lift).toHaveBeenCalledWith({projectRoot, results: enhancerResults});

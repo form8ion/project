@@ -2,7 +2,7 @@ import * as prompts from '@form8ion/overridable-prompts';
 
 import {afterEach, describe, expect, it, vi} from 'vitest';
 import any from '@travi/any';
-import {when} from 'jest-when';
+import {when} from 'vitest-when';
 
 import {promptForDependencyUpdaterChoice} from './prompt.js';
 import {questionNames} from '../index.js';
@@ -23,7 +23,7 @@ describe('dependency updater prompt', () => {
       type: 'list',
       message: 'Which dependency-update service do you want to manage this project?',
       choices: [...Object.keys(updaters), 'Other']
-    }], decisions).mockResolvedValue(answers);
+    }], decisions).thenResolve(answers);
 
     expect(await promptForDependencyUpdaterChoice(updaters, decisions)).toEqual(answers);
   });

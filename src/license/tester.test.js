@@ -1,6 +1,6 @@
 import {fileExists} from '@form8ion/core';
 
-import {when} from 'jest-when';
+import {when} from 'vitest-when';
 import {expect, it, describe, vi} from 'vitest';
 import any from '@travi/any';
 
@@ -12,13 +12,13 @@ describe('license predicate', () => {
   const projectRoot = any.string();
 
   it('should return `true` when a `LICENSE` file exists', async () => {
-    when(fileExists).calledWith(`${projectRoot}/LICENSE`).mockResolvedValue(true);
+    when(fileExists).calledWith(`${projectRoot}/LICENSE`).thenResolve(true);
 
     expect(await projectIsLicensed({projectRoot})).toBe(true);
   });
 
   it('should return `false` when a `LICENSE` does not file exist', async () => {
-    when(fileExists).calledWith(`${projectRoot}/LICENSE`).mockResolvedValue(false);
+    when(fileExists).calledWith(`${projectRoot}/LICENSE`).thenResolve(false);
 
     expect(await projectIsLicensed({projectRoot})).toBe(false);
   });
