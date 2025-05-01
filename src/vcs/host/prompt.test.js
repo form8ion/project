@@ -30,11 +30,10 @@ describe('vcs host details prompt', () => {
       choices: hostNames
     }], decisions).thenResolve(answersWithHostChoice);
 
-    expect(await promptForVcsHostDetails(hosts, null, decisions)).toEqual(answersWithHostChoice);
+    expect(await promptForVcsHostDetails(hosts, decisions)).toEqual(answersWithHostChoice);
   });
 
   it('should not throw an error when `Other` is chosen as the host', async () => {
-    const visibility = any.word();
     const answersWithHostChoice = {...answers, [questionNames.REPO_HOST]: 'Other'};
     when(prompts.prompt).calledWith([{
       name: questionNames.REPO_HOST,
@@ -43,6 +42,6 @@ describe('vcs host details prompt', () => {
       choices: []
     }], decisions).thenResolve(answersWithHostChoice);
 
-    expect(await promptForVcsHostDetails({}, visibility, decisions)).toEqual(answersWithHostChoice);
+    expect(await promptForVcsHostDetails({}, decisions)).toEqual(answersWithHostChoice);
   });
 });

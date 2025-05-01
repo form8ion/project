@@ -1,11 +1,10 @@
 import * as core from '@form8ion/core';
 import * as prompts from '@form8ion/overridable-prompts';
 
-import {afterEach, describe, expect, it, vi} from 'vitest';
+import {describe, expect, it, vi} from 'vitest';
 import any from '@travi/any';
 import {when} from 'vitest-when';
 
-import {questionNames} from './question-names.js';
 import {promptForBaseDetails} from './questions.js';
 
 vi.mock('@form8ion/core');
@@ -17,21 +16,9 @@ describe('base details prompt', () => {
   const decisions = any.simpleObject();
   const questions = any.listOf(any.simpleObject);
 
-  afterEach(() => {
-    vi.clearAllMocks();
-  });
-
   it('should prompt for the necessary details', async () => {
     when(core.questionsForBaseDetails).calledWith(decisions, projectPath).thenReturn(questions);
-    when(prompts.prompt).calledWith([
-      ...questions,
-      {
-        name: questionNames.GIT_REPO,
-        type: 'confirm',
-        default: true,
-        message: 'Should a git repository be initialized?'
-      }
-    ], decisions).thenResolve(answers);
+    when(prompts.prompt).calledWith(questions, decisions).thenResolve(answers);
 
     expect(await promptForBaseDetails(projectPath, decisions)).toEqual(answers);
   });

@@ -6,12 +6,11 @@ import {scaffold as scaffoldReadme} from '@form8ion/readme';
 import {info} from '@travi/cli-messages';
 
 import {scaffold as scaffoldLanguage} from './language/index.js';
-import {scaffold as scaffoldGit} from './vcs/git/git.js';
+import {scaffold as scaffoldVcs} from './vcs/index.js';
 import {scaffold as scaffoldLicense} from './license/index.js';
 import scaffoldDependencyUpdater from './dependency-updater/scaffolder.js';
 import {promptForBaseDetails} from './prompts/questions.js';
 import {validate} from './options-validator.js';
-import {questionNames} from './prompts/question-names.js';
 import {scaffold as scaffoldEditorConfig} from './editorconfig/index.js';
 import {scaffold as scaffoldContributing} from './contributing/index.js';
 import lift from './lift.js';
@@ -25,14 +24,13 @@ export async function scaffold(options) {
     [coreQuestionNames.LICENSE]: chosenLicense,
     [coreQuestionNames.VISIBILITY]: visibility,
     [coreQuestionNames.DESCRIPTION]: description,
-    [questionNames.GIT_REPO]: gitRepo,
     [coreQuestionNames.COPYRIGHT_YEAR]: copyrightYear,
     [coreQuestionNames.COPYRIGHT_HOLDER]: copyHolder
   } = await promptForBaseDetails(projectRoot, decisions);
   const copyright = {year: copyrightYear, holder: copyHolder};
 
   const [vcsResults, contributing, license] = await Promise.all([
-    scaffoldGit(gitRepo, projectRoot, projectName, description, vcsHosts, visibility, decisions),
+    scaffoldVcs({projectRoot, projectName, decisions, vcsHosts, visibility, description}),
     scaffoldContributing({visibility}),
     scaffoldLicense({projectRoot, license: chosenLicense, copyright}),
     scaffoldReadme({projectName, projectRoot, description}),
