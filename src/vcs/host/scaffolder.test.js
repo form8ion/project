@@ -3,11 +3,9 @@ import any from '@travi/any';
 import {when} from 'vitest-when';
 
 import {questionNames} from '../../prompts/question-names.js';
-import terminalPromptFactory from '../../prompts/terminal-prompt.js';
 import promptForVcsHostDetails from './prompt.js';
 import scaffoldVcsHost from './scaffolder.js';
 
-vi.mock('../../prompts/terminal-prompt.js');
 vi.mock('./prompt');
 
 describe('vcs host scaffolder', () => {
@@ -20,12 +18,10 @@ describe('vcs host scaffolder', () => {
     const chosenHostScaffolder = vi.fn();
     const hostPlugins = {...any.simpleObject(), [chosenHost.toLowerCase()]: {scaffold: chosenHostScaffolder}};
     const owner = any.word;
-    const terminalPrompt = () => undefined;
-    when(terminalPromptFactory).calledWith(decisions).thenReturn(terminalPrompt);
     when(promptForVcsHostDetails)
       .calledWith(hostPlugins, decisions)
       .thenResolve({[questionNames.REPO_HOST]: chosenHost, [questionNames.REPO_OWNER]: owner});
-    when(chosenHostScaffolder).calledWith(options, {prompt: terminalPrompt}).thenResolve(results);
+    when(chosenHostScaffolder).calledWith(options).thenResolve(results);
 
     expect(await scaffoldVcsHost(hostPlugins, decisions, options)).toEqual(results);
   });

@@ -1,5 +1,4 @@
 import {questionNames} from '../../prompts/question-names.js';
-import terminalPromptFactory from '../../prompts/terminal-prompt.js';
 import promptForVcsHostDetails from './prompt.js';
 
 export default async function scaffoldVcsHost(hosts, decisions, options) {
@@ -10,7 +9,7 @@ export default async function scaffoldVcsHost(hosts, decisions, options) {
   );
   const host = lowercasedHosts[chosenHost.toLowerCase()];
 
-  if (host) return host.scaffold(options, {prompt: terminalPromptFactory(decisions)});
+  if (host) return host.scaffold(options);
 
   return {vcs: {}};
 }
