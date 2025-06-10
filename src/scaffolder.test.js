@@ -114,18 +114,13 @@ describe('project scaffolder', () => {
       .thenResolve(licenseResults);
     scaffoldLanguage.mockResolvedValue(languageResults);
     when(dependencyUpdaterScaffolder.default)
-      .calledWith(dependencyUpdaters, decisions, {projectRoot: projectPath, vcs})
+      .calledWith(dependencyUpdaters, decisions, {projectRoot: projectPath})
       .thenResolve(dependencyUpdaterResults);
     when(scaffoldContributing).calledWith({visibility}).thenReturn(contributingResults);
 
     await scaffold(options);
 
     expect(scaffoldReadme).toHaveBeenCalledWith({projectName, projectRoot: projectPath, description});
-    expect(dependencyUpdaterScaffolder.default).toHaveBeenCalledWith(
-      dependencyUpdaters,
-      decisions,
-      {projectRoot: projectPath, vcs}
-    );
     expect(scaffoldEditorconfig).toHaveBeenCalledWith({projectRoot: projectPath});
     expect(lift).toHaveBeenCalledWith({
       projectRoot: projectPath,

@@ -40,7 +40,7 @@ export async function scaffold(options) {
   const dependencyUpdaterResults = vcsResults.vcs && await scaffoldDependencyUpdater(
     dependencyUpdaters,
     decisions,
-    {projectRoot, vcs: vcsResults.vcs}
+    {projectRoot}
   );
 
   const language = await scaffoldLanguage(
