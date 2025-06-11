@@ -10,7 +10,7 @@ vi.mock('./prompt');
 
 describe('vcs host scaffolder', () => {
   const options = any.simpleObject();
-  const decisions = any.simpleObject();
+  const prompt = () => undefined;
 
   it('should scaffold the chosen vcs host', async () => {
     const chosenHost = `${any.word()}CAPITAL${any.word()}`;
@@ -19,19 +19,19 @@ describe('vcs host scaffolder', () => {
     const hostPlugins = {...any.simpleObject(), [chosenHost.toLowerCase()]: {scaffold: chosenHostScaffolder}};
     const owner = any.word;
     when(promptForVcsHostDetails)
-      .calledWith(hostPlugins, decisions)
+      .calledWith(hostPlugins, {prompt})
       .thenResolve({[questionNames.REPO_HOST]: chosenHost, [questionNames.REPO_OWNER]: owner});
     when(chosenHostScaffolder).calledWith(options).thenResolve(results);
 
-    expect(await scaffoldVcsHost(hostPlugins, decisions, options)).toEqual(results);
+    expect(await scaffoldVcsHost(hostPlugins, options, {prompt})).toEqual(results);
   });
 
   it('should return empty `vcs` results when no matching host is available', async () => {
     const hostPlugins = any.simpleObject();
     when(promptForVcsHostDetails)
-      .calledWith(hostPlugins, decisions)
+      .calledWith(hostPlugins, {prompt})
       .thenResolve({[questionNames.REPO_HOST]: any.word()});
 
-    expect(await scaffoldVcsHost(hostPlugins, decisions, options)).toEqual({vcs: {}});
+    expect(await scaffoldVcsHost(hostPlugins, options, {prompt})).toEqual({vcs: {}});
   });
 });

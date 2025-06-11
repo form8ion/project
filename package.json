@@ -64,7 +64,6 @@
   "dependencies": {
     "@form8ion/core": "^4.6.0",
     "@form8ion/git": "^2.1.1",
-    "@form8ion/overridable-prompts": "^1.1.0",
     "@form8ion/readme": "3.1.0",
     "@form8ion/results-reporter": "^1.1.0",
     "@hapi/hoek": "^11.0.2",
