@@ -16,6 +16,7 @@ Given('the repository is hosted on {string}', async function (host) {
   this.repoHost = host;
   this.vcsOwner = any.word();
   this.vcsName = any.word();
+  this.setAnswerFor(questionNames.REPO_HOST, this.repoHost);
 });
 
 Then('the project repository is hosted on the chosen host', async function () {

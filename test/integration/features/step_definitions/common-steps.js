@@ -8,6 +8,7 @@ import stubbedFs from 'mock-fs';
 import {Before, After, Given, When, setWorldConstructor} from '@cucumber/cucumber';
 import any from '@travi/any';
 import * as td from 'testdouble';
+import {assert} from 'chai';
 
 import {World} from '../support/world.mjs';
 
@@ -22,6 +23,7 @@ const stubbedNodeModules = stubbedFs.load(resolve(...projectPath, 'node_modules'
 
 Before({timeout: 20 * 1000}, async function () {
   this.projectRoot = process.cwd();
+  this.projectName = 'project-name';
   this.git = await td.replaceEsm('simple-git');
 
   // eslint-disable-next-line import/no-extraneous-dependencies,import/no-unresolved
@@ -49,7 +51,6 @@ When(/^the project is scaffolded$/, async function () {
   const chosenLanguage = this.getAnswerFor(questionNames.PROJECT_LANGUAGE) || 'Other';
   const vcsHost = this.getAnswerFor(questionNames.REPO_HOST);
 
-  this.projectName = 'project-name';
   this.projectDescription = any.sentence();
   this.projectHomepage = any.url();
 
@@ -66,8 +67,15 @@ When(/^the project is scaffolded$/, async function () {
         languages: {
           ...'Other' !== chosenLanguage && {
             [chosenLanguage]: {
-              scaffold: ({projectName}) => {
+              scaffold: ({projectName, vcs}) => {
                 info(`Scaffolding ${chosenLanguage} language details for ${projectName}`);
+
+                if (repoShouldBeCreated && ((vcsHost && 'Other' !== vcsHost) || this.existingVcsHost)) {
+                  assert.equal(vcs.name, this.projectName);
+                  if ('GitHub' === this.existingVcsHost) {
+                    assert.equal(vcs.host, 'github');
+                  }
+                }
 
                 return this.languageScaffolderResults;
               },

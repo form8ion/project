@@ -32,6 +32,7 @@ Given(/^the project should not be versioned in git$/, async function () {
 Given('the project root is already initialized as a git repository', async function () {
   this.existingVcsIgnoredFiles = any.listOf(any.word);
   this.existingVcsIgnoredDirectories = any.listOf(any.word);
+  this.existingVcsHost = 'GitHub';
 
   await fs.mkdir(`${process.cwd()}/.git`, {recursive: true});
   await fs.writeFile(

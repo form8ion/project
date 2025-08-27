@@ -49,7 +49,7 @@ describe('vcs scaffolder', () => {
     when(alreadyVersionedByGit).calledWith({projectRoot}).thenResolve(true);
     when(determineExistingVcsDetails).calledWith({projectRoot}).thenResolve(existingVcsDetails);
 
-    expect(await scaffoldVcs({projectRoot}, {prompt})).toEqual({vcs: existingVcsDetails});
+    expect(await scaffoldVcs({projectRoot}, {prompt})).toEqual(existingVcsDetails);
   });
 
   it('should not scaffold a repository or vcs host details when a repository should not be created', async () => {
