@@ -1,5 +1,5 @@
 import {simpleGit} from 'simple-git';
-import hostedGitInfo from 'hosted-git-info';
+import parseGitUrl from 'git-url-parse';
 import {warn} from '@travi/cli-messages';
 
 async function getExistingRemotes(git) {
@@ -17,9 +17,9 @@ async function getExistingRemotes(git) {
 export async function determineExistingVcsDetails({projectRoot}) {
   const git = simpleGit({baseDir: projectRoot});
   const remoteOrigin = await git.remote(['get-url', 'origin']);
-  const {user, project, type} = hostedGitInfo.fromUrl(remoteOrigin);
+  const {owner, name, host} = parseGitUrl(remoteOrigin.trimEnd());
 
-  return {vcs: {owner: user, name: project, host: type}};
+  return {vcs: {owner, name, host: 'github.com' === host ? 'github' : host}};
 }
 
 export async function defineRemoteOrigin(projectRoot, sshUrl) {

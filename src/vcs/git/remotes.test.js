@@ -1,35 +1,54 @@
 import {simpleGit} from 'simple-git';
-import hostedGitInfo from 'hosted-git-info';
+import parseGitUrl from 'git-url-parse';
 
-import {describe, vi, it, expect} from 'vitest';
+import {describe, vi, it, expect, beforeEach} from 'vitest';
 import {when} from 'vitest-when';
 import any from '@travi/any';
 
 import {determineExistingVcsDetails, defineRemoteOrigin} from './remotes.js';
 
 vi.mock('simple-git');
-vi.mock('hosted-git-info');
+vi.mock('git-url-parse');
 
 describe('Git remote', () => {
   const projectRoot = any.string();
 
   describe('determine', () => {
-    it('should determine existing vcs details from the remote origin definition of the local repository', async () => {
-      const remote = vi.fn();
-      const remoteOrigin = any.url();
-      const repoName = any.word();
-      const vcsHost = `F${any.word()})O${any.word()}O`;
-      const vcsHostAccount = any.word();
+    const remote = vi.fn();
+    const remoteOrigin = any.url();
+    const repoName = any.word();
+    const vcsHostAccount = any.word();
+
+    beforeEach(() => {
       when(simpleGit).calledWith({baseDir: projectRoot}).thenReturn({remote});
-      when(remote).calledWith(['get-url', 'origin']).thenResolve(remoteOrigin);
-      when(hostedGitInfo.fromUrl)
+    });
+
+    it('should determine existing vcs details from the remote origin definition of the local repository', async () => {
+      const vcsHost = `F${any.word()})O${any.word()}O`;
+      when(remote).calledWith(['get-url', 'origin']).thenResolve(`${remoteOrigin}\n`);
+      when(parseGitUrl)
         .calledWith(remoteOrigin)
-        .thenReturn({user: vcsHostAccount, project: repoName, type: vcsHost.toLowerCase()});
+        .thenReturn({owner: vcsHostAccount, name: repoName, host: vcsHost.toLowerCase()});
 
       const {vcs: hostDetails} = await determineExistingVcsDetails({projectRoot});
 
       expect(hostDetails).toEqual({host: vcsHost.toLowerCase(), owner: vcsHostAccount, name: repoName});
     });
+
+    it(
+      'should return `github` when the host is determined to be `github.com` until that can be a breaking change',
+      async () => {
+        when(simpleGit).calledWith({baseDir: projectRoot}).thenReturn({remote});
+        when(remote).calledWith(['get-url', 'origin']).thenResolve(`${remoteOrigin}\n`);
+        when(parseGitUrl)
+          .calledWith(remoteOrigin)
+          .thenReturn({owner: vcsHostAccount, name: repoName, host: 'github.com'});
+
+        const {vcs: hostDetails} = await determineExistingVcsDetails({projectRoot});
+
+        expect(hostDetails).toEqual({host: 'github', owner: vcsHostAccount, name: repoName});
+      }
+    );
   });
 
   describe('define', () => {

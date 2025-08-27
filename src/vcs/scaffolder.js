@@ -10,7 +10,7 @@ export default async function scaffoldVcs({projectRoot, projectName, decisions, 
     if (await alreadyVersionedByGit({projectRoot})) {
       info('Git repository already exists');
 
-      return {vcs: await determineExistingVcsDetails({projectRoot})};
+      return determineExistingVcsDetails({projectRoot});
     }
 
     const [{vcs: {host, owner, name, sshUrl}}] = await Promise.all([
