@@ -82,7 +82,7 @@
   },
   "devDependencies": {
     "@cucumber/cucumber": "11.3.0",
-    "@form8ion/commitlint-config": "2.0.6",
+    "@form8ion/commitlint-config": "2.0.7",
     "@form8ion/eslint-config": "7.0.13",
     "@form8ion/eslint-config-cucumber": "1.4.1",
     "@form8ion/eslint-config-vitest": "1.0.0",
