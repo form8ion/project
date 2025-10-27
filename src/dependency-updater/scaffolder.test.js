@@ -6,7 +6,7 @@ import {promptForDependencyUpdaterChoice} from './prompt.js';
 import scaffoldUpdater from './scaffolder.js';
 import {questionNames} from '../index.js';
 
-vi.mock('./prompt');
+vi.mock('./prompt.js');
 
 describe('dependency-updater scaffolder', () => {
   const prompt = () => undefined;

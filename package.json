@@ -55,7 +55,7 @@
     "access": "public",
     "provenance": true
   },
-  "packageManager": "npm@11.5.2+sha512.aac1241cfc3f41dc38780d64295c6c6b917a41e24288b33519a7b11adfc5a54a5f881c642d7557215b6c70e01e55655ed7ba666300fd0238bc75fb17478afaf3",
+  "packageManager": "npm@11.6.2+sha512.ee22b335fcbc95662cdf3ab8a053daf045d9cf9c6df6040d28965abb707512b2c16fa6c5eec049d34c74f78f390cebd14f697919eadb97756564d4f9eccc4954",
   "config": {
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
@@ -81,16 +81,16 @@
   },
   "devDependencies": {
     "@cucumber/cucumber": "11.3.0",
-    "@form8ion/commitlint-config": "2.0.6",
+    "@form8ion/commitlint-config": "2.0.8",
     "@form8ion/eslint-config": "7.0.13",
     "@form8ion/eslint-config-cucumber": "1.4.1",
     "@form8ion/eslint-config-vitest": "1.0.0",
     "@form8ion/remark-lint-preset": "6.0.7",
-    "@rollup/plugin-node-resolve": "16.0.1",
-    "@travi/any": "3.1.2",
+    "@rollup/plugin-node-resolve": "16.0.3",
+    "@travi/any": "3.1.3",
     "c8": "10.1.3",
-    "chai": "6.0.1",
-    "cross-env": "10.0.0",
+    "chai": "6.2.0",
+    "cross-env": "10.1.0",
     "cz-conventional-changelog": "3.3.0",
     "gherkin-lint": "4.2.4",
     "husky": "9.1.7",
@@ -101,17 +101,17 @@
     "mdast-zone": "6.1.0",
     "mock-fs": "5.5.0",
     "npm-run-all2": "8.0.4",
-    "publint": "0.3.12",
+    "publint": "0.3.15",
     "remark-cli": "12.0.1",
     "remark-toc": "9.0.0",
     "remark-usage": "11.0.1",
     "rimraf": "6.0.1",
-    "rollup": "4.48.1",
+    "rollup": "4.52.5",
     "rollup-plugin-auto-external": "2.0.0",
     "sinon": "21.0.0",
     "testdouble": "3.20.2",
     "unist-util-find": "3.0.0",
-    "vitest": "3.2.4",
-    "vitest-when": "0.7.0"
+    "vitest": "4.0.3",
+    "vitest-when": "0.8.1"
   }
 }
