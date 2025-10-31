@@ -5,7 +5,7 @@
   "version": "0.0.0-semantically-released",
   "type": "module",
   "engines": {
-    "node": "^18.19.0 || ^20.9.0 || >=22.11.0"
+    "node": "^20.19.0 || >=22.14.0"
   },
   "author": "Matt Travi <npm@travi.org> (https://matt.travi.org/)",
   "contributors": [
@@ -64,7 +64,6 @@
   "dependencies": {
     "@form8ion/core": "^4.6.0",
     "@form8ion/git": "^2.1.1",
-    "@form8ion/overridable-prompts": "^1.1.0",
     "@form8ion/readme": "3.1.0",
     "@form8ion/results-reporter": "^1.1.0",
     "@hapi/hoek": "^11.0.2",
@@ -81,7 +80,7 @@
     "write-yaml": "1.0.0"
   },
   "devDependencies": {
-    "@cucumber/cucumber": "11.3.0",
+    "@cucumber/cucumber": "12.2.0",
     "@form8ion/commitlint-config": "2.0.8",
     "@form8ion/eslint-config": "7.0.13",
     "@form8ion/eslint-config-cucumber": "1.4.1",

@@ -1,32 +1,28 @@
-import {afterEach, describe, expect, it, vi} from 'vitest';
+import {describe, expect, it, vi} from 'vitest';
 import any from '@travi/any';
 import {when} from 'vitest-when';
 
-import * as prompt from './prompt.js';
+import {promptForDependencyUpdaterChoice} from './prompt.js';
 import scaffoldUpdater from './scaffolder.js';
 import {questionNames} from '../index.js';
-import {promptForDependencyUpdaterChoice} from './prompt.js';
 
-vi.mock('./prompt');
+vi.mock('./prompt.js');
 
 describe('dependency-updater scaffolder', () => {
-  afterEach(() => {
-    vi.clearAllMocks();
-  });
+  const prompt = () => undefined;
 
   it('should execute the chosen scaffolder with the appropriate options', async () => {
-    const decisions = any.simpleObject();
     const options = any.simpleObject();
     const chosenUpdater = any.word();
     const chosenUpdaterScaffolder = vi.fn();
     const plugins = {...any.simpleObject(), [chosenUpdater]: {scaffold: chosenUpdaterScaffolder}};
     const scaffolderResult = any.simpleObject();
-    when(prompt.promptForDependencyUpdaterChoice)
-      .calledWith(plugins, decisions)
+    when(promptForDependencyUpdaterChoice)
+      .calledWith(plugins, {prompt})
       .thenResolve({[questionNames.DEPENDENCY_UPDATER]: chosenUpdater});
     when(chosenUpdaterScaffolder).calledWith(options).thenResolve(scaffolderResult);
 
-    expect(await scaffoldUpdater(plugins, decisions, options)).toEqual(scaffolderResult);
+    expect(await scaffoldUpdater(plugins, options, {prompt})).toEqual(scaffolderResult);
   });
 
   it('should not present a prompt if no updaters are registered', async () => {

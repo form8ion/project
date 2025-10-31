@@ -1,12 +1,15 @@
-import {prompt} from '@form8ion/overridable-prompts';
-
 import {questionNames} from '../prompts/question-names.js';
 
-export default function (languages, decisions) {
-  return prompt([{
-    name: questionNames.PROJECT_LANGUAGE,
-    type: 'list',
-    message: 'What type of project is this?',
-    choices: [...Object.keys(languages), 'Other']
-  }], decisions);
+export const PROJECT_LANGUAGE_PROMPT_ID = 'PROJECT_LANGUAGE';
+
+export default function promptForProjectLanguage(languages, {prompt}) {
+  return prompt({
+    id: PROJECT_LANGUAGE_PROMPT_ID,
+    questions: [{
+      name: questionNames.PROJECT_LANGUAGE,
+      type: 'list',
+      message: 'What type of project is this?',
+      choices: [...Object.keys(languages), 'Other']
+    }]
+  });
 }
