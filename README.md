@@ -71,43 +71,48 @@ a wrapper.
 #### Import
 
 ```javascript
+import {ungroupObject} from '@form8ion/core';
 import {lift, questionNames, scaffold} from '@form8ion/project';
 ```
 
 #### Execute
 
 ```javascript
-await scaffold({
-  decisions: {
-    [questionNames.PROJECT_NAME]: 'my-project',
-    [questionNames.LICENSE]: 'MIT',
-    [questionNames.VISIBILITY]: 'Public',
-    [questionNames.DESCRIPTION]: 'My project',
-    [questionNames.GIT_REPO]: false,
-    [questionNames.COPYRIGHT_HOLDER]: 'John Smith',
-    [questionNames.COPYRIGHT_YEAR]: '2022',
-    [questionNames.PROJECT_LANGUAGE]: 'foo'
+const plugins = {
+  dependencyUpdaters: {
+    bar: {scaffold: options => options}
   },
-  plugins: {
-    dependencyUpdaters: {
-      bar: {scaffold: options => options}
-    },
-    languages: {
-      foo: {scaffold: options => options}
-    },
-    vcsHosts: {
-      baz: {
-        scaffold: options => options,
-        prompt: () => ({repoOwner: 'form8ion'})
-      }
+  languages: {
+    foo: {scaffold: options => options}
+  },
+  vcsHosts: {
+    baz: {
+      scaffold: options => options,
+      prompt: () => ({repoOwner: 'form8ion'})
     }
   }
-});
+};
+
+await scaffold(
+  {plugins},
+  {
+    prompt: () => ({
+      [questionNames.PROJECT_NAME]: 'my-project',
+      [questionNames.LICENSE]: 'MIT',
+      [questionNames.VISIBILITY]: 'Public',
+      [questionNames.DESCRIPTION]: 'My project',
+      [questionNames.GIT_REPO]: false,
+      [questionNames.COPYRIGHT_HOLDER]: 'John Smith',
+      [questionNames.COPYRIGHT_YEAR]: '2022',
+      [questionNames.PROJECT_LANGUAGE]: 'foo'
+    })
+  }
+);
 
 await lift({
   projectRoot: process.cwd(),
   results: {},
-  enhancers: {foo: {test: () => true, lift: () => ({})}},
+  enhancers: ungroupObject(plugins),
   vcs: {}
 });
 ```

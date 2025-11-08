@@ -16,7 +16,7 @@ vi.mock('./prompt.js');
 
 describe('vcs scaffolder', () => {
   const projectRoot = any.string();
-  const decisions = any.simpleObject();
+  const prompt = () => undefined;
 
   it('should scaffold the repository and vcs host details', async () => {
     const host = any.word();
@@ -29,14 +29,14 @@ describe('vcs scaffolder', () => {
     const vcsHostDetails = {host, owner, name};
     const sshUrl = any.url();
     const remoteOriginNextSteps = any.listOf(any.simpleObject);
-    when(promptForRepoCreation).calledWith(decisions).thenResolve(true);
+    when(promptForRepoCreation).calledWith({prompt}).thenResolve(true);
     when(alreadyVersionedByGit).calledWith({projectRoot}).thenResolve(false);
     when(scaffoldVcsHost)
-      .calledWith(vcsHosts, decisions, {projectName, projectRoot, description, visibility})
+      .calledWith(vcsHosts, {projectName, projectRoot, description, visibility}, {prompt})
       .thenResolve({vcs: {...vcsHostDetails, sshUrl, ...any.simpleObject()}});
     when(defineRemoteOrigin).calledWith(projectRoot, sshUrl).thenResolve({nextSteps: remoteOriginNextSteps});
 
-    expect(await scaffoldVcs({projectRoot, projectName, decisions, vcsHosts, visibility, description})).toEqual({
+    expect(await scaffoldVcs({projectRoot, projectName, vcsHosts, visibility, description}, {prompt})).toEqual({
       vcs: vcsHostDetails,
       nextSteps: [{summary: 'Commit scaffolded files'}, ...remoteOriginNextSteps]
     });
@@ -45,16 +45,16 @@ describe('vcs scaffolder', () => {
 
   it('should not scaffold a repository or vcs host details when the project is already versioned by git', async () => {
     const existingVcsDetails = any.simpleObject();
-    when(promptForRepoCreation).calledWith(decisions).thenResolve(true);
+    when(promptForRepoCreation).calledWith({prompt}).thenResolve(true);
     when(alreadyVersionedByGit).calledWith({projectRoot}).thenResolve(true);
     when(determineExistingVcsDetails).calledWith({projectRoot}).thenResolve(existingVcsDetails);
 
-    expect(await scaffoldVcs({projectRoot, decisions})).toEqual(existingVcsDetails);
+    expect(await scaffoldVcs({projectRoot}, {prompt})).toEqual(existingVcsDetails);
   });
 
   it('should not scaffold a repository or vcs host details when a repository should not be created', async () => {
-    when(promptForRepoCreation).calledWith(decisions).thenResolve(false);
+    when(promptForRepoCreation).calledWith({prompt}).thenResolve(false);
 
-    expect(await scaffoldVcs({projectRoot, decisions})).toEqual({});
+    expect(await scaffoldVcs({projectRoot}, {prompt})).toEqual({});
   });
 });

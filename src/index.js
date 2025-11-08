@@ -1,9 +1,7 @@
-import {questionNames as coreQuestionNames} from '@form8ion/core';
-import {questionNames as projectScaffolderQuestionNames} from './prompts/question-names.js';
+import {ids} from './prompts/index.js';
 
 export * from './scaffolder.js';
 export {default as lift} from './lift.js';
-export const questionNames = {
-  ...coreQuestionNames,
-  ...projectScaffolderQuestionNames
-};
+export const promptConstants = {ids};
+
+export {questionNames} from './prompts/index.js';

@@ -13,15 +13,15 @@ describe('language scaffolder', () => {
     const options = any.simpleObject();
     const chosenLanguage = any.word();
     const scaffolderResult = any.simpleObject();
-    const decisions = any.simpleObject();
+    const prompt = () => undefined;
     const chosenLanguageScaffolder = vi.fn();
     const plugins = {...any.simpleObject(), [chosenLanguage]: {scaffold: chosenLanguageScaffolder}};
     when(languagePrompt.default)
-      .calledWith(plugins, decisions)
+      .calledWith(plugins, {prompt})
       .thenResolve({[questionNames.PROJECT_LANGUAGE]: chosenLanguage});
     when(chosenLanguageScaffolder).calledWith(options).thenResolve(scaffolderResult);
 
-    expect(await scaffold(plugins, decisions, options)).toEqual(scaffolderResult);
+    expect(await scaffold(plugins, options, {prompt})).toEqual(scaffolderResult);
   });
 
   it('should not result in an error when choosing a language without a defined scaffolder', async () => {
