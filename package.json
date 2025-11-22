@@ -73,7 +73,7 @@
     "execa": "^9.5.1",
     "filedirname": "^3.0.0",
     "git-url-parse": "^16.1.0",
-    "joi": "^17.1.1",
+    "joi": "^18.0.0",
     "mustache": "4.2.0",
     "simple-git": "^3.16.0",
     "spdx-license-list": "6.10.0",
