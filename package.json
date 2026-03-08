@@ -108,7 +108,7 @@
     "rimraf": "6.1.2",
     "rollup": "4.59.0",
     "rollup-plugin-auto-external": "2.0.0",
-    "sinon": "21.0.1",
+    "sinon": "21.0.2",
     "testdouble": "3.20.2",
     "unist-util-find": "3.0.0",
     "vitest": "4.0.16",
