@@ -1,7 +1,6 @@
 import deepmerge from 'deepmerge';
 import {execa} from 'execa';
 import {questionNames as coreQuestionNames} from '@form8ion/core';
-import {reportResults} from '@form8ion/results-reporter';
 import {scaffold as scaffoldReadme} from '@form8ion/readme';
 import {info} from '@travi/cli-messages';
 
@@ -72,5 +71,5 @@ export async function scaffold(options, {prompt}) {
     await subprocess;
   }
 
-  reportResults(mergedResults);
+  return mergedResults;
 }

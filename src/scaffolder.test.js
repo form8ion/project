@@ -2,7 +2,6 @@ import deepmerge from 'deepmerge';
 import {execa} from 'execa';
 import {questionNames as coreQuestionNames} from '@form8ion/core';
 import {scaffold as scaffoldReadme} from '@form8ion/readme';
-import * as resultsReporter from '@form8ion/results-reporter';
 
 import {afterEach, beforeEach, describe, expect, it, vi} from 'vitest';
 import any from '@travi/any';
@@ -118,7 +117,7 @@ describe('project scaffolder', () => {
       .thenResolve(dependencyUpdaterResults);
     when(scaffoldContributing).calledWith({visibility}).thenReturn(contributingResults);
 
-    await scaffold(options, {prompt});
+    expect(await scaffold(options, {prompt})).toEqual(mergedResults);
 
     expect(scaffoldReadme).toHaveBeenCalledWith({projectName, projectRoot: projectPath, description});
     expect(scaffoldEditorconfig).toHaveBeenCalledWith({projectRoot: projectPath});
@@ -128,7 +127,6 @@ describe('project scaffolder', () => {
       results: mergedResults,
       enhancers: {...dependencyUpdaters, ...vcsHosts, ...languages}
     });
-    expect(resultsReporter.reportResults).toHaveBeenCalledWith(mergedResults);
   });
 
   it('should pass the lists of badges from contributors to the readme', async () => {
@@ -230,7 +228,6 @@ describe('project scaffolder', () => {
 
     expect(scaffoldReadme).toHaveBeenCalledWith({projectName, projectRoot: projectPath, description});
     expect(execaPipe).toHaveBeenCalledWith(process.stdout);
-    expect(resultsReporter.reportResults).toHaveBeenCalledWith(deepmerge.all([languageResults, vcsResults]));
   });
 
   it('should consider the language details to be optional', async () => {
