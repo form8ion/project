@@ -1,7 +1,6 @@
 import deepmerge from 'deepmerge';
 import {execa} from 'execa';
 import {questionNames as coreQuestionNames} from '@form8ion/core';
-import {reportResults} from '@form8ion/results-reporter';
 import {scaffold as scaffoldReadme} from '@form8ion/readme';
 import {info} from '@travi/cli-messages';
 
@@ -15,9 +14,9 @@ import {scaffold as scaffoldEditorConfig} from './editorconfig/index.js';
 import {scaffold as scaffoldContributing} from './contributing/index.js';
 import lift from './lift.js';
 
-export async function scaffold(options) {
+export async function scaffold(options, {prompt}) {
   const projectRoot = process.cwd();
-  const {decisions, plugins: {dependencyUpdaters, languages, vcsHosts = {}}} = validate(options);
+  const {plugins: {dependencyUpdaters, languages, vcsHosts = {}}} = validate(options);
 
   const {
     [coreQuestionNames.PROJECT_NAME]: projectName,
@@ -26,11 +25,11 @@ export async function scaffold(options) {
     [coreQuestionNames.DESCRIPTION]: description,
     [coreQuestionNames.COPYRIGHT_YEAR]: copyrightYear,
     [coreQuestionNames.COPYRIGHT_HOLDER]: copyHolder
-  } = await promptForBaseDetails(projectRoot, decisions);
+  } = await promptForBaseDetails(projectRoot, {prompt});
   const copyright = {year: copyrightYear, holder: copyHolder};
 
   const [vcsResults, contributing, license] = await Promise.all([
-    scaffoldVcs({projectRoot, projectName, decisions, vcsHosts, visibility, description}),
+    scaffoldVcs({projectRoot, projectName, vcsHosts, visibility, description}, {prompt}),
     scaffoldContributing({visibility}),
     scaffoldLicense({projectRoot, license: chosenLicense, copyright}),
     scaffoldReadme({projectName, projectRoot, description}),
@@ -39,14 +38,14 @@ export async function scaffold(options) {
 
   const dependencyUpdaterResults = vcsResults.vcs && await scaffoldDependencyUpdater(
     dependencyUpdaters,
-    decisions,
-    {projectRoot, vcs: vcsResults.vcs}
+    {projectRoot},
+    {prompt}
   );
 
   const language = await scaffoldLanguage(
     languages,
-    decisions,
-    {projectRoot, projectName, vcs: vcsResults.vcs, visibility, license: chosenLicense || 'UNLICENSED', description}
+    {projectRoot, projectName, vcs: vcsResults.vcs, visibility, license: chosenLicense || 'UNLICENSED', description},
+    {prompt}
   );
 
   const mergedResults = deepmerge.all([
@@ -72,5 +71,5 @@ export async function scaffold(options) {
     await subprocess;
   }
 
-  reportResults(mergedResults);
+  return mergedResults;
 }

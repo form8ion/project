@@ -33,9 +33,8 @@ jobs:
     strategy:
       matrix:
         node:
-          - 18.19.0
-          - 20.9.0
-          - 22.11.0
+          - 20.19.0
+          - 22.14.0
           - 24
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
@@ -57,10 +56,8 @@ jobs:
       pull-requests: write
     uses: form8ion/.github/.github/workflows/release-package.yml@master
     secrets:
-      NPM_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}  
-      
-  # separate job to set as required in branch protection,
-  # since the build names above change each time Node versions change
+      NPM_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
+
   workflow-result:
     runs-on: ubuntu-latest
     needs:

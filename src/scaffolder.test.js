@@ -2,7 +2,6 @@ import deepmerge from 'deepmerge';
 import {execa} from 'execa';
 import {questionNames as coreQuestionNames} from '@form8ion/core';
 import {scaffold as scaffoldReadme} from '@form8ion/readme';
-import * as resultsReporter from '@form8ion/results-reporter';
 
 import {afterEach, beforeEach, describe, expect, it, vi} from 'vitest';
 import any from '@travi/any';
@@ -52,7 +51,7 @@ describe('project scaffolder', () => {
   const tags = any.listOf(any.word);
   const visibility = any.word();
   const vcsIgnore = any.simpleObject();
-  const decisions = any.simpleObject();
+  const prompt = () => undefined;
 
   beforeEach(() => {
     process.cwd = vi.fn();
@@ -95,9 +94,9 @@ describe('project scaffolder', () => {
     ]);
     when(optionsValidator.validate)
       .calledWith(options)
-      .thenReturn({decisions, plugins: {dependencyUpdaters, languages, vcsHosts}});
+      .thenReturn({plugins: {dependencyUpdaters, languages, vcsHosts}});
     when(prompts.promptForBaseDetails)
-      .calledWith(projectPath, decisions)
+      .calledWith(projectPath, {prompt})
       .thenResolve({
         [coreQuestionNames.PROJECT_NAME]: projectName,
         [coreQuestionNames.LICENSE]: license,
@@ -107,25 +106,20 @@ describe('project scaffolder', () => {
         [coreQuestionNames.VISIBILITY]: visibility
       });
     when(scaffoldVcs)
-      .calledWith({projectRoot: projectPath, projectName, decisions, vcsHosts, visibility, description})
+      .calledWith({projectRoot: projectPath, projectName, vcsHosts, visibility, description}, {prompt})
       .thenResolve(vcsResults);
     when(licenseScaffolder.default)
       .calledWith({projectRoot: projectPath, license, copyright})
       .thenResolve(licenseResults);
     scaffoldLanguage.mockResolvedValue(languageResults);
     when(dependencyUpdaterScaffolder.default)
-      .calledWith(dependencyUpdaters, decisions, {projectRoot: projectPath, vcs})
+      .calledWith(dependencyUpdaters, {projectRoot: projectPath}, {prompt})
       .thenResolve(dependencyUpdaterResults);
     when(scaffoldContributing).calledWith({visibility}).thenReturn(contributingResults);
 
-    await scaffold(options);
+    expect(await scaffold(options, {prompt})).toEqual(mergedResults);
 
     expect(scaffoldReadme).toHaveBeenCalledWith({projectName, projectRoot: projectPath, description});
-    expect(dependencyUpdaterScaffolder.default).toHaveBeenCalledWith(
-      dependencyUpdaters,
-      decisions,
-      {projectRoot: projectPath, vcs}
-    );
     expect(scaffoldEditorconfig).toHaveBeenCalledWith({projectRoot: projectPath});
     expect(lift).toHaveBeenCalledWith({
       projectRoot: projectPath,
@@ -133,7 +127,6 @@ describe('project scaffolder', () => {
       results: mergedResults,
       enhancers: {...dependencyUpdaters, ...vcsHosts, ...languages}
     });
-    expect(resultsReporter.reportResults).toHaveBeenCalledWith(mergedResults);
   });
 
   it('should pass the lists of badges from contributors to the readme', async () => {
@@ -160,7 +153,7 @@ describe('project scaffolder', () => {
     const languageResults = {badges: languageBadges, vcsIgnore, documentation};
     when(optionsValidator.validate).calledWith(options).thenReturn({plugins: {vcsHosts}});
     when(prompts.promptForBaseDetails)
-      .calledWith(projectPath, undefined)
+      .calledWith(projectPath, {prompt})
       .thenResolve({
         [coreQuestionNames.DESCRIPTION]: description,
         [questionNames.GIT_REPO]: true,
@@ -173,7 +166,7 @@ describe('project scaffolder', () => {
     licenseScaffolder.default.mockResolvedValue({badges: licenseBadges});
     scaffoldVcs.mockResolvedValue(vcsResults);
 
-    await scaffold(options);
+    await scaffold(options, {prompt});
 
     expect(scaffoldReadme).toHaveBeenCalledWith({projectName, projectRoot: projectPath, description});
   });
@@ -184,7 +177,7 @@ describe('project scaffolder', () => {
     scaffoldReadme.mockResolvedValue();
     scaffoldVcs.mockResolvedValue({});
 
-    await scaffold(options);
+    await scaffold(options, {prompt});
 
     expect(dependencyUpdaterScaffolder.default).not.toHaveBeenCalled();
   });
@@ -209,9 +202,7 @@ describe('project scaffolder', () => {
       nextSteps: languageNextSteps,
       tags
     };
-    when(optionsValidator.validate)
-      .calledWith(options)
-      .thenReturn({decisions, plugins: {languages, vcsHosts}});
+    when(optionsValidator.validate).calledWith(options).thenReturn({plugins: {languages, vcsHosts}});
     scaffoldVcs.mockResolvedValue(vcsResults);
     prompts.promptForBaseDetails.mockResolvedValue({
       [coreQuestionNames.PROJECT_NAME]: projectName,
@@ -220,30 +211,29 @@ describe('project scaffolder', () => {
       [coreQuestionNames.LICENSE]: license,
       [coreQuestionNames.DESCRIPTION]: description
     });
-    when(scaffoldLanguage).calledWith(languages, decisions, {
+    when(scaffoldLanguage).calledWith(languages, {
       projectName,
       projectRoot: projectPath,
       visibility,
       license,
       vcs,
       description
-    }).thenResolve(languageResults);
+    }, {prompt}).thenResolve(languageResults);
     when(execa).calledWith(verificationCommand, {shell: true}).thenReturn({stdout: {pipe: execaPipe}});
     dependencyUpdaterScaffolder.default.mockResolvedValue({});
     licenseScaffolder.default.mockResolvedValue({});
     scaffoldContributing.mockResolvedValue({});
 
-    await scaffold(options);
+    await scaffold(options, {prompt});
 
     expect(scaffoldReadme).toHaveBeenCalledWith({projectName, projectRoot: projectPath, description});
     expect(execaPipe).toHaveBeenCalledWith(process.stdout);
-    expect(resultsReporter.reportResults).toHaveBeenCalledWith(deepmerge.all([languageResults, vcsResults]));
   });
 
   it('should consider the language details to be optional', async () => {
     when(optionsValidator.validate)
       .calledWith(options)
-      .thenReturn({vcsHosts, decisions, plugins: {languages}});
+      .thenReturn({vcsHosts, plugins: {languages}});
     scaffoldVcs.mockResolvedValue(vcsResults);
     prompts.promptForBaseDetails.mockResolvedValue({
       [coreQuestionNames.PROJECT_NAME]: projectName,
@@ -257,22 +247,21 @@ describe('project scaffolder', () => {
     licenseScaffolder.default.mockResolvedValue({});
     scaffoldContributing.mockResolvedValue({});
 
-    await scaffold(options);
+    await scaffold(options, {prompt});
 
     expect(scaffoldReadme).toHaveBeenCalledWith({projectName, projectRoot: projectPath, description});
     expect(execa).not.toHaveBeenCalled();
   });
 
   it('should pass the license to the language scaffolder as `UNLICENSED` when no license was chosen', async () => {
-    when(optionsValidator.validate).calledWith(options).thenReturn({plugins: {languages}, decisions});
+    when(optionsValidator.validate).calledWith(options).thenReturn({plugins: {languages}});
     prompts.promptForBaseDetails.mockResolvedValue({});
     scaffoldVcs.mockResolvedValue(vcsResults);
 
-    await scaffold(options);
+    await scaffold(options, {prompt});
 
     expect(scaffoldLanguage).toHaveBeenCalledWith(
       languages,
-      decisions,
       {
         license: 'UNLICENSED',
         description: undefined,
@@ -280,7 +269,8 @@ describe('project scaffolder', () => {
         projectRoot: projectPath,
         vcs,
         visibility: undefined
-      }
+      },
+      {prompt}
     );
   });
 
@@ -290,7 +280,7 @@ describe('project scaffolder', () => {
     scaffoldVcs.mockResolvedValue({});
     scaffoldLanguage.mockResolvedValue({badges: {}, projectDetails: {}});
 
-    await scaffold(options);
+    await scaffold(options, {prompt});
 
     expect(execa).not.toHaveBeenCalled();
   });
