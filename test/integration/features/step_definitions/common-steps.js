@@ -1,8 +1,8 @@
+import debugFactory from 'debug';
+
 import {promises as fs} from 'node:fs';
 import {dirname, resolve} from 'node:path';
 import {fileURLToPath} from 'node:url';
-
-import {info} from '@travi/cli-messages';
 
 import stubbedFs from 'mock-fs';
 import {Before, After, Given, When, setWorldConstructor} from '@cucumber/cucumber';
@@ -13,6 +13,7 @@ import {assert} from 'chai';
 import {World} from '../support/world.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));          // eslint-disable-line no-underscore-dangle
+const debug = debugFactory('test:common-steps');
 
 setWorldConstructor(World);
 
@@ -20,6 +21,12 @@ let scaffold, lift, questionNames;
 const projectPath = [__dirname, '..', '..', '..', '..'];
 const projectTemplatePath = [...projectPath, 'templates'];
 const stubbedNodeModules = stubbedFs.load(resolve(...projectPath, 'node_modules'));
+const logger = {
+  info: () => undefined,
+  success: () => undefined,
+  warn: () => undefined,
+  error: () => undefined
+};
 
 Before({timeout: 20 * 1000}, async function () {
   this.projectRoot = process.cwd();
@@ -68,7 +75,7 @@ When(/^the project is scaffolded$/, async function () {
           ...'Other' !== chosenLanguage && {
             [chosenLanguage]: {
               scaffold: ({projectName, vcs}) => {
-                info(`Scaffolding ${chosenLanguage} language details for ${projectName}`);
+                debug(`Scaffolding ${chosenLanguage} language details for ${projectName}`);
 
                 if (repoShouldBeCreated && ((vcsHost && 'Other' !== vcsHost) || this.existingVcsHost)) {
                   assert.equal(vcs.name, this.projectName);
@@ -80,12 +87,12 @@ When(/^the project is scaffolded$/, async function () {
                 return this.languageScaffolderResults;
               },
               test: ({projectRoot}) => {
-                info(`Determining if project at ${projectRoot} uses the ${chosenLanguage} language`);
+                debug(`Determining if project at ${projectRoot} uses the ${chosenLanguage} language`);
 
                 return true;
               },
               lift: ({projectRoot}) => {
-                info(`Applying the ${chosenLanguage} language lifter to the project at ${projectRoot}`);
+                debug(`Applying the ${chosenLanguage} language lifter to the project at ${projectRoot}`);
 
                 return this.languageLiftResults;
               }
@@ -103,7 +110,7 @@ When(/^the project is scaffolded$/, async function () {
                 });
               },
               test: ({projectRoot}) => {
-                info(`Determining if project at ${projectRoot} uses the ${vcsHost} VCS host`);
+                debug(`Determining if project at ${projectRoot} uses the ${vcsHost} VCS host`);
 
                 return true;
               },
@@ -148,7 +155,8 @@ When(/^the project is scaffolded$/, async function () {
           default:
             throw new Error(`Unknown prompt id: ${id}`);
         }
-      }
+      },
+      logger
     }
   );
 });

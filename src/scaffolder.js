@@ -2,7 +2,6 @@ import deepmerge from 'deepmerge';
 import {execa} from 'execa';
 import {questionNames as coreQuestionNames} from '@form8ion/core';
 import {scaffold as scaffoldReadme} from '@form8ion/readme';
-import {info} from '@travi/cli-messages';
 
 import {scaffold as scaffoldLanguage} from './language/index.js';
 import {scaffold as scaffoldVcs} from './vcs/index.js';
@@ -14,7 +13,7 @@ import {scaffold as scaffoldEditorConfig} from './editorconfig/index.js';
 import {scaffold as scaffoldContributing} from './contributing/index.js';
 import lift from './lift.js';
 
-export async function scaffold(options, {prompt}) {
+export async function scaffold(options, {prompt, logger}) {
   const projectRoot = process.cwd();
   const {plugins: {dependencyUpdaters, languages, vcsHosts = {}}} = validate(options);
 
@@ -29,9 +28,9 @@ export async function scaffold(options, {prompt}) {
   const copyright = {year: copyrightYear, holder: copyHolder};
 
   const [vcsResults, contributing, license] = await Promise.all([
-    scaffoldVcs({projectRoot, projectName, vcsHosts, visibility, description}, {prompt}),
+    scaffoldVcs({projectRoot, projectName, vcsHosts, visibility, description}, {prompt, logger}),
     scaffoldContributing({visibility}),
-    scaffoldLicense({projectRoot, license: chosenLicense, copyright}),
+    scaffoldLicense({projectRoot, license: chosenLicense, copyright}, {logger}),
     scaffoldReadme({projectName, projectRoot, description}),
     scaffoldEditorConfig({projectRoot})
   ]);
@@ -64,7 +63,7 @@ export async function scaffold(options, {prompt}) {
   });
 
   if (language && language.verificationCommand) {
-    info('Verifying the generated project');
+    logger.info('Verifying the generated project');
 
     const subprocess = execa(language.verificationCommand, {shell: true});
     subprocess.stdout.pipe(process.stdout);

@@ -52,6 +52,7 @@ describe('project scaffolder', () => {
   const visibility = any.word();
   const vcsIgnore = any.simpleObject();
   const prompt = () => undefined;
+  const logger = {info: () => {}};
 
   beforeEach(() => {
     process.cwd = vi.fn();
@@ -106,10 +107,10 @@ describe('project scaffolder', () => {
         [coreQuestionNames.VISIBILITY]: visibility
       });
     when(scaffoldVcs)
-      .calledWith({projectRoot: projectPath, projectName, vcsHosts, visibility, description}, {prompt})
+      .calledWith({projectRoot: projectPath, projectName, vcsHosts, visibility, description}, {prompt, logger})
       .thenResolve(vcsResults);
     when(licenseScaffolder.default)
-      .calledWith({projectRoot: projectPath, license, copyright})
+      .calledWith({projectRoot: projectPath, license, copyright}, {logger})
       .thenResolve(licenseResults);
     scaffoldLanguage.mockResolvedValue(languageResults);
     when(dependencyUpdaterScaffolder.default)
@@ -117,7 +118,7 @@ describe('project scaffolder', () => {
       .thenResolve(dependencyUpdaterResults);
     when(scaffoldContributing).calledWith({visibility}).thenReturn(contributingResults);
 
-    expect(await scaffold(options, {prompt})).toEqual(mergedResults);
+    expect(await scaffold(options, {prompt, logger})).toEqual(mergedResults);
 
     expect(scaffoldReadme).toHaveBeenCalledWith({projectName, projectRoot: projectPath, description});
     expect(scaffoldEditorconfig).toHaveBeenCalledWith({projectRoot: projectPath});
@@ -224,7 +225,7 @@ describe('project scaffolder', () => {
     licenseScaffolder.default.mockResolvedValue({});
     scaffoldContributing.mockResolvedValue({});
 
-    await scaffold(options, {prompt});
+    await scaffold(options, {prompt, logger});
 
     expect(scaffoldReadme).toHaveBeenCalledWith({projectName, projectRoot: projectPath, description});
     expect(execaPipe).toHaveBeenCalledWith(process.stdout);

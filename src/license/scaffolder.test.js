@@ -3,7 +3,7 @@ import wrap from 'word-wrap';
 import spdxLicenseListWithContent from 'spdx-license-list/full';
 import spdxLicenseList from 'spdx-license-list/simple';
 
-import {afterEach, describe, expect, it, vi} from 'vitest';
+import {describe, expect, it, vi} from 'vitest';
 import any from '@travi/any';
 
 import scaffoldLicense from './scaffolder.js';
@@ -16,19 +16,16 @@ describe('license', () => {
   const copyrightHolders = any.sentence();
   const copyright = {year, holder: copyrightHolders};
   const projectRoot = any.string();
-
-  afterEach(() => {
-    vi.clearAllMocks();
-  });
+  const logger = {info: () => {}};
 
   it('should not generate a license file when no license was chosen', async () => {
-    await scaffoldLicense({});
+    await scaffoldLicense({}, {logger});
 
     expect(fs.writeFile).not.toHaveBeenCalled();
   });
 
   it('should write the contents for the chosen license to LICENSE', async () => {
-    expect(await scaffoldLicense({projectRoot, license, copyright, vcs: {}})).toEqual({});
+    expect(await scaffoldLicense({projectRoot, license, copyright, vcs: {}}, {logger})).toEqual({});
 
     expect(fs.writeFile).toHaveBeenCalledWith(
       `${projectRoot}/LICENSE`,
@@ -43,7 +40,7 @@ describe('license', () => {
   });
 
   it('should write the common version of the MIT license to LICENSE, when chosen', async () => {
-    expect(await scaffoldLicense({projectRoot, license: 'MIT', copyright, vcs: {}})).toEqual({});
+    expect(await scaffoldLicense({projectRoot, license: 'MIT', copyright, vcs: {}}, {logger})).toEqual({});
 
     expect(fs.writeFile).toHaveBeenCalledWith(
       `${projectRoot}/LICENSE`,

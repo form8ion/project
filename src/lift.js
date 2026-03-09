@@ -4,7 +4,7 @@ import * as gitPlugin from '@form8ion/git';
 
 import * as licensePlugin from './license/index.js';
 
-export default async function ({projectRoot, results, enhancers, vcs, dependencies}) {
+export default async function lift({projectRoot, results, enhancers, vcs, dependencies}) {
   const enhancerResults = await applyEnhancers({
     results,
     enhancers: {...enhancers, gitPlugin, licensePlugin},

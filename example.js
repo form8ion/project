@@ -41,7 +41,13 @@ await scaffold(
       [questionNames.COPYRIGHT_HOLDER]: 'John Smith',
       [questionNames.COPYRIGHT_YEAR]: '2022',
       [questionNames.PROJECT_LANGUAGE]: 'foo'
-    })
+    }),
+    logger: {
+      info: () => undefined,
+      success: () => undefined,
+      warn: () => undefined,
+      error: () => undefined
+    }
   }
 );
 
