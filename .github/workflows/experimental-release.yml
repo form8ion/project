@@ -12,6 +12,6 @@ jobs:
       id-token: write
       issues: write
       pull-requests: write
-    uses: form8ion/.github/.github/workflows/release-package.yml@master
+    uses: form8ion/.github/.github/workflows/release-package.yml@114c02f6c2fbc71a80a73d0fe46f0d5d247a3518 # master
     secrets:
       NPM_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
