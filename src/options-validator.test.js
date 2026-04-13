@@ -5,6 +5,7 @@ import {afterEach, beforeEach, describe, expect, it, vi} from 'vitest';
 import any from '@travi/any';
 import {when} from 'vitest-when';
 
+import ciProviderPluginsSchema from './ci-provider/schema.js';
 import languagePluginsSchema from './language/schema.js';
 import vcsHostPluginsSchema from './vcs/host/schema.js';
 import dependencyUpdaterPluginsSchema from './dependency-updater/schema.js';
@@ -35,7 +36,8 @@ describe('options validator', () => {
       .calledWith({
         dependencyUpdaters: dependencyUpdaterPluginsSchema,
         languages: languagePluginsSchema,
-        vcsHosts: vcsHostPluginsSchema
+        vcsHosts: vcsHostPluginsSchema,
+        ciProviders: ciProviderPluginsSchema
       })
       .thenReturn(pluginsSchema);
     when(joi.object).calledWith({plugins: pluginsSchema}).thenReturn(fullSchema);
