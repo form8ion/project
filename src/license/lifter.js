@@ -2,7 +2,7 @@ function repositoryIsHostedOnGithub(vcs) {
   return vcs && 'github' === vcs.host;
 }
 
-export default function ({vcs}) {
+export default function liftLicense({vcs}) {
   return {
     ...repositoryIsHostedOnGithub(vcs) && {
       badges: {

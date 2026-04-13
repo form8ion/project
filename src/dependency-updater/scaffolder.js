@@ -1,7 +1,7 @@
 import {questionNames} from '../prompts/question-names.js';
 import {promptForDependencyUpdaterChoice} from './prompt.js';
 
-export default async function (plugins, options, {prompt}) {
+export default async function scaffoldDependencyUpdater(plugins, options, {prompt}) {
   if (!Object.keys(plugins).length) return undefined;
 
   const plugin = plugins[

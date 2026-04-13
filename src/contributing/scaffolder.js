@@ -1,4 +1,4 @@
-export default function ({visibility}) {
+export default function scaffoldContribution({visibility}) {
   if ('Public' === visibility) {
     return {
       badges: {
