@@ -3,5 +3,6 @@ export const questionNames = {
   REPO_HOST: 'repoHost',
   REPO_OWNER: 'repoOwner',
   PROJECT_LANGUAGE: 'projectLanguage',
-  DEPENDENCY_UPDATER: 'dependencyUpdater'
+  DEPENDENCY_UPDATER: 'dependencyUpdater',
+  CI_PROVIDER: 'ciProvider'
 };

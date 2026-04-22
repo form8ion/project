@@ -35,11 +35,11 @@ export async function scaffold(options, {prompt, logger}) {
     scaffoldEditorConfig({projectRoot})
   ]);
 
-  const dependencyUpdaterResults = vcsResults.vcs && await scaffoldDependencyUpdater(
-    dependencyUpdaters,
-    {projectRoot},
-    {prompt}
-  );
+  const [dependencyUpdaterResults] = vcsResults.vcs
+    ? await Promise.all([
+      scaffoldDependencyUpdater(dependencyUpdaters, {projectRoot}, {prompt})
+    ])
+    : [];
 
   const language = await scaffoldLanguage(
     languages,
