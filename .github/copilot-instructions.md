@@ -108,8 +108,10 @@ names through `promptConstants`:
 When making commits, follow the guidelines in
 `.github/instructions/commit-conventions.md`.
 
-Key principle: write commits from the **consumer perspective**, focusing only
-on using the commit type that accurately describes what changed.
+For commit approval, history shaping, fixup commits, and rebase preferences,
+follow `.github/instructions/commit-workflow.md`.
+
+Key principle: use the commit type that accurately describes what changed.
 
 semantic-release determines release impact from the commit type and any
 `BREAKING CHANGE:` footer.
