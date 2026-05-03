@@ -103,6 +103,17 @@ names through `promptConstants`:
 * Run `npm run generate:md` to regenerate it from `example.js` via remark.
 * The script runs `remark . --output` after a build, so a build must be current.
 
+## Commit Message Conventions
+
+When making commits, follow the guidelines in
+`.github/instructions/commit-conventions.md`.
+
+Key principle: write commits from the **consumer perspective**, focusing only
+on using the commit type that accurately describes what changed.
+
+semantic-release determines release impact from the commit type and any
+`BREAKING CHANGE:` footer.
+
 ## Prohibited Without Explicit Request
 
 * Cross-feature refactors.
