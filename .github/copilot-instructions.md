@@ -77,6 +77,36 @@ names through `promptConstants`:
   `.github/instructions/integration-testing.instructions.md`.
 * Do not leave new logic untested.
 
+## Workflow: Outside-First, Inside-Out Delivery Required
+
+Use integration and unit tests together to drive new functionality.
+Define behavior from the outside first.
+Then build implementation layers from the inside out.
+
+Follow this sequence for new behavior:
+
+1. Define or update the integration scenario first in
+   `test/integration/features/**`.
+1. Commit that scenario before implementation as its own commit when it is the
+   first statement of the new behavior.
+1. Tag incomplete new integration scenarios with `@wip` so they can be pushed
+   to remote before the implementation is complete.
+1. Use `@focus` locally while iterating on a specific `@wip` scenario.
+1. Do not commit `@focus`.
+1. Add or update unit tests in `src/**/*.test.js` to drive the next internal
+   implementation layer.
+1. Implement the minimum code needed to satisfy the unit test.
+1. Commit partial production-quality implementation progress as `wip` while the
+   full integration scenario is still incomplete.
+1. Repeat unit-test-driven layer delivery until all required layers are
+   implemented.
+1. Complete the integration scenario from the outside perspective and remove
+   `@wip` when it passes in the normal integration flow.
+1. Commit the consumer-visible completion as `feat` or `fix`.
+
+Treat the scenario-definition commit, intermediate `wip` implementation
+commits, and final `feat`/`fix` completion commit as separate steps.
+
 ## Code Style Rules
 
 * Match import ordering and formatting in the edited file.

@@ -29,9 +29,14 @@ test/integration/features/
 
 * Runner is `@cucumber/cucumber` via `cucumber-js`.
 * Profiles in `cucumber.js` are `noWip`, `wip`, and `focus`.
-* Tag in-progress scenarios with `@wip`.
-* Remove `@wip` when a scenario is complete.
-* Use `@focus` locally only.
+* Tag new incomplete scenarios with `@wip`.
+* Use `@wip` aggressively to define scenario-first behavior before
+  implementation exists.
+* It is valid to commit and push `@wip` scenarios before implementation is
+  complete.
+* Remove `@wip` only when a scenario is complete and ready for the normal
+  integration flow.
+* Use `@focus` locally only while iterating on a specific `@wip` scenario.
 * Do not commit `@focus`.
 * Use `@skip` for intentionally skipped scenarios.
 
@@ -91,9 +96,14 @@ npm run test:integration:wip
 npm run test:integration:focus
 ```
 
+Use `test:integration:wip` while defining and advancing committed `@wip`
+scenarios.
+Use `test:integration:focus` locally while working one scenario at a time.
+
 ## Prohibited
 
 * Do not import `src/` modules in steps except shared constants.
 * Do not use `vitest` APIs in integration tests.
 * Do not use `sinon` unless `testdouble` cannot cover a case.
-* Do not commit `@focus` or stale `@wip` tags.
+* Do not commit `@focus`.
+* Do not leave stale `@wip` tags on scenarios that are already complete.

@@ -54,6 +54,9 @@ Same-directory imports should be last.
 
 ## Test Structure
 
+Unit tests usually drive inside-out implementation after the integration
+scenario defines expected behavior from the outside.
+
 * Follow TDD with short Red-Green-Refactor cycles.
 * Apply the three laws of TDD.
 * Write a failing test before writing production code.
