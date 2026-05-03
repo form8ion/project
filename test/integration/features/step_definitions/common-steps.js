@@ -34,7 +34,7 @@ Before({timeout: 20 * 1000}, async function () {
   this.git = await td.replaceEsm('simple-git');
 
   // eslint-disable-next-line import/no-extraneous-dependencies,import/no-unresolved
-  ({scaffold, lift, questionNames} = await import('@form8ion/project'));
+  ({scaffold, lift, promptConstants: {questionNames}} = await import('@form8ion/project'));
 
   stubbedFs({
     node_modules: stubbedNodeModules,
@@ -52,11 +52,11 @@ Given('the project is {string}', async function (visibility) {
 });
 
 When(/^the project is scaffolded$/, async function () {
-  const repoShouldBeCreated = this.getAnswerFor(questionNames.GIT_REPO);
+  const repoShouldBeCreated = this.getAnswerFor(questionNames.GIT_REPOSITORY.GIT_REPO);
   const visibility = this.visibility || any.fromList(['Public', 'Private']);
   const chosenUpdater = any.word();
-  const chosenLanguage = this.getAnswerFor(questionNames.PROJECT_LANGUAGE) || 'Other';
-  const vcsHost = this.getAnswerFor(questionNames.REPO_HOST);
+  const chosenLanguage = this.getAnswerFor(questionNames.PROJECT_LANGUAGE.PROJECT_LANGUAGE) || 'Other';
+  const vcsHost = this.getAnswerFor(questionNames.REPOSITORY_HOST.REPO_HOST);
 
   this.projectDescription = any.sentence();
   this.projectHomepage = any.url();
@@ -128,32 +128,54 @@ When(/^the project is scaffolded$/, async function () {
       prompt: async ({id}) => {
         // eslint-disable-next-line import/no-extraneous-dependencies,import/no-unresolved
         const {promptConstants: {ids}} = await import('@form8ion/project');
+        const {
+          BASE_DETAILS: baseDetailsPromptId,
+          GIT_REPOSITORY: gitRepositoryPromptId,
+          REPOSITORY_HOST: repositoryHostPromptId,
+          PROJECT_LANGUAGE: projectLanguagePromptId,
+          DEPENDENCY_UPDATER: dependencyUpdaterPromptId
+        } = ids;
 
         switch (id) {
-          case ids.BASE_DETAILS:
+          case baseDetailsPromptId: {
+            const {PROJECT_NAME, DESCRIPTION, VISIBILITY} = questionNames[baseDetailsPromptId];
+
             return {
-              [questionNames.PROJECT_NAME]: this.projectName,
-              [questionNames.DESCRIPTION]: this.projectDescription,
-              [questionNames.VISIBILITY]: visibility
+              [PROJECT_NAME]: this.projectName,
+              [DESCRIPTION]: this.projectDescription,
+              [VISIBILITY]: visibility
             };
-          case ids.GIT_REPOSITORY:
+          }
+          case gitRepositoryPromptId: {
+            const {GIT_REPO} = questionNames[gitRepositoryPromptId];
+
             return {
-              [questionNames.GIT_REPO]: repoShouldBeCreated ?? false
+              [GIT_REPO]: repoShouldBeCreated ?? false
             };
-          case ids.REPOSITORY_HOST:
+          }
+          case repositoryHostPromptId: {
+            const {REPO_HOST} = questionNames[repositoryHostPromptId];
+
             return {
-              [questionNames.REPO_HOST]: vcsHost
+              [REPO_HOST]: vcsHost
             };
-          case ids.PROJECT_LANGUAGE:
+          }
+          case projectLanguagePromptId: {
+            const {PROJECT_LANGUAGE} = questionNames[projectLanguagePromptId];
+
             return {
-              [questionNames.PROJECT_LANGUAGE]: chosenLanguage
+              [PROJECT_LANGUAGE]: chosenLanguage
             };
-          case ids.DEPENDENCY_UPDATER:
+          }
+          case dependencyUpdaterPromptId: {
+            const {DEPENDENCY_UPDATER} = questionNames[dependencyUpdaterPromptId];
+
             return {
-              [questionNames.DEPENDENCY_UPDATER]: chosenUpdater
+              [DEPENDENCY_UPDATER]: chosenUpdater
             };
+          }
           default:
-            throw new Error(`Unknown prompt id: ${id}`);
+            throw new Error(`Unknown prompt with ID: ${id}`);
         }
       },
       logger

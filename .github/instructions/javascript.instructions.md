@@ -1,6 +1,8 @@
-# JavaScript Source Instructions (`src/**/*.js`)
-
+---
 applyTo: "src/**/*.js"
+---
+
+# JavaScript Source Instructions (`src/**/*.js`)
 
 ## Module Format
 
@@ -47,6 +49,23 @@ Prompt modules (`prompt.js`) must follow existing patterns.
 * Use keys through the shared `questionNames` map.
 
 Example structure to follow: `src/language/prompt.js`.
+
+## Prompt Consumer Pattern
+
+Code that implements a `prompt` handler must dispatch by `id`:
+
+* Accept the prompt payload and destructure only the properties the handler
+  uses, including `id`.
+* Destructure `{questionNames, ids}` from `promptConstants` (the public export
+  from this package).
+* Alias each needed prompt ID from `ids` to a local `*PromptId` variable.
+* Use `switch (id)` with one `case` block per prompt ID.
+* Within each `case`, destructure the relevant question key names from
+  `questionNames[promptId]`.
+* Always include a `default` case that throws an error with the unknown
+  prompt ID.
+
+Canonical examples: `example.js` in this repo and `form8ion/github` `example.js`.
 
 ## Scaffolder / Lifter Module Shape
 

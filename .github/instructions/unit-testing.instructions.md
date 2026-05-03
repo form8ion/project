@@ -1,9 +1,11 @@
+---
+applyTo: "src/**/*.test.js"
+---
+
 # Unit Testing Instructions (`src/**/*.test.js`)
 
 > For integration testing under `test/integration/`, see
 > `.github/instructions/integration-testing.instructions.md`.
-
-applyTo: "src/**/*.test.js"
 
 ## File Placement
 
@@ -75,12 +77,12 @@ Same-directory imports should be last.
 
 ## Reference Examples
 
-| Scenario                            | Reference file                               |
-| ----------------------------------- | -------------------------------------------- |
-| Simple prompt test with `when`      | `src/language/prompt.test.js`                |
-| Multiple edge cases, no mocks       | `src/license/lifter.test.js`                 |
-| Module-level `vi.mock` + `when`     | `src/dependency-updater/scaffolder.test.js` |
-| Complex orchestration with `beforeEach` | `src/scaffolder.test.js`                 |
+| Scenario                                | Reference file                              |
+| --------------------------------------- | ------------------------------------------- |
+| Simple prompt test with `when`          | `src/language/prompt.test.js`               |
+| Multiple edge cases, no mocks           | `src/license/lifter.test.js`                |
+| Module-level `vi.mock` + `when`         | `src/dependency-updater/scaffolder.test.js` |
+| Complex orchestration with `beforeEach` | `src/scaffolder.test.js`                    |
 
 ## Prohibited
 

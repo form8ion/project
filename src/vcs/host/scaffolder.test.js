@@ -8,6 +8,8 @@ import scaffoldVcsHost from './scaffolder.js';
 
 vi.mock('./prompt');
 
+const {REPO_HOST, REPO_OWNER} = questionNames.REPOSITORY_HOST;
+
 describe('vcs host scaffolder', () => {
   const options = any.simpleObject();
   const prompt = () => undefined;
@@ -20,7 +22,7 @@ describe('vcs host scaffolder', () => {
     const owner = any.word;
     when(promptForVcsHostDetails)
       .calledWith(hostPlugins, {prompt})
-      .thenResolve({[questionNames.REPO_HOST]: chosenHost, [questionNames.REPO_OWNER]: owner});
+      .thenResolve({[REPO_HOST]: chosenHost, [REPO_OWNER]: owner});
     when(chosenHostScaffolder).calledWith(options).thenResolve(results);
 
     expect(await scaffoldVcsHost(hostPlugins, options, {prompt})).toEqual(results);
@@ -30,7 +32,7 @@ describe('vcs host scaffolder', () => {
     const hostPlugins = any.simpleObject();
     when(promptForVcsHostDetails)
       .calledWith(hostPlugins, {prompt})
-      .thenResolve({[questionNames.REPO_HOST]: any.word()});
+      .thenResolve({[REPO_HOST]: any.word()});
 
     expect(await scaffoldVcsHost(hostPlugins, options, {prompt})).toEqual({vcs: {}});
   });

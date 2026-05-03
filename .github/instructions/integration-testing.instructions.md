@@ -1,6 +1,8 @@
-# Integration Testing Instructions (`test/integration/**`)
-
+---
 applyTo: "test/integration/**"
+---
+
+# Integration Testing Instructions (`test/integration/**`)
 
 ## Approach
 

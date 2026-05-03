@@ -51,6 +51,22 @@ When adding or modifying prompt flow:
 1. Merge through existing `questionNames` composition patterns.
 1. Do not remove or rename existing IDs or keys unless requested.
 
+### Prompt Consumer Pattern (Mandatory)
+
+Consumers of the prompt handler must dispatch by `id` and resolve question key
+names through `promptConstants`:
+
+* Accept the prompt payload and destructure only the properties the handler
+  uses, including `id`.
+* Destructure `{questionNames, ids}` from `promptConstants`.
+* Alias each prompt ID from `ids` into a local `*PromptId` variable.
+* Use a `switch (id)` with one `case` per prompt ID.
+* Within each `case`, destructure question key names from
+  `questionNames[promptId]`.
+* Throw an error with the unknown prompt ID in the `default` case.
+* Reference `example.js` and `form8ion/github` `example.js` for the canonical
+  shape.
+
 ## Testing Rules (Mandatory)
 
 * Any behavior change requires test updates.
@@ -80,6 +96,12 @@ When adding or modifying prompt flow:
 * Avoid comments; write code that reads clearly without them.
 * In markdown documentation, use at most one sentence per line.
 * In markdown tables, use spaces around cells for readability.
+
+## README and Documentation
+
+* Do not hand-edit the `## Example` section of `README.md`.
+* Run `npm run generate:md` to regenerate it from `example.js` via remark.
+* The script runs `remark . --output` after a build, so a build must be current.
 
 ## Prohibited Without Explicit Request
 

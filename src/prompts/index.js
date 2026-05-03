@@ -1,12 +1,10 @@
-import {questionNames as coreQuestionNames} from '@form8ion/core';
-
 import {BASE_DETAILS_PROMPT_ID} from './questions.js';
 import {GIT_REPOSITORY_PROMPT_ID} from '../vcs/prompt.js';
 import {PROJECT_LANGUAGE_PROMPT_ID} from '../language/prompt.js';
 import {REPOSITORY_HOST_PROMPT_ID} from '../vcs/host/prompt.js';
 import {DEPENDENCY_UPDATER_PROMPT_ID} from '../dependency-updater/prompt.js';
 import {CI_PROVIDER_PROMPT_ID} from '../ci-provider/prompt.js';
-import {questionNames as projectScaffolderQuestionNames} from './question-names.js';
+import {questionNames} from './question-names.js';
 
 export const ids = {
   BASE_DETAILS: BASE_DETAILS_PROMPT_ID,
@@ -17,7 +15,6 @@ export const ids = {
   CI_PROVIDER: CI_PROVIDER_PROMPT_ID
 };
 
-export const questionNames = {
-  ...coreQuestionNames,
-  ...projectScaffolderQuestionNames
-};
+export {questionNames};
+
+export const constants = {ids, questionNames};

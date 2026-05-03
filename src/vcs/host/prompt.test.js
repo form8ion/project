@@ -8,6 +8,8 @@ import promptForVcsHostDetails, {REPOSITORY_HOST_PROMPT_ID} from './prompt.js';
 vi.mock('@form8ion/overridable-prompts');
 vi.mock('../../prompts/conditionals');
 
+const {REPO_HOST} = questionNames.REPOSITORY_HOST;
+
 describe('vcs host details prompt', () => {
   let prompt;
   const answers = any.simpleObject();
@@ -20,11 +22,11 @@ describe('vcs host details prompt', () => {
     const host = any.string();
     const hostNames = [...any.listOf(any.string), host];
     const hosts = any.objectWithKeys(hostNames, {factory: () => ({})});
-    const answersWithHostChoice = {...answers, [questionNames.REPO_HOST]: host};
+    const answersWithHostChoice = {...answers, [REPO_HOST]: host};
     when(prompt).calledWith({
       id: REPOSITORY_HOST_PROMPT_ID,
       questions: [{
-        name: questionNames.REPO_HOST,
+        name: REPO_HOST,
         type: 'list',
         message: 'Where will the repository be hosted?',
         choices: hostNames
@@ -35,11 +37,11 @@ describe('vcs host details prompt', () => {
   });
 
   it('should not throw an error when `Other` is chosen as the host', async () => {
-    const answersWithHostChoice = {...answers, [questionNames.REPO_HOST]: 'Other'};
+    const answersWithHostChoice = {...answers, [REPO_HOST]: 'Other'};
     when(prompt).calledWith({
       id: REPOSITORY_HOST_PROMPT_ID,
       questions: [{
-        name: questionNames.REPO_HOST,
+        name: REPO_HOST,
         type: 'list',
         message: 'Where will the repository be hosted?',
         choices: []

@@ -19,10 +19,13 @@ Use this checklist for pull requests and local reviews.
 ## Module and File Placement
 
 * [ ] New file names use `kebab-case` and are noun-based.
+
 * [ ] New function names are verb-based.
 
 * [ ] Logic stays in role files such as `prompt.js` and `scaffolder.js`.
+
 * [ ] No new architectural patterns are introduced without approval.
+
 * [ ] File and folder placement matches existing `src/` patterns.
 
 ## Testing
@@ -43,9 +46,9 @@ Use this checklist for pull requests and local reviews.
 * [ ] Node built-in imports use the `node:` prefix.
 * [ ] Most files use two groups: packages, then relative imports.
 * [ ] Unit and integration test files use three groups: other packages,
-      testing dependencies, then relative imports.
+  testing dependencies, then relative imports.
 * [ ] Package ordering follows built-ins, third-party, `@travi`,
-      then `@form8ion`.
+  then `@form8ion`.
 * [ ] Relative imports put farther parents first and same-directory last.
 * [ ] Import ordering and formatting match surrounding code.
 * [ ] No unnecessary dependencies were added.

@@ -7,6 +7,8 @@ import promptForRepoCreation, {GIT_REPOSITORY_PROMPT_ID} from './prompt.js';
 
 vi.mock('@form8ion/overridable-prompts');
 
+const {GIT_REPO} = questionNames.GIT_REPOSITORY;
+
 describe('git prompt', () => {
   it('should ask whether a repository should be created', async () => {
     const prompt = vi.fn();
@@ -15,13 +17,13 @@ describe('git prompt', () => {
       .calledWith({
         id: GIT_REPOSITORY_PROMPT_ID,
         questions: [{
-          name: questionNames.GIT_REPO,
+          name: GIT_REPO,
           type: 'confirm',
           default: true,
           message: 'Should a git repository be initialized?'
         }]
       })
-      .thenResolve({[questionNames.GIT_REPO]: repoShouldBeCreated});
+      .thenResolve({[GIT_REPO]: repoShouldBeCreated});
 
     expect(await promptForRepoCreation({prompt})).toBe(repoShouldBeCreated);
   });

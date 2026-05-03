@@ -1,7 +1,9 @@
 import {Given} from '@cucumber/cucumber';
 import any from '@travi/any';
 
-import {questionNames} from '../../../../src/prompts/question-names.js';
+import {questionNames} from '../../../../src/prompts/index.js';
+
+const {PROJECT_LANGUAGE} = questionNames.PROJECT_LANGUAGE;
 
 function generateFullBadge() {
   return {
@@ -19,7 +21,7 @@ function generateBadgeWithNoLink() {
 }
 
 Given('a language scaffolder is chosen', async function () {
-  this.setAnswerFor(questionNames.PROJECT_LANGUAGE, any.word());
+  this.setAnswerFor(PROJECT_LANGUAGE, any.word());
   this.vcsIgnoreDirectories = any.listOf(any.word, {min: 1});
   this.vcsIgnoreFiles = any.listOf(any.word, {min: 1});
 

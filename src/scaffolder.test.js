@@ -33,6 +33,8 @@ vi.mock('./editorconfig');
 vi.mock('./contributing');
 vi.mock('./lift.js');
 
+const {GIT_REPO} = questionNames.GIT_REPOSITORY;
+
 describe('project scaffolder', () => {
   const originalProcessCwd = process.cwd;
   const options = any.simpleObject();
@@ -157,7 +159,7 @@ describe('project scaffolder', () => {
       .calledWith(projectPath, {prompt})
       .thenResolve({
         [coreQuestionNames.DESCRIPTION]: description,
-        [questionNames.GIT_REPO]: true,
+        [GIT_REPO]: true,
         [coreQuestionNames.PROJECT_NAME]: projectName,
         [coreQuestionNames.VISIBILITY]: visibility
       });
@@ -174,7 +176,7 @@ describe('project scaffolder', () => {
 
   it('should not scaffold the git repo if not requested', async () => {
     when(optionsValidator.validate).calledWith(options).thenReturn({plugins: {}});
-    prompts.promptForBaseDetails.mockResolvedValue({[questionNames.GIT_REPO]: false});
+    prompts.promptForBaseDetails.mockResolvedValue({[GIT_REPO]: false});
     scaffoldReadme.mockResolvedValue();
     scaffoldVcs.mockResolvedValue({});
 
@@ -208,7 +210,7 @@ describe('project scaffolder', () => {
     prompts.promptForBaseDetails.mockResolvedValue({
       [coreQuestionNames.PROJECT_NAME]: projectName,
       [coreQuestionNames.VISIBILITY]: visibility,
-      [questionNames.GIT_REPO]: true,
+      [GIT_REPO]: true,
       [coreQuestionNames.LICENSE]: license,
       [coreQuestionNames.DESCRIPTION]: description
     });
@@ -239,7 +241,7 @@ describe('project scaffolder', () => {
     prompts.promptForBaseDetails.mockResolvedValue({
       [coreQuestionNames.PROJECT_NAME]: projectName,
       [coreQuestionNames.VISIBILITY]: visibility,
-      [questionNames.GIT_REPO]: true,
+      [GIT_REPO]: true,
       [coreQuestionNames.LICENSE]: license,
       [coreQuestionNames.DESCRIPTION]: description
     });

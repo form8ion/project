@@ -7,6 +7,8 @@ import promptForLanguageDetails, {PROJECT_LANGUAGE_PROMPT_ID} from './prompt.js'
 
 vi.mock('@form8ion/overridable-prompts');
 
+const {PROJECT_LANGUAGE} = questionNames.PROJECT_LANGUAGE;
+
 describe('language prompt', () => {
   it('should prompt for the language details', async () => {
     const prompt = vi.fn();
@@ -15,7 +17,7 @@ describe('language prompt', () => {
     when(prompt).calledWith({
       id: PROJECT_LANGUAGE_PROMPT_ID,
       questions: [{
-        name: questionNames.PROJECT_LANGUAGE,
+        name: PROJECT_LANGUAGE,
         type: 'list',
         message: 'What type of project is this?',
         choices: [...Object.keys(languages), 'Other']
