@@ -81,6 +81,23 @@ Within each group, keep ordering consistent with nearby files.
 * Keep scenario data in `World`.
 * Avoid module-level mutable state for scenario data.
 
+## Plugin Injection
+
+Some behavior depends on plugins injected through arguments to the subject.
+
+* Do not use real implementations from external plugin packages in integration
+  tests.
+* When plugin behavior is needed for test scope, inject a minimal example
+  plugin that satisfies the expected plugin convention contract.
+* Keep injected plugins focused to the behavior under test.
+* Implement only the plugin methods needed by the scenario (for example
+  `scaffold`, `lift`, or `test`).
+* Prefer inline plugin doubles in step definitions over importing full plugin
+  modules.
+* Reference
+  `test/integration/features/step_definitions/common-steps.js` for the
+  canonical structure.
+
 ## Prompt Simulation
 
 * `common-steps.js` provides a `prompt` switch based on `ids.*`.
