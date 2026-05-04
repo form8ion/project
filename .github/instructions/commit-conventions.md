@@ -74,6 +74,10 @@ A `wip` commit should still be production-quality and releasable.
 It is distinct from other non-release types because it communicates
 in-progress product work, not just maintenance or documentation updates.
 
+When any `@word` token appears in a commit message summary or body, wrap it in
+backticks to prevent GitHub from interpreting it as a user mention.
+Cucumber tags (such as `@wip` or `@skip`) are a common source of this.
+
 ## Scope
 
 `scope` should be kebab-case.
