@@ -7,6 +7,7 @@ import {scaffold as scaffoldLanguage} from './language/index.js';
 import {scaffold as scaffoldVcs} from './vcs/index.js';
 import {scaffold as scaffoldLicense} from './license/index.js';
 import scaffoldDependencyUpdater from './dependency-updater/scaffolder.js';
+import {scaffold as scaffoldCiProvider} from './ci-provider/index.js';
 import {promptForBaseDetails} from './prompts/questions.js';
 import {validate} from './options-validator.js';
 import {scaffold as scaffoldEditorConfig} from './editorconfig/index.js';
@@ -15,7 +16,7 @@ import lift from './lift.js';
 
 export async function scaffold(options, {prompt, logger}) {
   const projectRoot = process.cwd();
-  const {plugins: {dependencyUpdaters, languages, vcsHosts = {}}} = validate(options);
+  const {plugins: {dependencyUpdaters, ciProviders, languages, vcsHosts = {}}} = validate(options);
 
   const {
     [coreQuestionNames.PROJECT_NAME]: projectName,
@@ -37,7 +38,8 @@ export async function scaffold(options, {prompt, logger}) {
 
   const [dependencyUpdaterResults] = vcsResults.vcs
     ? await Promise.all([
-      scaffoldDependencyUpdater(dependencyUpdaters, {projectRoot}, {prompt})
+      scaffoldDependencyUpdater(dependencyUpdaters, {projectRoot}, {prompt}),
+      scaffoldCiProvider(ciProviders, {projectRoot}, {prompt})
     ])
     : [];
 

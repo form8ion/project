@@ -1,4 +1,3 @@
-@wip
 Feature: CI Providers
 
   Scenario: only qualified providers can be chosen
