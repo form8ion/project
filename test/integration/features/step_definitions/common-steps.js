@@ -10,6 +10,7 @@ import any from '@travi/any';
 import * as td from 'testdouble';
 import {assert} from 'chai';
 
+import {deriveHostMarkerDirectory} from './vcs/vcs-host-steps.js';
 import {World} from '../support/world.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));          // eslint-disable-line no-underscore-dangle
@@ -57,6 +58,7 @@ When(/^the project is scaffolded$/, async function () {
   const chosenUpdater = any.word();
   const chosenLanguage = this.getAnswerFor(questionNames.PROJECT_LANGUAGE.PROJECT_LANGUAGE) || 'Other';
   const vcsHost = this.getAnswerFor(questionNames.REPOSITORY_HOST.REPO_HOST);
+  const chosenCiProvider = this.getAnswerFor(questionNames.CI_PROVIDER.CI_PROVIDER) || 'Other';
 
   this.projectDescription = any.sentence();
   this.projectHomepage = any.url();
@@ -70,6 +72,9 @@ When(/^the project is scaffolded$/, async function () {
           dependencyUpdaters: {
             [chosenUpdater]: this.updatePlugin
           }
+        },
+        ...this.ciProviderPlugins && {
+          ciProviders: this.ciProviderPlugins
         },
         languages: {
           ...'Other' !== chosenLanguage && {
@@ -102,7 +107,14 @@ When(/^the project is scaffolded$/, async function () {
         ...vcsHost && 'Other' !== vcsHost && {
           vcsHosts: {
             [vcsHost]: {
-              scaffold: ({projectName, owner}) => {
+              scaffold: async ({projectName, owner, projectRoot}) => {
+                const markerDirectory = deriveHostMarkerDirectory(vcsHost);
+
+                if (markerDirectory) {
+                  this.vcsHostMarkerDirectory = markerDirectory;
+                  await fs.mkdir(`${projectRoot}/${markerDirectory}`, {recursive: true});
+                }
+
                 this.hostedVcsDetails = {name: projectName, host: vcsHost};
 
                 return ({
@@ -125,7 +137,7 @@ When(/^the project is scaffolded$/, async function () {
       }
     },
     {
-      prompt: async ({id}) => {
+      prompt: async ({id, questions}) => {
         // eslint-disable-next-line import/no-extraneous-dependencies,import/no-unresolved
         const {promptConstants: {ids}} = await import('@form8ion/project');
         const {
@@ -133,8 +145,14 @@ When(/^the project is scaffolded$/, async function () {
           GIT_REPOSITORY: gitRepositoryPromptId,
           REPOSITORY_HOST: repositoryHostPromptId,
           PROJECT_LANGUAGE: projectLanguagePromptId,
-          DEPENDENCY_UPDATER: dependencyUpdaterPromptId
+          DEPENDENCY_UPDATER: dependencyUpdaterPromptId,
+          CI_PROVIDER: ciProviderPromptId
         } = ids;
+
+        this.promptQuestionsById = {
+          ...this.promptQuestionsById,
+          [id]: questions
+        };
 
         switch (id) {
           case baseDetailsPromptId: {
@@ -172,6 +190,13 @@ When(/^the project is scaffolded$/, async function () {
 
             return {
               [DEPENDENCY_UPDATER]: chosenUpdater
+            };
+          }
+          case ciProviderPromptId: {
+            const {CI_PROVIDER} = questionNames[ciProviderPromptId];
+
+            return {
+              [CI_PROVIDER]: chosenCiProvider
             };
           }
           default:

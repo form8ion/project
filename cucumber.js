@@ -1,6 +1,6 @@
 const base = {
   formatOptions: {snippetInterface: 'async-await'},
-  import: ['test/integration/features/**/*.js']
+  import: ['test/integration/features/**/*-steps.js']
 };
 
 export default base;

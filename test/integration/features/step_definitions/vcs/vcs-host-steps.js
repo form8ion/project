@@ -6,6 +6,10 @@ import {questionNames} from '../../../../../src/prompts/index.js';
 
 const {REPO_HOST} = questionNames.REPOSITORY_HOST;
 
+export function deriveHostMarkerDirectory(host) {
+  return `.${host.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
+}
+
 Given('the git repository will be hosted', async function () {
   const vcsHost = any.word();
 
