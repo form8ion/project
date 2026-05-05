@@ -9,6 +9,15 @@ Feature: CI Providers
     And the qualified CI provider is scaffolded
     And the unqualified CI provider is not scaffolded
 
+  @wip
+  Scenario: provider without qualify method is always offered
+    Given the project should be versioned in git
+    And the git repository will be hosted
+    And a CI provider without a qualify method can be chosen
+    When the project is scaffolded
+    Then the CI provider without a qualify method is offered
+    And the CI provider without a qualify method is scaffolded
+
   Scenario: host-aware provider qualification
     Given the project should be versioned in git
     And the repository is hosted on "Example Host"

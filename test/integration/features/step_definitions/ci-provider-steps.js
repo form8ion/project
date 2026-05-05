@@ -42,6 +42,25 @@ Given('CI providers can be chosen when they qualify', async function () {
   };
 });
 
+Given('a CI provider without a qualify method can be chosen', async function () {
+  this.noQualifyMethodCiProviderName = any.word();
+  this.noQualifyMethodCiProviderScaffolderCalled = false;
+
+  this.setAnswerFor(CI_PROVIDER, this.noQualifyMethodCiProviderName);
+
+  this.ciProviderPlugins = {
+    [this.noQualifyMethodCiProviderName]: {
+      scaffold: options => {
+        this.noQualifyMethodCiProviderScaffolderCalled = true;
+
+        assert.isDefined(options);
+
+        return {};
+      }
+    }
+  };
+});
+
 Given('a host-aware CI provider can be chosen', async function () {
   this.hostAwareCiProviderName = any.word();
   this.hostAwareCiProviderScaffolderCalled = false;
@@ -88,6 +107,22 @@ Then('the qualified CI provider is scaffolded', async function () {
 
 Then('the unqualified CI provider is not scaffolded', async function () {
   assert.isFalse(this.unqualifiedCiProviderScaffolderCalled);
+});
+
+Then('the CI provider without a qualify method is offered', async function () {
+  const ciProviderPromptQuestions = this.promptQuestionsById?.[ciProviderPromptId];
+
+  assert.isDefined(ciProviderPromptQuestions, 'Expected the CI provider prompt to be shown');
+  assert.deepEqual(ciProviderPromptQuestions, [{
+    name: CI_PROVIDER,
+    type: 'list',
+    message: 'Which CI service do you want use with this project?',
+    choices: [this.noQualifyMethodCiProviderName, 'Other']
+  }]);
+});
+
+Then('the CI provider without a qualify method is scaffolded', async function () {
+  assert.isTrue(this.noQualifyMethodCiProviderScaffolderCalled);
 });
 
 Then('the CI provider is qualified using repository marker files', async function () {
