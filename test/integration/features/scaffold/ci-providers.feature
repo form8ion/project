@@ -9,7 +9,6 @@ Feature: CI Providers
     And the qualified CI provider is scaffolded
     And the unqualified CI provider is not scaffolded
 
-  @wip
   Scenario: provider without qualify method is always offered
     Given the project should be versioned in git
     And the git repository will be hosted

@@ -36,6 +36,19 @@ describe('ci-provider scaffolder', () => {
     )).toEqual(scaffolderResult);
   });
 
+  it('should treat a plugin without a qualify method as always qualifying', async () => {
+    const providerName = any.word();
+    const pluginScaffolder = vi.fn();
+    const plugin = {scaffold: pluginScaffolder};
+    const scaffolderResult = any.simpleObject();
+    when(promptForCiProvider)
+      .calledWith({[providerName]: plugin}, {prompt})
+      .thenResolve({[CI_PROVIDER]: providerName});
+    when(pluginScaffolder).calledWith(options).thenResolve(scaffolderResult);
+
+    expect(await scaffoldCiProvider({[providerName]: plugin}, options, {prompt})).toEqual(scaffolderResult);
+  });
+
   it('should not present a prompt when no plugins are registered', async () => {
     expect(await scaffoldCiProvider({}, options, {prompt})).toBe(undefined);
     expect(promptForCiProvider).not.toHaveBeenCalled();

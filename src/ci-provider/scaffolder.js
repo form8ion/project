@@ -10,7 +10,11 @@ export default async function scaffoldCiProvider(plugins, options, {prompt}) {
 
   const qualifiedPlugins = Object.fromEntries(
     (await Promise.all(
-      Object.entries(plugins).map(async ([name, plugin]) => [name, plugin, await plugin.qualify({projectRoot})])
+      Object.entries(plugins).map(async ([name, plugin]) => [
+        name,
+        plugin,
+        plugin.qualify ? await plugin.qualify({projectRoot}) : true
+      ])
     )).filter(([, , qualified]) => qualified).map(([name, plugin]) => [name, plugin])
   );
 
