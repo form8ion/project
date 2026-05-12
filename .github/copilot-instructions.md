@@ -1,0 +1,163 @@
+# Copilot Instructions for `form8ion/project` (Strict)
+
+## Primary Rule
+
+Follow existing repository patterns exactly.
+Do not introduce new architecture, naming conventions, or directory structure.
+Only do that when explicitly requested.
+
+## Scope and Safety
+
+* Make the smallest possible change to satisfy the request.
+* Do not perform unrelated cleanup, refactors, or file moves.
+* Preserve existing public exports and contracts unless a break is required.
+* If required behavior is ambiguous, ask for clarification.
+
+## Repository Conventions (Mandatory)
+
+* Use ESM syntax only (`import` / `export`) in `src/**/*.js`.
+* Feature implementation files usually default-export their primary function.
+* Re-export plugin convention (protocol contract) names from each directory
+  `index.js`.
+* Valid plugin convention names include `scaffold`, `lift`, `test`,
+  `remove`, and `qualify`.
+* Keep feature logic in existing role files.
+  * `prompt.js`
+  * `schema.js`
+  * `scaffolder.js`
+  * `lifter.js`
+  * `tester.js`
+  * `index.js`
+* Keep tests colocated with implementation as `*.test.js`.
+
+## Naming Rules (Mandatory)
+
+* File names use `kebab-case` and are noun-based.
+* Function names are verb-based.
+* Default export functions must be named, not anonymous.
+* Prompt ID constants must use `*_PROMPT_ID`.
+* Shared question maps must use `questionNames`.
+* Prompt ID aggregators must use `ids`.
+* Aggregator keys stay `CONSTANT_CASE`.
+* Reuse existing identifiers where possible.
+
+## Prompt Wiring Rules (Mandatory)
+
+When adding or modifying prompt flow:
+
+1. Define and export the prompt ID constant in the feature module.
+1. Wire the prompt ID into `src/prompts/index.js` if it is in core flow.
+1. Add or update keys in `src/prompts/question-names.js` when needed.
+1. Merge through existing `questionNames` composition patterns.
+1. Do not remove or rename existing IDs or keys unless requested.
+
+### Prompt Consumer Pattern (Mandatory)
+
+Consumers of the prompt handler must dispatch by `id` and resolve question key
+names through `promptConstants`:
+
+* Accept the prompt payload and destructure only the properties the handler
+  uses, including `id`.
+* Destructure `{questionNames, ids}` from `promptConstants`.
+* Alias each prompt ID from `ids` into a local `*PromptId` variable.
+* Use a `switch (id)` with one `case` per prompt ID.
+* Within each `case`, destructure question key names from
+  `questionNames[promptId]`.
+* Throw an error with the unknown prompt ID in the `default` case.
+* Reference `example.js` and `form8ion/github` `example.js` for the canonical
+  shape.
+
+## Testing Rules (Mandatory)
+
+* Any behavior change requires test updates.
+* Follow TDD and the three laws with Red-Green-Refactor iteration.
+* Unit test rules live in
+  `.github/instructions/unit-testing.instructions.md`.
+* Integration rules live in
+  `.github/instructions/integration-testing.instructions.md`.
+* Do not leave new logic untested.
+
+## Workflow: Outside-First, Inside-Out Delivery Required
+
+Use integration and unit tests together to drive new functionality.
+Define behavior from the outside first.
+Then build implementation layers from the inside out.
+
+Follow this sequence for new behavior:
+
+1. Define or update the integration scenario first in
+   `test/integration/features/**`.
+1. Commit that scenario before implementation as its own commit when it is the
+   first statement of the new behavior.
+1. Tag incomplete new integration scenarios with `@wip` so they can be pushed
+   to remote before the implementation is complete.
+1. Use `@focus` locally while iterating on a specific `@wip` scenario.
+1. Do not commit `@focus`.
+1. Add or update unit tests in `src/**/*.test.js` to drive the next internal
+   implementation layer.
+1. Implement the minimum code needed to satisfy the unit test.
+1. Commit partial production-quality implementation progress as `wip` while the
+   full integration scenario is still incomplete.
+1. Repeat unit-test-driven layer delivery until all required layers are
+   implemented.
+1. Complete the integration scenario from the outside perspective and remove
+   `@wip` when it passes in the normal integration flow.
+1. Commit the consumer-visible completion as `feat` or `fix`.
+
+Treat the scenario-definition commit, intermediate `wip` implementation
+commits, and final `feat`/`fix` completion commit as separate steps.
+
+## Code Style Rules
+
+* Match import ordering and formatting in the edited file.
+* Prefix Node built-in imports with `node:`.
+* Use two separated import groups in most files.
+* Put package imports first and relative imports second.
+* Keep exactly one blank line between package and relative groups.
+* Within package imports, order by distance as built-ins, third-party,
+  `@travi`, then `@form8ion`.
+* In relative imports, more parent traversals come first and same-folder
+  imports come last.
+* For test files, use three groups: other packages,
+  testing dependencies, then relative imports.
+* Prefer simple, explicit logic over abstractions.
+* Prefer existing popular packages over complex local logic.
+* Do not add dependencies for things easily done inline.
+* Avoid comments; write code that reads clearly without them.
+* In markdown documentation, use at most one sentence per line.
+* In markdown tables, use spaces around cells for readability.
+
+## README and Documentation
+
+* Do not hand-edit the `## Example` section of `README.md`.
+* Run `npm run generate:md` to regenerate it from `example.js` via remark.
+* The script runs `remark . --output` after a build, so a build must be current.
+
+## Commit Message Conventions
+
+When making commits, follow the guidelines in
+`.github/instructions/commit-conventions.md`.
+
+For commit approval, history shaping, fixup commits, and rebase preferences,
+follow `.github/instructions/commit-workflow.md`.
+
+Key principle: use the commit type that accurately describes what changed.
+
+semantic-release determines release impact from the commit type and any
+`BREAKING CHANGE:` footer.
+
+## Prohibited Without Explicit Request
+
+* Cross-feature refactors.
+* Renaming files or symbols for style only.
+* Reorganizing folder structure.
+* Changing module boundaries.
+* Altering behavior outside task scope.
+
+## Completion Checklist
+
+* Change is minimal and task-focused.
+* Naming follows repository conventions.
+* Prompt and question wiring is consistent with `src/prompts/index.js`.
+* Tests are added or updated for behavior changes.
+* No unrelated modifications were introduced.

@@ -1,8 +1,10 @@
 import {questionNames} from '../prompts/question-names.js';
 import promptForLanguageDetails from './prompt.js';
 
-export default async function (languagePlugins, decisions, options) {
-  const {[questionNames.PROJECT_LANGUAGE]: chosenLanguage} = await promptForLanguageDetails(languagePlugins, decisions);
+const {PROJECT_LANGUAGE} = questionNames.PROJECT_LANGUAGE;
+
+export default async function scaffoldLanguage(languagePlugins, options, {prompt}) {
+  const {[PROJECT_LANGUAGE]: chosenLanguage} = await promptForLanguageDetails(languagePlugins, {prompt});
 
   const plugin = languagePlugins[chosenLanguage];
 

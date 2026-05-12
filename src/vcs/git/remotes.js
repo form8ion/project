@@ -1,6 +1,5 @@
 import {simpleGit} from 'simple-git';
 import parseGitUrl from 'git-url-parse';
-import {warn} from '@travi/cli-messages';
 
 async function getExistingRemotes(git) {
   try {
@@ -22,9 +21,9 @@ export async function determineExistingVcsDetails({projectRoot}) {
   return {vcs: {owner, name, host: 'github.com' === host ? 'github' : host}};
 }
 
-export async function defineRemoteOrigin(projectRoot, sshUrl) {
+export async function defineRemoteOrigin(projectRoot, sshUrl, {logger}) {
   if (!sshUrl) {
-    warn('URL not available to configure remote `origin`');
+    logger.warn('URL not available to configure remote `origin`');
 
     return {nextSteps: []};
   }
@@ -33,7 +32,7 @@ export async function defineRemoteOrigin(projectRoot, sshUrl) {
   const existingRemotes = await getExistingRemotes(git);
 
   if (existingRemotes.includes('origin')) {
-    warn('The `origin` remote is already defined for this repository');
+    logger.warn('The `origin` remote is already defined for this repository');
 
     return {nextSteps: []};
   }

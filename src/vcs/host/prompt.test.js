@@ -1,47 +1,53 @@
-import * as prompts from '@form8ion/overridable-prompts';
-
-import {afterEach, describe, expect, it, vi} from 'vitest';
+import {beforeEach, describe, expect, it, vi} from 'vitest';
 import any from '@travi/any';
 import {when} from 'vitest-when';
 
 import {questionNames} from '../../prompts/question-names.js';
-import promptForVcsHostDetails from './prompt.js';
+import promptForVcsHostDetails, {REPOSITORY_HOST_PROMPT_ID} from './prompt.js';
 
 vi.mock('@form8ion/overridable-prompts');
 vi.mock('../../prompts/conditionals');
 
-describe('vcs host details prompt', () => {
-  const answers = any.simpleObject();
-  const decisions = any.simpleObject();
+const {REPO_HOST} = questionNames.REPOSITORY_HOST;
 
-  afterEach(() => {
-    vi.clearAllMocks();
+describe('vcs host details prompt', () => {
+  let prompt;
+  const answers = any.simpleObject();
+
+  beforeEach(() => {
+    prompt = vi.fn();
   });
 
   it('should prompt for the vcs hosting details', async () => {
     const host = any.string();
     const hostNames = [...any.listOf(any.string), host];
     const hosts = any.objectWithKeys(hostNames, {factory: () => ({})});
-    const answersWithHostChoice = {...answers, [questionNames.REPO_HOST]: host};
-    when(prompts.prompt).calledWith([{
-      name: questionNames.REPO_HOST,
-      type: 'list',
-      message: 'Where will the repository be hosted?',
-      choices: hostNames
-    }], decisions).thenResolve(answersWithHostChoice);
+    const answersWithHostChoice = {...answers, [REPO_HOST]: host};
+    when(prompt).calledWith({
+      id: REPOSITORY_HOST_PROMPT_ID,
+      questions: [{
+        name: REPO_HOST,
+        type: 'list',
+        message: 'Where will the repository be hosted?',
+        choices: hostNames
+      }]
+    }).thenResolve(answersWithHostChoice);
 
-    expect(await promptForVcsHostDetails(hosts, decisions)).toEqual(answersWithHostChoice);
+    expect(await promptForVcsHostDetails(hosts, {prompt})).toEqual(answersWithHostChoice);
   });
 
   it('should not throw an error when `Other` is chosen as the host', async () => {
-    const answersWithHostChoice = {...answers, [questionNames.REPO_HOST]: 'Other'};
-    when(prompts.prompt).calledWith([{
-      name: questionNames.REPO_HOST,
-      type: 'list',
-      message: 'Where will the repository be hosted?',
-      choices: []
-    }], decisions).thenResolve(answersWithHostChoice);
+    const answersWithHostChoice = {...answers, [REPO_HOST]: 'Other'};
+    when(prompt).calledWith({
+      id: REPOSITORY_HOST_PROMPT_ID,
+      questions: [{
+        name: REPO_HOST,
+        type: 'list',
+        message: 'Where will the repository be hosted?',
+        choices: []
+      }]
+    }).thenResolve(answersWithHostChoice);
 
-    expect(await promptForVcsHostDetails({}, decisions)).toEqual(answersWithHostChoice);
+    expect(await promptForVcsHostDetails({}, {prompt})).toEqual(answersWithHostChoice);
   });
 });

@@ -9,7 +9,9 @@ import {Before, Given, Then} from '@cucumber/cucumber';
 import {assert} from 'chai';
 import any from '@travi/any';
 
-import {questionNames} from '../../../../src/prompts/question-names.js';
+import {questionNames} from '../../../../src/prompts/index.js';
+
+const {PROJECT_LANGUAGE} = questionNames.PROJECT_LANGUAGE;
 
 function getLicenseBadgeDetails({vcs}) {
   return {
@@ -191,7 +193,7 @@ Before(function () {
 });
 
 Given('the language scaffolder defines documentation content', function () {
-  this.setAnswerFor(questionNames.PROJECT_LANGUAGE, this.getAnswerFor(questionNames.PROJECT_LANGUAGE) || any.word());
+  this.setAnswerFor(PROJECT_LANGUAGE, this.getAnswerFor(PROJECT_LANGUAGE) || any.word());
 
   this.languageScaffolderResults = {
     ...this.languageScaffolderResults,

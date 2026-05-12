@@ -5,8 +5,8 @@ import {afterEach, beforeEach, describe, expect, it, vi} from 'vitest';
 import any from '@travi/any';
 import {when} from 'vitest-when';
 
+import ciProviderPluginsSchema from './ci-provider/schema.js';
 import languagePluginsSchema from './language/schema.js';
-import {decisionsSchema} from './options-schemas.js';
 import vcsHostPluginsSchema from './vcs/host/schema.js';
 import dependencyUpdaterPluginsSchema from './dependency-updater/schema.js';
 import {validate} from './options-validator.js';
@@ -36,13 +36,11 @@ describe('options validator', () => {
       .calledWith({
         dependencyUpdaters: dependencyUpdaterPluginsSchema,
         languages: languagePluginsSchema,
-        vcsHosts: vcsHostPluginsSchema
+        vcsHosts: vcsHostPluginsSchema,
+        ciProviders: ciProviderPluginsSchema
       })
       .thenReturn(pluginsSchema);
-    when(joi.object).calledWith({
-      decisions: decisionsSchema,
-      plugins: pluginsSchema
-    }).thenReturn(fullSchema);
+    when(joi.object).calledWith({plugins: pluginsSchema}).thenReturn(fullSchema);
     when(core.validateOptions).calledWith(fullSchema, options).thenReturn(validatedOptions);
 
     expect(validate(options)).toEqual(validatedOptions);

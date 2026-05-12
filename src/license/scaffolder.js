@@ -3,11 +3,10 @@ import wrap from 'word-wrap';
 import mustache from 'mustache';
 // eslint-disable-next-line import/extensions
 import spdxLicenseList from 'spdx-license-list/full.js';
-import {info} from '@travi/cli-messages';
 
-export default async function ({projectRoot, license, copyright}) {
+export default async function scaffoldLicense({projectRoot, license, copyright}, {logger}) {
   if (license) {
-    info('Generating License');
+    logger.info('Generating License');
 
     const licenseContent = spdxLicenseList[license].licenseText;
 

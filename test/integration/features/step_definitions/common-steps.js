@@ -1,8 +1,8 @@
+import debugFactory from 'debug';
+
 import {promises as fs} from 'node:fs';
 import {dirname, resolve} from 'node:path';
 import {fileURLToPath} from 'node:url';
-
-import {info} from '@travi/cli-messages';
 
 import stubbedFs from 'mock-fs';
 import {Before, After, Given, When, setWorldConstructor} from '@cucumber/cucumber';
@@ -10,9 +10,11 @@ import any from '@travi/any';
 import * as td from 'testdouble';
 import {assert} from 'chai';
 
+import {deriveHostMarkerDirectory} from './vcs/vcs-host-steps.js';
 import {World} from '../support/world.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));          // eslint-disable-line no-underscore-dangle
+const debug = debugFactory('test:common-steps');
 
 setWorldConstructor(World);
 
@@ -20,6 +22,12 @@ let scaffold, lift, questionNames;
 const projectPath = [__dirname, '..', '..', '..', '..'];
 const projectTemplatePath = [...projectPath, 'templates'];
 const stubbedNodeModules = stubbedFs.load(resolve(...projectPath, 'node_modules'));
+const logger = {
+  info: () => undefined,
+  success: () => undefined,
+  warn: () => undefined,
+  error: () => undefined
+};
 
 Before({timeout: 20 * 1000}, async function () {
   this.projectRoot = process.cwd();
@@ -27,7 +35,7 @@ Before({timeout: 20 * 1000}, async function () {
   this.git = await td.replaceEsm('simple-git');
 
   // eslint-disable-next-line import/no-extraneous-dependencies,import/no-unresolved
-  ({scaffold, lift, questionNames} = await import('@form8ion/project'));
+  ({scaffold, lift, promptConstants: {questionNames}} = await import('@form8ion/project'));
 
   stubbedFs({
     node_modules: stubbedNodeModules,
@@ -45,92 +53,159 @@ Given('the project is {string}', async function (visibility) {
 });
 
 When(/^the project is scaffolded$/, async function () {
-  const repoShouldBeCreated = this.getAnswerFor(questionNames.GIT_REPO);
+  const repoShouldBeCreated = this.getAnswerFor(questionNames.GIT_REPOSITORY.GIT_REPO);
   const visibility = this.visibility || any.fromList(['Public', 'Private']);
   const chosenUpdater = any.word();
-  const chosenLanguage = this.getAnswerFor(questionNames.PROJECT_LANGUAGE) || 'Other';
-  const vcsHost = this.getAnswerFor(questionNames.REPO_HOST);
+  const chosenLanguage = this.getAnswerFor(questionNames.PROJECT_LANGUAGE.PROJECT_LANGUAGE) || 'Other';
+  const vcsHost = this.getAnswerFor(questionNames.REPOSITORY_HOST.REPO_HOST);
+  const chosenCiProvider = this.getAnswerFor(questionNames.CI_PROVIDER.CI_PROVIDER) || 'Other';
 
   this.projectDescription = any.sentence();
   this.projectHomepage = any.url();
 
   this.languageLiftResults = {...any.simpleObject(), homepage: this.projectHomepage};
 
-  await scaffold({
-    plugins: {
-      ...this.updatePlugin && {
-        dependencyUpdaters: {
-          [chosenUpdater]: this.updatePlugin
-        }
-      },
-      languages: {
-        ...'Other' !== chosenLanguage && {
-          [chosenLanguage]: {
-            scaffold: ({projectName, vcs}) => {
-              info(`Scaffolding ${chosenLanguage} language details for ${projectName}`);
+  await scaffold(
+    {
+      plugins: {
+        ...this.updatePlugin && {
+          dependencyUpdaters: {
+            [chosenUpdater]: this.updatePlugin
+          }
+        },
+        ...this.ciProviderPlugins && {
+          ciProviders: this.ciProviderPlugins
+        },
+        languages: {
+          ...'Other' !== chosenLanguage && {
+            [chosenLanguage]: {
+              scaffold: ({projectName, vcs}) => {
+                debug(`Scaffolding ${chosenLanguage} language details for ${projectName}`);
 
-              if (repoShouldBeCreated && ((vcsHost && 'Other' !== vcsHost) || this.existingVcsHost)) {
-                assert.equal(vcs.name, this.projectName);
-                if ('GitHub' === this.existingVcsHost) {
-                  assert.equal(vcs.host, 'github');
+                if (repoShouldBeCreated && ((vcsHost && 'Other' !== vcsHost) || this.existingVcsHost)) {
+                  assert.equal(vcs.name, this.projectName);
+                  if ('GitHub' === this.existingVcsHost) {
+                    assert.equal(vcs.host, 'github');
+                  }
                 }
+
+                return this.languageScaffolderResults;
+              },
+              test: ({projectRoot}) => {
+                debug(`Determining if project at ${projectRoot} uses the ${chosenLanguage} language`);
+
+                return true;
+              },
+              lift: ({projectRoot}) => {
+                debug(`Applying the ${chosenLanguage} language lifter to the project at ${projectRoot}`);
+
+                return this.languageLiftResults;
               }
-
-              return this.languageScaffolderResults;
-            },
-            test: ({projectRoot}) => {
-              info(`Determining if project at ${projectRoot} uses the ${chosenLanguage} language`);
-
-              return true;
-            },
-            lift: ({projectRoot}) => {
-              info(`Applying the ${chosenLanguage} language lifter to the project at ${projectRoot}`);
-
-              return this.languageLiftResults;
             }
           }
-        }
-      },
-      ...vcsHost && 'Other' !== vcsHost && {
-        vcsHosts: {
-          [vcsHost]: {
-            scaffold: ({projectName, owner}) => {
-              this.hostedVcsDetails = {name: projectName, host: vcsHost};
+        },
+        ...vcsHost && 'Other' !== vcsHost && {
+          vcsHosts: {
+            [vcsHost]: {
+              scaffold: async ({projectName, owner, projectRoot}) => {
+                const markerDirectory = deriveHostMarkerDirectory(vcsHost);
 
-              return ({
-                vcs: {sshUrl: this.remoteOriginUrl, name: projectName, owner, host: vcsHost}
-              });
-            },
-            test: ({projectRoot}) => {
-              info(`Determining if project at ${projectRoot} uses the ${vcsHost} VCS host`);
+                if (markerDirectory) {
+                  this.vcsHostMarkerDirectory = markerDirectory;
+                  await fs.mkdir(`${projectRoot}/${markerDirectory}`, {recursive: true});
+                }
 
-              return true;
-            },
-            lift: ({results}) => {
-              this.vcsHostProjectHomepage = results.homepage;
+                this.hostedVcsDetails = {name: projectName, host: vcsHost};
 
-              return results;
+                return ({
+                  vcs: {sshUrl: this.remoteOriginUrl, name: projectName, owner, host: vcsHost}
+                });
+              },
+              test: ({projectRoot}) => {
+                debug(`Determining if project at ${projectRoot} uses the ${vcsHost} VCS host`);
+
+                return true;
+              },
+              lift: ({results}) => {
+                this.vcsHostProjectHomepage = results.homepage;
+
+                return results;
+              }
             }
           }
         }
       }
     },
-    decisions: {
-      [questionNames.PROJECT_NAME]: this.projectName,
-      [questionNames.DESCRIPTION]: this.projectDescription,
-      [questionNames.VISIBILITY]: visibility,
-      ...'Public' === visibility && {
-        [questionNames.LICENSE]: 'MIT',
-        [questionNames.COPYRIGHT_HOLDER]: any.word(),
-        [questionNames.COPYRIGHT_YEAR]: 2000
+    {
+      prompt: async ({id, questions}) => {
+        // eslint-disable-next-line import/no-extraneous-dependencies,import/no-unresolved
+        const {promptConstants: {ids}} = await import('@form8ion/project');
+        const {
+          BASE_DETAILS: baseDetailsPromptId,
+          GIT_REPOSITORY: gitRepositoryPromptId,
+          REPOSITORY_HOST: repositoryHostPromptId,
+          PROJECT_LANGUAGE: projectLanguagePromptId,
+          DEPENDENCY_UPDATER: dependencyUpdaterPromptId,
+          CI_PROVIDER: ciProviderPromptId
+        } = ids;
+
+        this.promptQuestionsById = {
+          ...this.promptQuestionsById,
+          [id]: questions
+        };
+
+        switch (id) {
+          case baseDetailsPromptId: {
+            const {PROJECT_NAME, DESCRIPTION, VISIBILITY} = questionNames[baseDetailsPromptId];
+
+            return {
+              [PROJECT_NAME]: this.projectName,
+              [DESCRIPTION]: this.projectDescription,
+              [VISIBILITY]: visibility
+            };
+          }
+          case gitRepositoryPromptId: {
+            const {GIT_REPO} = questionNames[gitRepositoryPromptId];
+
+            return {
+              [GIT_REPO]: repoShouldBeCreated ?? false
+            };
+          }
+          case repositoryHostPromptId: {
+            const {REPO_HOST} = questionNames[repositoryHostPromptId];
+
+            return {
+              [REPO_HOST]: vcsHost
+            };
+          }
+          case projectLanguagePromptId: {
+            const {PROJECT_LANGUAGE} = questionNames[projectLanguagePromptId];
+
+            return {
+              [PROJECT_LANGUAGE]: chosenLanguage
+            };
+          }
+          case dependencyUpdaterPromptId: {
+            const {DEPENDENCY_UPDATER} = questionNames[dependencyUpdaterPromptId];
+
+            return {
+              [DEPENDENCY_UPDATER]: chosenUpdater
+            };
+          }
+          case ciProviderPromptId: {
+            const {CI_PROVIDER} = questionNames[ciProviderPromptId];
+
+            return {
+              [CI_PROVIDER]: chosenCiProvider
+            };
+          }
+          default:
+            throw new Error(`Unknown prompt with ID: ${id}`);
+        }
       },
-      ...'Private' === visibility && {[questionNames.UNLICENSED]: true},
-      [questionNames.GIT_REPO]: repoShouldBeCreated ?? false,
-      ...repoShouldBeCreated && {[questionNames.REPO_HOST]: vcsHost},
-      [questionNames.PROJECT_LANGUAGE]: chosenLanguage,
-      ...this.updatePlugin && {[questionNames.DEPENDENCY_UPDATER]: chosenUpdater}
+      logger
     }
-  });
+  );
 });
 
 When('the project is lifted', async function () {

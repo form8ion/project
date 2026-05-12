@@ -8,7 +8,10 @@ import {assert} from 'chai';
 import * as td from 'testdouble';
 import any from '@travi/any';
 
-import {questionNames} from '../../../../../src/prompts/question-names.js';
+import {questionNames} from '../../../../../src/prompts/index.js';
+
+const {GIT_REPO} = questionNames.GIT_REPOSITORY;
+const {REPO_HOST} = questionNames.REPOSITORY_HOST;
 
 const simpleGitInstance = td.object(['checkIsRepo', 'listRemote', 'remote', 'addRemote', 'init']);
 
@@ -17,8 +20,8 @@ Before(function () {
 });
 
 Given(/^the project should be versioned in git$/, async function () {
-  this.setAnswerFor(questionNames.GIT_REPO, true);
-  this.setAnswerFor(questionNames.REPO_HOST, 'Other');
+  this.setAnswerFor(GIT_REPO, true);
+  this.setAnswerFor(REPO_HOST, 'Other');
 
   td.when(simpleGitInstance.checkIsRepo('root')).thenResolve(false, true);
   td.when(simpleGitInstance.listRemote())
@@ -26,7 +29,7 @@ Given(/^the project should be versioned in git$/, async function () {
 });
 
 Given(/^the project should not be versioned in git$/, async function () {
-  this.setAnswerFor(questionNames.GIT_REPO, false);
+  this.setAnswerFor(GIT_REPO, false);
 });
 
 Given('the project root is already initialized as a git repository', async function () {
@@ -39,8 +42,8 @@ Given('the project root is already initialized as a git repository', async funct
     `${process.cwd()}/.gitignore`,
     `${this.existingVcsIgnoredDirectories.join('\n')}\n\n${this.existingVcsIgnoredFiles.join('\n')}`
   );
-  this.setAnswerFor(questionNames.GIT_REPO, true);
-  this.setAnswerFor(questionNames.REPO_HOST, undefined);
+  this.setAnswerFor(GIT_REPO, true);
+  this.setAnswerFor(REPO_HOST, undefined);
 
   td.when(simpleGitInstance.checkIsRepo('root')).thenResolve(true);
   td.when(simpleGitInstance.listRemote()).thenResolve(['origin']);

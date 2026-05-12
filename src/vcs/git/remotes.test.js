@@ -53,6 +53,7 @@ describe('Git remote', () => {
 
   describe('define', () => {
     const sshUrl = any.url();
+    const logger = {warn: () => {}};
 
     it('should define the remote origin', async () => {
       const listRemote = vi.fn();
@@ -60,7 +61,7 @@ describe('Git remote', () => {
       when(simpleGit).calledWith({baseDir: projectRoot}).thenReturn({listRemote, addRemote});
       when(listRemote).calledWith().thenResolve(any.listOf(any.word));
 
-      const {nextSteps} = await defineRemoteOrigin(projectRoot, sshUrl);
+      const {nextSteps} = await defineRemoteOrigin(projectRoot, sshUrl, {logger});
 
       expect(addRemote).toHaveBeenCalledWith('origin', sshUrl);
       expect(nextSteps).toEqual([{summary: 'Set local `master` branch to track upstream `origin/master`'}]);
@@ -72,7 +73,7 @@ describe('Git remote', () => {
       when(simpleGit).calledWith({baseDir: projectRoot}).thenReturn({listRemote, addRemote});
       when(listRemote).calledWith().thenThrow(new Error('fatal: No remote configured to list refs from.\n'));
 
-      const {nextSteps} = await defineRemoteOrigin(projectRoot, sshUrl);
+      const {nextSteps} = await defineRemoteOrigin(projectRoot, sshUrl, {logger});
 
       expect(nextSteps).toEqual([{summary: 'Set local `master` branch to track upstream `origin/master`'}]);
     });
@@ -83,7 +84,7 @@ describe('Git remote', () => {
       when(simpleGit).calledWith({baseDir: projectRoot}).thenReturn({listRemote});
       when(listRemote).calledWith().thenThrow(error);
 
-      await expect(defineRemoteOrigin(projectRoot, sshUrl)).rejects.toThrow(error);
+      await expect(defineRemoteOrigin(projectRoot, sshUrl, {logger})).rejects.toThrow(error);
     });
 
     it('should return no next-steps when the remote origin is already defined', async () => {
@@ -91,13 +92,13 @@ describe('Git remote', () => {
       when(simpleGit).calledWith({baseDir: projectRoot}).thenReturn({listRemote});
       when(listRemote).calledWith().thenResolve([...any.listOf(any.word), 'origin', ...any.listOf(any.word)]);
 
-      const {nextSteps} = await defineRemoteOrigin(projectRoot, sshUrl);
+      const {nextSteps} = await defineRemoteOrigin(projectRoot, sshUrl, {logger});
 
       expect(nextSteps).toEqual([]);
     });
 
     it('should return no next-steps when no `sshUrl` is provided', async () => {
-      const {nextSteps} = await defineRemoteOrigin(projectRoot);
+      const {nextSteps} = await defineRemoteOrigin(projectRoot, undefined, {logger});
 
       expect(nextSteps).toEqual([]);
     });
