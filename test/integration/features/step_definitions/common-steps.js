@@ -28,6 +28,11 @@ const logger = {
   warn: () => undefined,
   error: () => undefined
 };
+export const visibilityAbbreviations = {
+  'Open Source': 'OSS',
+  'Inner Source': 'ISS',
+  'Closed Source': 'CS'
+};
 
 Before({timeout: 20 * 1000}, async function () {
   this.projectRoot = process.cwd();
@@ -49,12 +54,12 @@ After(() => {
 });
 
 Given('the project is {string}', async function (visibility) {
-  this.visibility = visibility;
+  this.visibility = visibilityAbbreviations[visibility];
 });
 
 When(/^the project is scaffolded$/, async function () {
   const repoShouldBeCreated = this.getAnswerFor(questionNames.GIT_REPOSITORY.GIT_REPO);
-  const visibility = this.visibility || any.fromList(['Public', 'Private']);
+  const visibility = this.visibility || any.fromList(Object.values(visibilityAbbreviations));
   const chosenUpdater = any.word();
   const chosenLanguage = this.getAnswerFor(questionNames.PROJECT_LANGUAGE.PROJECT_LANGUAGE) || 'Other';
   const vcsHost = this.getAnswerFor(questionNames.REPOSITORY_HOST.REPO_HOST);
@@ -157,6 +162,10 @@ When(/^the project is scaffolded$/, async function () {
         switch (id) {
           case baseDetailsPromptId: {
             const {PROJECT_NAME, DESCRIPTION, VISIBILITY} = questionNames[baseDetailsPromptId];
+
+            if (!questions.find(question => VISIBILITY === question.name).validate(visibility)) {
+              throw new Error(`Visibility of '${visibility}' provided in test is not valid`);
+            }
 
             return {
               [PROJECT_NAME]: this.projectName,

@@ -10,6 +10,7 @@ import {assert} from 'chai';
 import any from '@travi/any';
 
 import {questionNames} from '../../../../src/prompts/index.js';
+import {visibilityAbbreviations} from './common-steps.js';
 
 const {PROJECT_LANGUAGE} = questionNames.PROJECT_LANGUAGE;
 
@@ -324,8 +325,9 @@ Then('{string} details are included in the README', async function (visibility) 
     link: 'https://makeapullrequest.com'
   };
 
-  if ('Public' === visibility) assertGroupContainsBadge(badgeGroups.contribution, references, prsWelcomeDetails);
-  else assertGroupDoesNotContainBadge(badgeGroups.contribution, references, prsWelcomeDetails);
+  if (['OSS', 'ISS'].includes(visibilityAbbreviations[visibility])) {
+    assertGroupContainsBadge(badgeGroups.contribution, references, prsWelcomeDetails);
+  } else assertGroupDoesNotContainBadge(badgeGroups.contribution, references, prsWelcomeDetails);
 });
 
 Then('the README includes the language details', async function () {

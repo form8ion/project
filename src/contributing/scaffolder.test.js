@@ -4,8 +4,20 @@ import any from '@travi/any';
 import scaffoldContributing from './scaffolder.js';
 
 describe('contributing scaffolder', () => {
-  it('should return the PRs-welcome badge for public projects', () => {
-    const {badges} = scaffoldContributing({visibility: 'Public'});
+  it('should return the PRs-welcome badge for open-source projects', () => {
+    const {badges} = scaffoldContributing({visibility: 'OSS'});
+
+    expect(badges.contribution).toEqual({
+      PRs: {
+        text: 'PRs Welcome',
+        link: 'https://makeapullrequest.com',
+        img: 'https://img.shields.io/badge/PRs-welcome-brightgreen.svg'
+      }
+    });
+  });
+
+  it('should return the PRs-welcome badge for inner-source projects', () => {
+    const {badges} = scaffoldContributing({visibility: 'ISS'});
 
     expect(badges.contribution).toEqual({
       PRs: {

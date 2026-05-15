@@ -54,7 +54,7 @@ await scaffold(
           return {
             [PROJECT_NAME]: 'my-project',
             [LICENSE]: 'MIT',
-            [VISIBILITY]: 'Public',
+            [VISIBILITY]: 'OSS',
             [DESCRIPTION]: 'My project',
             [COPYRIGHT_HOLDER]: 'John Smith',
             [COPYRIGHT_YEAR]: '2022'

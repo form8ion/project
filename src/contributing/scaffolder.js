@@ -1,5 +1,5 @@
 export default function scaffoldContribution({visibility}) {
-  if ('Public' === visibility) {
+  if (['OSS', 'ISS'].includes(visibility)) {
     return {
       badges: {
         contribution: {

@@ -4,20 +4,26 @@ Feature: Documentation
     When the project is scaffolded
     Then the README includes the core details
 
-  Scenario: README for a Public Project
-    Given the project is "Public"
+  Scenario: README for an Open Source Project
+    Given the project is "Open Source"
     When the project is scaffolded
     Then the README includes the core details
-    And "Public" details are included in the README
+    And "Open Source" details are included in the README
 
-  Scenario: README for a Private Project
-    Given the project is "Private"
+  Scenario: README for an Inner Source Project
+    Given the project is "Inner Source"
     When the project is scaffolded
     Then the README includes the core details
-    And "Private" details are included in the README
+    And "Inner Source" details are included in the README
+
+  Scenario: README for a Closed Source Project
+    Given the project is "Closed Source"
+    When the project is scaffolded
+    Then the README includes the core details
+    And "Closed Source" details are included in the README
 
   Scenario: Language Content in README
-    Given the project is "Public"
+    Given the project is "Open Source"
     And a language scaffolder is chosen
     And the language scaffolder defines documentation content
     When the project is scaffolded
