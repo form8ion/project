@@ -28,6 +28,12 @@ const plugins = {
     }
   }
 };
+const logger = {
+  info: () => undefined,
+  success: () => undefined,
+  warn: () => undefined,
+  error: () => undefined
+};
 
 await scaffold(
   {plugins},
@@ -74,12 +80,7 @@ await scaffold(
           throw new Error(`Unknown prompt with ID: ${id}`);
       }
     },
-    logger: {
-      info: () => undefined,
-      success: () => undefined,
-      warn: () => undefined,
-      error: () => undefined
-    }
+    logger
   }
 );
 
@@ -88,4 +89,4 @@ await lift({
   results: {},
   enhancers: ungroupObject(plugins),
   vcs: {}
-});
+}, {logger});

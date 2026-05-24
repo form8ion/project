@@ -57,6 +57,7 @@ describe('project scaffolder', () => {
   const vcsIgnore = any.simpleObject();
   const prompt = () => undefined;
   const logger = {info: () => {}};
+  const dependencies = {prompt, logger};
 
   beforeEach(() => {
     process.cwd = vi.fn();
@@ -123,7 +124,7 @@ describe('project scaffolder', () => {
       .thenResolve(dependencyUpdaterResults);
     when(scaffoldContributing).calledWith({visibility}).thenReturn(contributingResults);
 
-    expect(await scaffold(options, {prompt, logger})).toEqual(mergedResults);
+    expect(await scaffold(options, dependencies)).toEqual(mergedResults);
 
     expect(scaffoldReadme).toHaveBeenCalledWith({projectName, projectRoot: projectPath, description});
     expect(scaffoldEditorconfig).toHaveBeenCalledWith({projectRoot: projectPath});
@@ -137,7 +138,7 @@ describe('project scaffolder', () => {
       vcs,
       results: mergedResults,
       enhancers: {...dependencyUpdaters, ...vcsHosts, ...languages}
-    });
+    }, dependencies);
   });
 
   it('should pass the lists of badges from contributors to the readme', async () => {
@@ -236,7 +237,7 @@ describe('project scaffolder', () => {
     licenseScaffolder.default.mockResolvedValue({});
     scaffoldContributing.mockResolvedValue({});
 
-    await scaffold(options, {prompt, logger});
+    await scaffold(options, dependencies);
 
     expect(scaffoldReadme).toHaveBeenCalledWith({projectName, projectRoot: projectPath, description});
     expect(execaPipe).toHaveBeenCalledWith(process.stdout);

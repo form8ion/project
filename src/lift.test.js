@@ -37,7 +37,7 @@ describe('lift', () => {
   it('should lift the README based on the provided results', async () => {
     when(editorconfigInUse).calledWith({projectRoot}).thenResolve(true);
 
-    expect(await lift({projectRoot, results, enhancers, vcs, dependencies})).toEqual(enhancerResults);
+    expect(await lift({projectRoot, results, enhancers, vcs}, dependencies)).toEqual(enhancerResults);
     expect(readme.lift).toHaveBeenCalledWith({projectRoot, results: enhancerResults});
     expect(scaffoldEditorconfig).not.toHaveBeenCalled();
   });

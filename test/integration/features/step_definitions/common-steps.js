@@ -251,5 +251,5 @@ When('the project is lifted', async function () {
         lift: () => ({...this.enhancerBadges && {badges: this.enhancerBadges}})
       }
     }
-  });
+  }, {logger});
 });

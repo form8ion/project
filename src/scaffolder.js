@@ -14,9 +14,10 @@ import {scaffold as scaffoldEditorConfig} from './editorconfig/index.js';
 import {scaffold as scaffoldContributing} from './contributing/index.js';
 import lift from './lift.js';
 
-export async function scaffold(options, {prompt, logger}) {
+export async function scaffold(options, dependencies) {
   const projectRoot = process.cwd();
   const {plugins: {dependencyUpdaters, ciProviders, languages, vcsHosts = {}}} = validate(options);
+  const {prompt, logger} = dependencies;
 
   const {
     [coreQuestionNames.PROJECT_NAME]: projectName,
@@ -62,7 +63,7 @@ export async function scaffold(options, {prompt, logger}) {
     vcs: vcsResults.vcs,
     results: mergedResults,
     enhancers: {...dependencyUpdaters, ...languages, ...vcsHosts}
-  });
+  }, dependencies);
 
   if (language && language.verificationCommand) {
     logger.info('Verifying the generated project');

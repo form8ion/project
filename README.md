@@ -92,6 +92,12 @@ const plugins = {
     }
   }
 };
+const logger = {
+  info: () => undefined,
+  success: () => undefined,
+  warn: () => undefined,
+  error: () => undefined
+};
 
 await scaffold(
   {plugins},
@@ -118,7 +124,7 @@ await scaffold(
           return {
             [PROJECT_NAME]: 'my-project',
             [LICENSE]: 'MIT',
-            [VISIBILITY]: 'Public',
+            [VISIBILITY]: 'OSS',
             [DESCRIPTION]: 'My project',
             [COPYRIGHT_HOLDER]: 'John Smith',
             [COPYRIGHT_YEAR]: '2022'
@@ -138,12 +144,7 @@ await scaffold(
           throw new Error(`Unknown prompt with ID: ${id}`);
       }
     },
-    logger: {
-      info: () => undefined,
-      success: () => undefined,
-      warn: () => undefined,
-      error: () => undefined
-    }
+    logger
   }
 );
 
@@ -152,7 +153,7 @@ await lift({
   results: {},
   enhancers: ungroupObject(plugins),
   vcs: {}
-});
+}, {logger});
 ```
 
 ### API
