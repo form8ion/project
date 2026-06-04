@@ -110,7 +110,7 @@
     "sinon": "22.0.0",
     "testdouble": "3.20.2",
     "unist-util-find": "3.0.0",
-    "vitest": "4.1.7",
+    "vitest": "4.1.8",
     "vitest-when": "0.10.0"
   }
 }
