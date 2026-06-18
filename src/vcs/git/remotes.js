@@ -18,7 +18,7 @@ export async function determineExistingVcsDetails({projectRoot}) {
   const remoteOrigin = await git.remote(['get-url', 'origin']);
   const {owner, name, host} = parseGitUrl(remoteOrigin.trimEnd());
 
-  return {vcs: {owner, name, host: 'github.com' === host ? 'github' : host}};
+  return {vcs: {owner, name, host}};
 }
 
 export async function defineRemoteOrigin(projectRoot, sshUrl, {logger}) {

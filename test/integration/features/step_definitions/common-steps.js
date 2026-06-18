@@ -90,7 +90,7 @@ When(/^the project is scaffolded$/, async function () {
                 if (repoShouldBeCreated && ((vcsHost && 'Other' !== vcsHost) || this.existingVcsHost)) {
                   assert.equal(vcs.name, this.projectName);
                   if ('GitHub' === this.existingVcsHost) {
-                    assert.equal(vcs.host, 'github');
+                    assert.equal(vcs.host, 'github.com');
                   }
                 }
 

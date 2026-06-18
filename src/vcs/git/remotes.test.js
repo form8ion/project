@@ -34,21 +34,6 @@ describe('Git remote', () => {
 
       expect(hostDetails).toEqual({host: vcsHost.toLowerCase(), owner: vcsHostAccount, name: repoName});
     });
-
-    it(
-      'should return `github` when the host is determined to be `github.com` until that can be a breaking change',
-      async () => {
-        when(simpleGit).calledWith({baseDir: projectRoot}).thenReturn({remote});
-        when(remote).calledWith(['get-url', 'origin']).thenResolve(`${remoteOrigin}\n`);
-        when(parseGitUrl)
-          .calledWith(remoteOrigin)
-          .thenReturn({owner: vcsHostAccount, name: repoName, host: 'github.com'});
-
-        const {vcs: hostDetails} = await determineExistingVcsDetails({projectRoot});
-
-        expect(hostDetails).toEqual({host: 'github', owner: vcsHostAccount, name: repoName});
-      }
-    );
   });
 
   describe('define', () => {
