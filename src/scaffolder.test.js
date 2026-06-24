@@ -126,7 +126,7 @@ describe('project scaffolder', () => {
 
     expect(await scaffold(options, dependencies)).toEqual(mergedResults);
 
-    expect(scaffoldReadme).toHaveBeenCalledWith({projectName, projectRoot: projectPath, description});
+    expect(scaffoldReadme).toHaveBeenCalledWith({projectName, projectRoot: projectPath, description}, {logger});
     expect(scaffoldEditorconfig).toHaveBeenCalledWith({projectRoot: projectPath});
     expect(scaffoldCiProvider).toHaveBeenCalledWith(
       ciProviders,
@@ -178,9 +178,9 @@ describe('project scaffolder', () => {
     licenseScaffolder.default.mockResolvedValue({badges: licenseBadges});
     scaffoldVcs.mockResolvedValue(vcsResults);
 
-    await scaffold(options, {prompt});
+    await scaffold(options, {prompt, logger});
 
-    expect(scaffoldReadme).toHaveBeenCalledWith({projectName, projectRoot: projectPath, description});
+    expect(scaffoldReadme).toHaveBeenCalledWith({projectName, projectRoot: projectPath, description}, {logger});
   });
 
   it('should not scaffold the git repo if not requested', async () => {
@@ -239,7 +239,7 @@ describe('project scaffolder', () => {
 
     await scaffold(options, dependencies);
 
-    expect(scaffoldReadme).toHaveBeenCalledWith({projectName, projectRoot: projectPath, description});
+    expect(scaffoldReadme).toHaveBeenCalledWith({projectName, projectRoot: projectPath, description}, {logger});
     expect(execaPipe).toHaveBeenCalledWith(process.stdout);
   });
 
@@ -260,9 +260,9 @@ describe('project scaffolder', () => {
     licenseScaffolder.default.mockResolvedValue({});
     scaffoldContributing.mockResolvedValue({});
 
-    await scaffold(options, {prompt});
+    await scaffold(options, {prompt, logger});
 
-    expect(scaffoldReadme).toHaveBeenCalledWith({projectName, projectRoot: projectPath, description});
+    expect(scaffoldReadme).toHaveBeenCalledWith({projectName, projectRoot: projectPath, description}, {logger});
     expect(execa).not.toHaveBeenCalled();
   });
 

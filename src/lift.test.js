@@ -39,7 +39,7 @@ describe('lift', () => {
     when(editorconfigInUse).calledWith({projectRoot}).thenResolve(true);
 
     expect(await lift({projectRoot, results, enhancers, vcs}, dependencies)).toEqual(enhancerResults);
-    expect(readme.lift).toHaveBeenCalledWith({projectRoot, results: enhancerResults});
+    expect(readme.lift).toHaveBeenCalledWith({projectRoot, results: enhancerResults}, dependencies);
     expect(scaffoldEditorconfig).not.toHaveBeenCalled();
   });
 

@@ -33,7 +33,7 @@ export async function scaffold(options, dependencies) {
     scaffoldVcs({projectRoot, projectName, vcsHosts, visibility, description}, {prompt, logger}),
     scaffoldContributing({visibility}),
     scaffoldLicense({projectRoot, license: chosenLicense, copyright}, {logger}),
-    scaffoldReadme({projectName, projectRoot, description}),
+    scaffoldReadme({projectName, projectRoot, description}, {logger}),
     scaffoldEditorConfig({projectRoot})
   ]);
 

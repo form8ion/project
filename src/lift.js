@@ -18,7 +18,7 @@ export default async function lift({projectRoot, results, enhancers, vcs}, depen
     dependencies
   });
 
-  await liftReadme({projectRoot, results: enhancerResults});
+  await liftReadme({projectRoot, results: enhancerResults}, dependencies);
 
   return enhancerResults;
 }
