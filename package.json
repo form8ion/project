@@ -92,7 +92,7 @@
     "cross-env": "10.1.0",
     "cz-conventional-changelog": "3.3.0",
     "debug": "4.4.3",
-    "gherkin-lint": "4.2.4",
+    "gplint": "2.5.2",
     "husky": "9.1.7",
     "lockfile-lint": "5.0.0",
     "ls-engines": "0.10.0",
