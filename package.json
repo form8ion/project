@@ -5,7 +5,7 @@
   "version": "0.0.0-semantically-released",
   "type": "module",
   "engines": {
-    "node": "^22.21.0 || >=24.12"
+    "node": "^22.22.2 || >=24.15"
   },
   "author": "Matt Travi <npm@travi.org> (https://matt.travi.org/)",
   "contributors": [
