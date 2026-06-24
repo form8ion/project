@@ -1,6 +1,7 @@
 import * as core from '@form8ion/core';
 import * as readme from '@form8ion/readme';
 import * as gitPlugin from '@form8ion/git';
+import * as misePlugin from '@form8ion/mise';
 
 import {beforeEach, describe, expect, it, vi} from 'vitest';
 import any from '@travi/any';
@@ -27,7 +28,7 @@ describe('lift', () => {
     when(core.applyEnhancers)
       .calledWith({
         results,
-        enhancers: {...enhancers, gitPlugin, licensePlugin},
+        enhancers: {...enhancers, gitPlugin, licensePlugin, misePlugin},
         options: {projectRoot, vcs},
         dependencies
       })

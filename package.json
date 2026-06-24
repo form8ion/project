@@ -64,6 +64,7 @@
   "dependencies": {
     "@form8ion/core": "^5.0.0-beta.6",
     "@form8ion/git": "^2.1.1",
+    "@form8ion/mise": "^1.1.1",
     "@form8ion/readme": "3.1.0",
     "@hapi/hoek": "^11.0.2",
     "deepmerge": "^4.2.2",
