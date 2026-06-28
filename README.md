@@ -8,6 +8,7 @@ opinionated scaffolder for new projects
 [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/form8ion/project/badge)](https://securityscorecards.dev/viewer/?uri=github.com/form8ion/project)
 [![Codecov][coverage-badge]][coverage-link]
 ![SLSA Level 2][slsa-badge]
+[![Socket][socket-badge]][socket-link]
 
 <!--status-badges end -->
 
@@ -324,3 +325,7 @@ $ npm test
 [semantic-release-link]: https://github.com/semantic-release/semantic-release
 
 [semantic-release-badge]: https://img.shields.io/badge/semantic--release-angular-e10079?logo=semantic-release
+
+[socket-badge]: https://badge.socket.dev/npm/package/@form8ion/project/latest
+
+[socket-link]: https://socket.dev/npm/package/@form8ion/project/overview/21.2.0
