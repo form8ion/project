@@ -2,7 +2,7 @@ import {describe, expect, it, vi} from 'vitest';
 import any from '@travi/any';
 import {when} from 'vitest-when';
 
-import promptForCiProvider from './prompt.js';
+import chooseCiProvider from './prompt.js';
 import scaffoldCiProvider from './scaffolder.js';
 import {questionNames} from '../prompts/index.js';
 
@@ -24,9 +24,9 @@ describe('ci-provider scaffolder', () => {
     const scaffolderResult = any.simpleObject();
     when(qualifiedPlugin.qualify).calledWith({projectRoot}).thenResolve(true);
     when(unqualifiedPlugin.qualify).calledWith({projectRoot}).thenResolve(false);
-    when(promptForCiProvider)
+    when(chooseCiProvider)
       .calledWith({[qualifiedProviderName]: qualifiedPlugin}, {prompt})
-      .thenResolve({[CI_PROVIDER]: qualifiedProviderName});
+      .thenResolve(qualifiedProviderName);
     when(qualifiedScaffolder).calledWith(options).thenResolve(scaffolderResult);
 
     expect(await scaffoldCiProvider(
@@ -41,9 +41,9 @@ describe('ci-provider scaffolder', () => {
     const pluginScaffolder = vi.fn();
     const plugin = {scaffold: pluginScaffolder};
     const scaffolderResult = any.simpleObject();
-    when(promptForCiProvider)
+    when(chooseCiProvider)
       .calledWith({[providerName]: plugin}, {prompt})
-      .thenResolve({[CI_PROVIDER]: providerName});
+      .thenResolve(providerName);
     when(pluginScaffolder).calledWith(options).thenResolve(scaffolderResult);
 
     expect(await scaffoldCiProvider({[providerName]: plugin}, options, {prompt})).toEqual(scaffolderResult);
@@ -51,14 +51,14 @@ describe('ci-provider scaffolder', () => {
 
   it('should not present a prompt when no plugins are registered', async () => {
     expect(await scaffoldCiProvider({}, options, {prompt})).toBe(undefined);
-    expect(promptForCiProvider).not.toHaveBeenCalled();
+    expect(chooseCiProvider).not.toHaveBeenCalled();
   });
 
   it('should return undefined when Other is chosen', async () => {
     const providerName = any.word();
     const plugin = {qualify: vi.fn(), scaffold: vi.fn()};
     when(plugin.qualify).calledWith({projectRoot}).thenResolve(true);
-    when(promptForCiProvider)
+    when(chooseCiProvider)
       .calledWith({[providerName]: plugin}, {prompt})
       .thenResolve({[CI_PROVIDER]: 'Other'});
 

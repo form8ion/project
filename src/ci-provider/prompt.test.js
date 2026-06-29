@@ -2,7 +2,7 @@ import {describe, it, expect, vi} from 'vitest';
 import any from '@travi/any';
 import {when} from 'vitest-when';
 
-import promptForCiProvider, {CI_PROVIDER_PROMPT_ID} from './prompt.js';
+import chooseCiProvider, {CI_PROVIDER_PROMPT_ID} from './prompt.js';
 import {questionNames} from '../prompts/index.js';
 
 const {CI_PROVIDER} = questionNames.CI_PROVIDER;
@@ -10,7 +10,8 @@ const {CI_PROVIDER} = questionNames.CI_PROVIDER;
 describe('ci-provider-prompt', () => {
   it('should prompt for the provider choice', async () => {
     const prompt = vi.fn();
-    const answers = any.simpleObject();
+    const chosenProvider = any.word();
+    const answers = {...any.simpleObject(), [CI_PROVIDER]: chosenProvider};
     const providers = any.simpleObject();
     when(prompt).calledWith({
       id: CI_PROVIDER_PROMPT_ID,
@@ -22,6 +23,6 @@ describe('ci-provider-prompt', () => {
       }]
     }).thenResolve(answers);
 
-    expect(await promptForCiProvider(providers, {prompt})).toEqual(answers);
+    expect(await chooseCiProvider(providers, {prompt})).toEqual(chosenProvider);
   });
 });

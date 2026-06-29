@@ -1,14 +1,7 @@
-import {questionNames} from '../prompts/question-names.js';
-import promptForCiProvider from './prompt.js';
+import chooseCiProvider from './prompt.js';
 
-const {CI_PROVIDER} = questionNames.CI_PROVIDER;
-
-export default async function scaffoldCiProvider(plugins, options, {prompt}) {
-  if (!Object.keys(plugins).length) return undefined;
-
-  const {projectRoot} = options;
-
-  const qualifiedPlugins = Object.fromEntries(
+async function filterToQualifiedPlugins(plugins, projectRoot) {
+  return Object.fromEntries(
     (await Promise.all(
       Object.entries(plugins).map(async ([name, plugin]) => [
         name,
@@ -17,11 +10,21 @@ export default async function scaffoldCiProvider(plugins, options, {prompt}) {
       ])
     )).filter(([, , qualified]) => qualified).map(([name, plugin]) => [name, plugin])
   );
+}
 
-  const chosen = (await promptForCiProvider(qualifiedPlugins, {prompt}))[CI_PROVIDER];
+async function scaffoldChoiceFromOptions(plugins, options, promptToChooseFromOptions, {prompt}) {
+  if (!Object.keys(plugins).length) return undefined;
+
+  const {projectRoot} = options;
+  const qualifiedPlugins = await filterToQualifiedPlugins(plugins, projectRoot);
+  const chosen = await promptToChooseFromOptions(qualifiedPlugins, {prompt});
   const plugin = qualifiedPlugins[chosen];
 
   if (plugin) return plugin.scaffold(options);
 
   return {};
+}
+
+export default async function scaffoldCiProvider(plugins, options, {prompt}) {
+  return scaffoldChoiceFromOptions(plugins, options, chooseCiProvider, {prompt});
 }

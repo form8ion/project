@@ -4,8 +4,8 @@ export const CI_PROVIDER_PROMPT_ID = 'CI_PROVIDER';
 
 const {CI_PROVIDER} = questionNames.CI_PROVIDER;
 
-export default function promptForCiProvider(providers, {prompt}) {
-  return prompt({
+export default async function chooseCiProvider(providers, {prompt}) {
+  const {[CI_PROVIDER]: provider} = await prompt({
     id: CI_PROVIDER_PROMPT_ID,
     questions: [{
       name: CI_PROVIDER,
@@ -14,4 +14,6 @@ export default function promptForCiProvider(providers, {prompt}) {
       choices: [...Object.keys(providers), 'Other']
     }]
   });
+
+  return provider;
 }
