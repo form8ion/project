@@ -129,8 +129,7 @@ describe('project scaffolder', () => {
     expect(scaffoldReadme).toHaveBeenCalledWith({projectName, projectRoot: projectPath, description}, {logger});
     expect(scaffoldEditorconfig).toHaveBeenCalledWith({projectRoot: projectPath});
     expect(scaffoldCiProvider).toHaveBeenCalledWith(
-      ciProviders,
-      {projectRoot: projectPath},
+      {plugins: ciProviders, options: {projectRoot: projectPath}},
       {prompt}
     );
     expect(lift).toHaveBeenCalledWith({
