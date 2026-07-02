@@ -120,7 +120,7 @@ describe('project scaffolder', () => {
       .thenResolve(licenseResults);
     scaffoldLanguage.mockResolvedValue(languageResults);
     when(dependencyUpdaterScaffolder.default)
-      .calledWith(dependencyUpdaters, {projectRoot: projectPath}, {prompt})
+      .calledWith({plugins: dependencyUpdaters, options: {projectRoot: projectPath}}, {prompt})
       .thenResolve(dependencyUpdaterResults);
     when(scaffoldContributing).calledWith({visibility}).thenReturn(contributingResults);
 

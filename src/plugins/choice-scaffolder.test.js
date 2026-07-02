@@ -9,7 +9,6 @@ vi.mock('./qualification-filter.js');
 
 describe('plugin choice scaffolder', () => {
   const projectRoot = any.string();
-  const prompt = () => undefined;
   const options = {projectRoot};
   const plugins = any.simpleObject();
   const chosenPlugin = any.word();
@@ -19,29 +18,29 @@ describe('plugin choice scaffolder', () => {
   });
 
   it('should return empty results when no plugin is provided for the chosen option', async () => {
-    const promptToChooseFromOptions = vi.fn();
+    const choicePrompt = vi.fn();
     const qualifiedPlugins = any.simpleObject();
     when(filterToQualifiedPlugins).calledWith({plugins, projectRoot}).thenResolve(qualifiedPlugins);
-    when(promptToChooseFromOptions).calledWith(qualifiedPlugins, {prompt}).thenResolve(chosenPlugin);
+    when(choicePrompt).calledWith(qualifiedPlugins).thenResolve(chosenPlugin);
 
     expect(await scaffoldChoiceFromOptions(
       {plugins, options},
-      {promptToChooseFromOptions, prompt}
+      {choicePrompt}
     )).toEqual({});
   });
 
   it('should scaffold the chosen plugin', async () => {
-    const promptToChooseFromOptions = vi.fn();
+    const choicePrompt = vi.fn();
     const chosenPluginScaffolder = vi.fn();
     const qualifiedPlugins = {...any.simpleObject(), [chosenPlugin]: {scaffold: chosenPluginScaffolder}};
     const scaffoldResults = any.simpleObject();
     when(filterToQualifiedPlugins).calledWith({plugins, projectRoot}).thenResolve(qualifiedPlugins);
-    when(promptToChooseFromOptions).calledWith(qualifiedPlugins, {prompt}).thenResolve(chosenPlugin);
+    when(choicePrompt).calledWith(qualifiedPlugins).thenResolve(chosenPlugin);
     when(chosenPluginScaffolder).calledWith(options).thenResolve(scaffoldResults);
 
     expect(await scaffoldChoiceFromOptions(
       {plugins, options},
-      {promptToChooseFromOptions, prompt}
+      {choicePrompt}
     )).toEqual(scaffoldResults);
   });
 });

@@ -96,7 +96,7 @@ Then('only qualified CI providers are offered', async function () {
   assert.deepEqual(ciProviderPromptQuestions, [{
     name: CI_PROVIDER,
     type: 'list',
-    message: 'Which CI service do you want use with this project?',
+    message: 'Which CI service do you want to use with this project?',
     choices: [this.qualifiedCiProviderName, 'Other']
   }]);
 });
@@ -116,7 +116,7 @@ Then('the CI provider without a qualify method is offered', async function () {
   assert.deepEqual(ciProviderPromptQuestions, [{
     name: CI_PROVIDER,
     type: 'list',
-    message: 'Which CI service do you want use with this project?',
+    message: 'Which CI service do you want to use with this project?',
     choices: [this.noQualifyMethodCiProviderName, 'Other']
   }]);
 });

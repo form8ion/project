@@ -18,11 +18,11 @@ describe('ci-provider-prompt', () => {
       questions: [{
         name: CI_PROVIDER,
         type: 'list',
-        message: 'Which CI service do you want use with this project?',
+        message: 'Which CI service do you want to use with this project?',
         choices: [...Object.keys(providers), 'Other']
       }]
     }).thenResolve(answers);
 
-    expect(await chooseCiProvider(providers, {prompt})).toEqual(chosenProvider);
+    expect(await chooseCiProvider({prompt})(providers)).toEqual(chosenProvider);
   });
 });

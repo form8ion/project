@@ -16,9 +16,13 @@ describe('ci-provider scaffolder', () => {
 
   it('should scaffold the chosen provider', async () => {
     const scaffolderResult = any.simpleObject();
+    const choicePrompt = () => undefined;
     const plugins = any.simpleObject();
+    when(chooseCiProvider)
+      .calledWith({prompt})
+      .thenReturn(choicePrompt);
     when(scaffoldChoiceFromOptions)
-      .calledWith({plugins, options}, {prompt, promptToChooseFromOptions: chooseCiProvider})
+      .calledWith({plugins, options}, {choicePrompt})
       .thenResolve(scaffolderResult);
 
     expect(await scaffoldCiProvider({plugins, options}, {prompt})).toEqual(scaffolderResult);

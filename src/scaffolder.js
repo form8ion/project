@@ -39,7 +39,7 @@ export async function scaffold(options, dependencies) {
 
   const [dependencyUpdaterResults] = vcsResults.vcs
     ? await Promise.all([
-      scaffoldDependencyUpdater(dependencyUpdaters, {projectRoot}, {prompt}),
+      scaffoldDependencyUpdater({plugins: dependencyUpdaters, options: {projectRoot}}, {prompt}),
       scaffoldCiProvider({plugins: ciProviders, options: {projectRoot}}, {prompt})
     ])
     : [];
