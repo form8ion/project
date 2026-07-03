@@ -22,7 +22,7 @@
   "scripts": {
     "clean": "rimraf lib/",
     "lint:js": "eslint . --cache",
-    "lint:gherkin": "gherkin-lint",
+    "lint:gherkin": "gplint --config .gplintrc.json",
     "lint:md": "remark --quiet . --frail",
     "lint:lockfile": "lockfile-lint",
     "lint:engines": "ls-engines",
@@ -91,7 +91,7 @@
     "cross-env": "10.1.0",
     "cz-conventional-changelog": "3.3.0",
     "debug": "4.4.3",
-    "gherkin-lint": "4.2.4",
+    "gplint": "2.5.2",
     "husky": "9.1.7",
     "lockfile-lint": "5.0.0",
     "ls-engines": "0.10.1",

@@ -1,0 +1,13 @@
+{
+  "no-restricted-tags": [
+    "error",
+    {
+      "tags": [
+        "@focus"
+      ]
+    }
+  ],
+  "use-and": "error",
+  "no-multiple-empty-lines": "error",
+  "no-dupe-feature-names": "error"
+}
