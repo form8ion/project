@@ -30,7 +30,12 @@ jobs:
       - run: sfw npm clean-install
       - run: npm audit signatures
       - run: npm test
-      - uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v7.0.0
+      - name: Upload unit test coverage to Codecov
+        uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v7.0.0
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          flags: unit
+          report_type: coverage
   verify-matrix:
     runs-on: ubuntu-latest
     strategy:
