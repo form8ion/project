@@ -308,7 +308,7 @@ $ npm test
 
 [renovate-link]: https://renovatebot.com
 
-[renovate-badge]: https://img.shields.io/badge/renovate-enabled-brightgreen.svg?logo=renovatebot
+[renovate-badge]: https://img.shields.io/badge/renovate-enabled-brightgreen.svg?logo=renovate
 
 [github-actions-ci-link]: https://github.com/form8ion/project/actions?query=workflow%3A%22Node.js+CI%22+branch%3Amaster
 
