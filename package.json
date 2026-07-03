@@ -11,7 +11,10 @@
   "contributors": [
     "Trevor Richardson <npm@trevorrichardson.me> (https://trevorrichardson.me)"
   ],
-  "repository": "form8ion/project",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/form8ion/project.git"
+  },
   "bugs": "https://github.com/form8ion/project/issues",
   "homepage": "https://www.npmjs.com/package/@form8ion/project",
   "funding": {
