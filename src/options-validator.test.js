@@ -10,6 +10,7 @@ import languagePluginsSchema from './language/schema.js';
 import vcsHostPluginsSchema from './vcs/host/schema.js';
 import dependencyUpdaterPluginsSchema from './dependency-updater/schema.js';
 import {validate} from './options-validator.js';
+import coverageServicePluginsSchema from './coverage-service/schema.js';
 
 vi.mock('@form8ion/core', async () => ({
   validateOptions: vi.fn(),
@@ -37,7 +38,8 @@ describe('options validator', () => {
         dependencyUpdaters: dependencyUpdaterPluginsSchema,
         languages: languagePluginsSchema,
         vcsHosts: vcsHostPluginsSchema,
-        ciProviders: ciProviderPluginsSchema
+        ciProviders: ciProviderPluginsSchema,
+        coverageServices: coverageServicePluginsSchema
       })
       .thenReturn(pluginsSchema);
     when(joi.object).calledWith({plugins: pluginsSchema}).thenReturn(fullSchema);

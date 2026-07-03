@@ -5,6 +5,7 @@ import languagePluginsSchema from './language/schema.js';
 import vcsHostPluginsSchema from './vcs/host/schema.js';
 import dependencyUpdaterPluginsSchema from './dependency-updater/schema.js';
 import ciProviderPluginsSchema from './ci-provider/schema.js';
+import coverageServicePluginsSchema from './coverage-service/schema.js';
 
 export function validate(options) {
   return validateOptions(joi.object({
@@ -12,7 +13,8 @@ export function validate(options) {
       dependencyUpdaters: dependencyUpdaterPluginsSchema,
       languages: languagePluginsSchema,
       vcsHosts: vcsHostPluginsSchema,
-      ciProviders: ciProviderPluginsSchema
+      ciProviders: ciProviderPluginsSchema,
+      coverageServices: coverageServicePluginsSchema
     })
   }), options) || {};
 }

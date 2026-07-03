@@ -64,6 +64,7 @@ When(/^the project is scaffolded$/, async function () {
   const chosenLanguage = this.getAnswerFor(questionNames.PROJECT_LANGUAGE.PROJECT_LANGUAGE) || 'Other';
   const vcsHost = this.getAnswerFor(questionNames.REPOSITORY_HOST.REPO_HOST);
   const chosenCiProvider = this.getAnswerFor(questionNames.CI_PROVIDER.CI_PROVIDER) || 'Other';
+  const chosenCoverageService = this.getAnswerFor(questionNames.COVERAGE_SERVICE.COVERAGE_SERVICE) || 'Other';
 
   this.projectDescription = any.sentence();
   this.projectHomepage = any.url();
@@ -80,6 +81,9 @@ When(/^the project is scaffolded$/, async function () {
         },
         ...this.ciProviderPlugins && {
           ciProviders: this.ciProviderPlugins
+        },
+        ...this.coverageServicePlugins && {
+          coverageServices: this.coverageServicePlugins
         },
         languages: {
           ...'Other' !== chosenLanguage && {
@@ -151,7 +155,8 @@ When(/^the project is scaffolded$/, async function () {
           REPOSITORY_HOST: repositoryHostPromptId,
           PROJECT_LANGUAGE: projectLanguagePromptId,
           DEPENDENCY_UPDATER: dependencyUpdaterPromptId,
-          CI_PROVIDER: ciProviderPromptId
+          CI_PROVIDER: ciProviderPromptId,
+          COVERAGE_SERVICE: coverageServicePromptId
         } = ids;
 
         this.promptQuestionsById = {
@@ -206,6 +211,13 @@ When(/^the project is scaffolded$/, async function () {
 
             return {
               [CI_PROVIDER]: chosenCiProvider
+            };
+          }
+          case coverageServicePromptId: {
+            const {COVERAGE_SERVICE} = questionNames[coverageServicePromptId];
+
+            return {
+              [COVERAGE_SERVICE]: chosenCoverageService
             };
           }
           default:

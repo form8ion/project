@@ -17,5 +17,8 @@ export const questionNames = {
   },
   CI_PROVIDER: {
     CI_PROVIDER: 'ciProvider'
+  },
+  COVERAGE_SERVICE: {
+    COVERAGE_SERVICE: 'coverageService'
   }
 };

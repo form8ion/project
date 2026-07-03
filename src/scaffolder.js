@@ -8,6 +8,7 @@ import {scaffold as scaffoldVcs} from './vcs/index.js';
 import {scaffold as scaffoldLicense} from './license/index.js';
 import scaffoldDependencyUpdater from './dependency-updater/scaffolder.js';
 import {scaffold as scaffoldCiProvider} from './ci-provider/index.js';
+import {scaffold as scaffoldCoverageService} from './coverage-service/index.js';
 import {promptForBaseDetails} from './prompts/questions.js';
 import {validate} from './options-validator.js';
 import {scaffold as scaffoldEditorConfig} from './editorconfig/index.js';
@@ -16,7 +17,7 @@ import lift from './lift.js';
 
 export async function scaffold(options, dependencies) {
   const projectRoot = process.cwd();
-  const {plugins: {dependencyUpdaters, ciProviders, languages, vcsHosts = {}}} = validate(options);
+  const {plugins: {dependencyUpdaters, ciProviders, coverageServices, languages, vcsHosts = {}}} = validate(options);
   const {prompt, logger} = dependencies;
 
   const {
@@ -40,7 +41,8 @@ export async function scaffold(options, dependencies) {
   const [dependencyUpdaterResults] = vcsResults.vcs
     ? await Promise.all([
       scaffoldDependencyUpdater({plugins: dependencyUpdaters, options: {projectRoot}}, {prompt}),
-      scaffoldCiProvider({plugins: ciProviders, options: {projectRoot}}, {prompt})
+      scaffoldCiProvider({plugins: ciProviders, options: {projectRoot}}, {prompt}),
+      scaffoldCoverageService({plugins: coverageServices, options: {projectRoot}}, {prompt})
     ])
     : [];
 

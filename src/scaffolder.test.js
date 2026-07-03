@@ -12,6 +12,7 @@ import * as licenseScaffolder from './license/scaffolder.js';
 import scaffoldLanguage from './language/scaffolder.js';
 import * as dependencyUpdaterScaffolder from './dependency-updater/scaffolder.js';
 import {scaffold as scaffoldCiProvider} from './ci-provider/index.js';
+import {scaffold as scaffoldCoverageService} from './coverage-service/index.js';
 import * as optionsValidator from './options-validator.js';
 import * as prompts from './prompts/questions.js';
 import {questionNames} from './prompts/question-names.js';
@@ -29,6 +30,7 @@ vi.mock('./license/scaffolder');
 vi.mock('./language/scaffolder');
 vi.mock('./dependency-updater/scaffolder');
 vi.mock('./ci-provider/index.js');
+vi.mock('./coverage-service/index.js');
 vi.mock('./options-validator');
 vi.mock('./prompts/questions');
 vi.mock('./editorconfig');
@@ -77,6 +79,7 @@ describe('project scaffolder', () => {
     const copyright = {year, holder};
     const dependencyUpdaters = any.simpleObject();
     const ciProviders = any.simpleObject();
+    const coverageServices = any.simpleObject();
     const dependencyUpdaterNextSteps = any.listOf(any.simpleObject);
     const dependencyUpdaterContributionBadges = any.simpleObject();
     const dependencyUpdaterResults = {
@@ -101,7 +104,7 @@ describe('project scaffolder', () => {
     ]);
     when(optionsValidator.validate)
       .calledWith(options)
-      .thenReturn({plugins: {dependencyUpdaters, ciProviders, languages, vcsHosts}});
+      .thenReturn({plugins: {dependencyUpdaters, ciProviders, languages, vcsHosts, coverageServices}});
     when(prompts.promptForBaseDetails)
       .calledWith(projectPath, {prompt})
       .thenResolve({
@@ -130,6 +133,10 @@ describe('project scaffolder', () => {
     expect(scaffoldEditorconfig).toHaveBeenCalledWith({projectRoot: projectPath});
     expect(scaffoldCiProvider).toHaveBeenCalledWith(
       {plugins: ciProviders, options: {projectRoot: projectPath}},
+      {prompt}
+    );
+    expect(scaffoldCoverageService).toHaveBeenCalledWith(
+      {plugins: coverageServices, options: {projectRoot: projectPath}},
       {prompt}
     );
     expect(lift).toHaveBeenCalledWith({
