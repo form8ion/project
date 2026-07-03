@@ -67,12 +67,12 @@ jobs:
     uses: form8ion/semantic-release-workflow/.github/workflows/release.yml@v2.0.0
     secrets:
       NPM_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
-
   workflow-result:
     runs-on: ubuntu-latest
     needs:
       - verify
       - verify-matrix
+      - release
     if: ${{ !cancelled() }}
     steps:
       - name: All matrix versions passed
