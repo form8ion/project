@@ -26,21 +26,21 @@ describe('vcs-host plugins schema', () => {
 
   it('should require options to be provided as an object', () => {
     expect(() => validateOptions(vcsHostSchema, {[key]: []}))
-      .toThrowError(`"${key}" must be of type object`);
+      .toThrow(`"${key}" must be of type object`);
   });
 
   it('should require a `scaffold` to be included', () => {
     expect(() => validateOptions(vcsHostSchema, {[key]: {}}))
-      .toThrowError(`"${key}.scaffold" is required`);
+      .toThrow(`"${key}.scaffold" is required`);
   });
 
   it('should require `scaffold` to be a function', () => {
     expect(() => validateOptions(vcsHostSchema, {[key]: {scaffold: any.word()}}))
-      .toThrowError(`"${key}.scaffold" must be of type function`);
+      .toThrow(`"${key}.scaffold" must be of type function`);
   });
 
   it('should require the scaffold to accept a single argument', () => {
     expect(() => validateOptions(vcsHostSchema, {[key]: {scaffold: () => undefined}}))
-      .toThrowError(`"${key}.scaffold" must have an arity greater or equal to 1`);
+      .toThrow(`"${key}.scaffold" must have an arity greater or equal to 1`);
   });
 });
