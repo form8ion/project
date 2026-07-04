@@ -17,7 +17,7 @@ export default async function scaffoldVcs(
 
     const [{vcs: {host, owner, name, sshUrl}}] = await Promise.all([
       scaffoldVcsHost(vcsHosts, {projectName, projectRoot, description, visibility}, {prompt}),
-      scaffoldGit({projectRoot})
+      scaffoldGit({projectRoot}, {logger})
     ]);
 
     const remoteOriginResults = await defineRemoteOrigin(projectRoot, sshUrl, {logger});

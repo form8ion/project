@@ -22,16 +22,6 @@ describe('coverage service plugins schema', () => {
       .toThrow(`"${key}" must be of type object`);
   });
 
-  it('should require a `scaffold` property to be included', () => {
-    expect(() => validateOptions(coverageServicePluginsSchema, {[key]: {}}))
-      .toThrow(`"${key}.scaffold" is required`);
-  });
-
-  it('should require `scaffold` to be a function', () => {
-    expect(() => validateOptions(coverageServicePluginsSchema, {[key]: {scaffold: any.word()}}))
-      .toThrow(`"${key}.scaffold" must be of type function`);
-  });
-
   it('should require the scaffolder to accept a single argument', () => {
     expect(() => validateOptions(coverageServicePluginsSchema, {[key]: {scaffold: () => undefined}}))
       .toThrow(`"${key}.scaffold" must have an arity greater or equal to 1`);

@@ -41,7 +41,7 @@ describe('vcs scaffolder', () => {
       vcs: vcsHostDetails,
       nextSteps: [{summary: 'Commit scaffolded files'}, ...remoteOriginNextSteps]
     });
-    expect(scaffoldGit).toHaveBeenCalledWith({projectRoot});
+    expect(scaffoldGit).toHaveBeenCalledWith({projectRoot}, {logger});
   });
 
   it('should not scaffold a repository or vcs host details when the project is already versioned by git', async () => {

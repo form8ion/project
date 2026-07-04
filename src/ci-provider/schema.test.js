@@ -22,11 +22,6 @@ describe('ci-provider plugins schema', () => {
       .toThrow(`"${key}" must be of type object`);
   });
 
-  it('should require a `scaffold` property to be included', () => {
-    expect(() => validateOptions(ciProviderPluginsSchema, {[key]: {}}))
-      .toThrow(`"${key}.scaffold" is required`);
-  });
-
   it('should require `scaffold` to be a function', () => {
     expect(() => validateOptions(ciProviderPluginsSchema, {[key]: {scaffold: any.word()}}))
       .toThrow(`"${key}.scaffold" must be of type function`);

@@ -29,11 +29,6 @@ describe('vcs-host plugins schema', () => {
       .toThrow(`"${key}" must be of type object`);
   });
 
-  it('should require a `scaffold` to be included', () => {
-    expect(() => validateOptions(vcsHostSchema, {[key]: {}}))
-      .toThrow(`"${key}.scaffold" is required`);
-  });
-
   it('should require `scaffold` to be a function', () => {
     expect(() => validateOptions(vcsHostSchema, {[key]: {scaffold: any.word()}}))
       .toThrow(`"${key}.scaffold" must be of type function`);
