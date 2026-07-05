@@ -1,6 +1,6 @@
 import deepmerge from 'deepmerge';
 import {execa} from 'execa';
-import {questionNames as coreQuestionNames} from '@form8ion/core';
+import {questionNames as coreQuestionNames, ungroupObject} from '@form8ion/core';
 import {scaffold as scaffoldReadme} from '@form8ion/readme';
 
 import {scaffold as scaffoldLanguage} from './language/index.js';
@@ -17,7 +17,8 @@ import lift from './lift.js';
 
 export async function scaffold(options, dependencies) {
   const projectRoot = process.cwd();
-  const {plugins: {dependencyUpdaters, ciProviders, coverageServices, languages, vcsHosts = {}}} = validate(options);
+  const {plugins} = validate(options);
+  const {dependencyUpdaters, ciProviders, coverageServices, languages, vcsHosts = {}} = plugins;
   const {prompt, logger} = dependencies;
 
   const {
@@ -64,7 +65,7 @@ export async function scaffold(options, dependencies) {
     projectRoot,
     vcs: vcsResults.vcs,
     results: mergedResults,
-    enhancers: {...dependencyUpdaters, ...languages, ...vcsHosts}
+    enhancers: ungroupObject(plugins)
   }, dependencies);
 
   if (language && language.verificationCommand) {

@@ -1,6 +1,6 @@
 import deepmerge from 'deepmerge';
 import {execa} from 'execa';
-import {questionNames as coreQuestionNames} from '@form8ion/core';
+import {questionNames as coreQuestionNames, ungroupObject} from '@form8ion/core';
 import {scaffold as scaffoldReadme} from '@form8ion/readme';
 
 import {afterEach, beforeEach, describe, expect, it, vi} from 'vitest';
@@ -22,6 +22,7 @@ import lift from './lift.js';
 import {scaffold} from './scaffolder.js';
 
 vi.mock('execa');
+vi.mock('@form8ion/core');
 vi.mock('@form8ion/readme');
 vi.mock('@form8ion/results-reporter');
 vi.mock('./readme');
@@ -102,9 +103,11 @@ describe('project scaffolder', () => {
       contributingResults,
       vcsResults
     ]);
+    const validatedPlugins = {dependencyUpdaters, ciProviders, languages, vcsHosts, coverageServices};
+    const ungroupedPlugins = any.simpleObject();
     when(optionsValidator.validate)
       .calledWith(options)
-      .thenReturn({plugins: {dependencyUpdaters, ciProviders, languages, vcsHosts, coverageServices}});
+      .thenReturn({plugins: validatedPlugins});
     when(prompts.promptForBaseDetails)
       .calledWith(projectPath, {prompt})
       .thenResolve({
@@ -126,6 +129,7 @@ describe('project scaffolder', () => {
       .calledWith({plugins: dependencyUpdaters, options: {projectRoot: projectPath}}, {prompt})
       .thenResolve(dependencyUpdaterResults);
     when(scaffoldContributing).calledWith({visibility}).thenReturn(contributingResults);
+    when(ungroupObject).calledWith(validatedPlugins).thenReturn(ungroupedPlugins);
 
     expect(await scaffold(options, dependencies)).toEqual(mergedResults);
 
@@ -143,7 +147,7 @@ describe('project scaffolder', () => {
       projectRoot: projectPath,
       vcs,
       results: mergedResults,
-      enhancers: {...dependencyUpdaters, ...vcsHosts, ...languages}
+      enhancers: ungroupedPlugins
     }, dependencies);
   });
 
