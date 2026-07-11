@@ -89,7 +89,7 @@
     "@form8ion/remark-lint-preset": "6.0.7",
     "@rollup/plugin-node-resolve": "16.0.3",
     "@travi/any": "3.3.0",
-    "@vitest/coverage-v8": "4.1.9",
+    "@vitest/coverage-v8": "4.1.10",
     "chai": "6.2.2",
     "cz-conventional-changelog": "3.3.0",
     "debug": "4.4.3",
@@ -112,7 +112,7 @@
     "sinon": "22.0.0",
     "testdouble": "3.20.2",
     "unist-util-find": "3.0.0",
-    "vitest": "4.1.9",
+    "vitest": "4.1.10",
     "vitest-when": "0.10.0"
   }
 }
