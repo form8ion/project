@@ -328,4 +328,4 @@ $ npm test
 
 [socket-badge]: https://badge.socket.dev/npm/package/@form8ion/project/latest
 
-[socket-link]: https://socket.dev/npm/package/@form8ion/project/overview/21.2.0
+[socket-link]: https://socket.dev/npm/package/@form8ion/project/overview
