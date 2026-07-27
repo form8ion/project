@@ -77,7 +77,7 @@
     "joi": "^18.0.0",
     "mustache": "4.2.0",
     "simple-git": "^3.16.0",
-    "spdx-license-list": "6.11.0",
+    "spdx-license-list": "6.12.0",
     "word-wrap": "^1.2.3"
   },
   "devDependencies": {
