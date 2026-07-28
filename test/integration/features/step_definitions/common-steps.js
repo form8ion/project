@@ -88,8 +88,8 @@ When(/^the project is scaffolded$/, async function () {
         languages: {
           ...'Other' !== chosenLanguage && {
             [chosenLanguage]: {
-              scaffold: ({projectName, vcs}) => {
-                debug(`Scaffolding ${chosenLanguage} language details for ${projectName}`);
+              scaffold: ({projectName, vcs}, {logger: log}) => {
+                log.info(`Scaffolding ${chosenLanguage} language details for ${projectName}`);
 
                 if (repoShouldBeCreated && ((vcsHost && 'Other' !== vcsHost) || this.existingVcsHost)) {
                   assert.equal(vcs.name, this.projectName);
@@ -100,13 +100,13 @@ When(/^the project is scaffolded$/, async function () {
 
                 return this.languageScaffolderResults;
               },
-              test: ({projectRoot}) => {
-                debug(`Determining if project at ${projectRoot} uses the ${chosenLanguage} language`);
+              test: ({projectRoot}, {logger: log}) => {
+                log.info(`Determining if project at ${projectRoot} uses the ${chosenLanguage} language`);
 
                 return true;
               },
-              lift: ({projectRoot}) => {
-                debug(`Applying the ${chosenLanguage} language lifter to the project at ${projectRoot}`);
+              lift: ({projectRoot}, {logger: log}) => {
+                log.info(`Applying the ${chosenLanguage} language lifter to the project at ${projectRoot}`);
 
                 return this.languageLiftResults;
               }

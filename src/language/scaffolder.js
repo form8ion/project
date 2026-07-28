@@ -8,7 +8,7 @@ export default async function scaffoldLanguage(languagePlugins, options, depende
 
   const plugin = languagePlugins[chosenLanguage];
 
-  if (plugin) return plugin.scaffold(options);
+  if (plugin) return plugin.scaffold(options, dependencies);
 
   return undefined;
 }

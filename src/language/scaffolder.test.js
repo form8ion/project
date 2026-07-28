@@ -22,7 +22,7 @@ describe('language scaffolder', () => {
     when(promptForProjectLanguage)
       .calledWith(plugins, dependencies)
       .thenResolve({[PROJECT_LANGUAGE]: chosenLanguage});
-    when(chosenLanguageScaffolder).calledWith(options).thenResolve(scaffolderResult);
+    when(chosenLanguageScaffolder).calledWith(options, dependencies).thenResolve(scaffolderResult);
 
     expect(await scaffold(plugins, options, dependencies)).toEqual(scaffolderResult);
   });
