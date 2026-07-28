@@ -119,10 +119,10 @@ describe('project scaffolder', () => {
         [coreQuestionNames.VISIBILITY]: visibility
       });
     when(scaffoldVcs)
-      .calledWith({projectRoot: projectPath, projectName, vcsHosts, visibility, description}, {prompt, logger})
+      .calledWith({projectRoot: projectPath, projectName, vcsHosts, visibility, description}, dependencies)
       .thenResolve(vcsResults);
     when(licenseScaffolder.default)
-      .calledWith({projectRoot: projectPath, license, copyright}, {logger})
+      .calledWith({projectRoot: projectPath, license, copyright}, dependencies)
       .thenResolve(licenseResults);
     scaffoldLanguage.mockResolvedValue(languageResults);
     when(dependencyUpdaterScaffolder.default)
@@ -133,7 +133,7 @@ describe('project scaffolder', () => {
 
     expect(await scaffold(options, dependencies)).toEqual(mergedResults);
 
-    expect(scaffoldReadme).toHaveBeenCalledWith({projectName, projectRoot: projectPath, description}, {logger});
+    expect(scaffoldReadme).toHaveBeenCalledWith({projectName, projectRoot: projectPath, description}, dependencies);
     expect(scaffoldEditorconfig).toHaveBeenCalledWith({projectRoot: projectPath});
     expect(scaffoldCiProvider).toHaveBeenCalledWith(
       {plugins: ciProviders, options: {projectRoot: projectPath}},
@@ -188,9 +188,9 @@ describe('project scaffolder', () => {
     licenseScaffolder.default.mockResolvedValue({badges: licenseBadges});
     scaffoldVcs.mockResolvedValue(vcsResults);
 
-    await scaffold(options, {prompt, logger});
+    await scaffold(options, dependencies);
 
-    expect(scaffoldReadme).toHaveBeenCalledWith({projectName, projectRoot: projectPath, description}, {logger});
+    expect(scaffoldReadme).toHaveBeenCalledWith({projectName, projectRoot: projectPath, description}, dependencies);
   });
 
   it('should not scaffold the git repo if not requested', async () => {
@@ -241,7 +241,7 @@ describe('project scaffolder', () => {
       license,
       vcs,
       description
-    }, {prompt}).thenResolve(languageResults);
+    }, dependencies).thenResolve(languageResults);
     when(execa).calledWith(verificationCommand, {shell: true}).thenReturn({stdout: {pipe: execaPipe}});
     dependencyUpdaterScaffolder.default.mockResolvedValue({});
     licenseScaffolder.default.mockResolvedValue({});
@@ -249,7 +249,7 @@ describe('project scaffolder', () => {
 
     await scaffold(options, dependencies);
 
-    expect(scaffoldReadme).toHaveBeenCalledWith({projectName, projectRoot: projectPath, description}, {logger});
+    expect(scaffoldReadme).toHaveBeenCalledWith({projectName, projectRoot: projectPath, description}, dependencies);
     expect(execaPipe).toHaveBeenCalledWith(process.stdout);
   });
 
@@ -270,9 +270,9 @@ describe('project scaffolder', () => {
     licenseScaffolder.default.mockResolvedValue({});
     scaffoldContributing.mockResolvedValue({});
 
-    await scaffold(options, {prompt, logger});
+    await scaffold(options, dependencies);
 
-    expect(scaffoldReadme).toHaveBeenCalledWith({projectName, projectRoot: projectPath, description}, {logger});
+    expect(scaffoldReadme).toHaveBeenCalledWith({projectName, projectRoot: projectPath, description}, dependencies);
     expect(execa).not.toHaveBeenCalled();
   });
 
@@ -281,7 +281,7 @@ describe('project scaffolder', () => {
     prompts.promptForBaseDetails.mockResolvedValue({});
     scaffoldVcs.mockResolvedValue(vcsResults);
 
-    await scaffold(options, {prompt});
+    await scaffold(options, dependencies);
 
     expect(scaffoldLanguage).toHaveBeenCalledWith(
       languages,
@@ -293,7 +293,7 @@ describe('project scaffolder', () => {
         vcs,
         visibility: undefined
       },
-      {prompt}
+      dependencies
     );
   });
 

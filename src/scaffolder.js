@@ -32,10 +32,10 @@ export async function scaffold(options, dependencies) {
   const copyright = {year: copyrightYear, holder: copyHolder};
 
   const [vcsResults, contributing, license] = await Promise.all([
-    scaffoldVcs({projectRoot, projectName, vcsHosts, visibility, description}, {prompt, logger}),
+    scaffoldVcs({projectRoot, projectName, vcsHosts, visibility, description}, dependencies),
     scaffoldContributing({visibility}),
-    scaffoldLicense({projectRoot, license: chosenLicense, copyright}, {logger}),
-    scaffoldReadme({projectName, projectRoot, description}, {logger}),
+    scaffoldLicense({projectRoot, license: chosenLicense, copyright}, dependencies),
+    scaffoldReadme({projectName, projectRoot, description}, dependencies),
     scaffoldEditorConfig({projectRoot})
   ]);
 
@@ -50,7 +50,7 @@ export async function scaffold(options, dependencies) {
   const language = await scaffoldLanguage(
     languages,
     {projectRoot, projectName, vcs: vcsResults.vcs, visibility, license: chosenLicense || 'UNLICENSED', description},
-    {prompt}
+    dependencies
   );
 
   const mergedResults = deepmerge.all([

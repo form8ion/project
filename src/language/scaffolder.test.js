@@ -11,25 +11,25 @@ vi.mock('./prompt.js');
 const {PROJECT_LANGUAGE} = questionNames.PROJECT_LANGUAGE;
 
 describe('language scaffolder', () => {
+  const dependencies = any.simpleObject();
+
   it('should scaffold the chosen language', async () => {
     const options = any.simpleObject();
     const chosenLanguage = any.word();
     const scaffolderResult = any.simpleObject();
-    const prompt = () => undefined;
     const chosenLanguageScaffolder = vi.fn();
     const plugins = {...any.simpleObject(), [chosenLanguage]: {scaffold: chosenLanguageScaffolder}};
     when(promptForProjectLanguage)
-      .calledWith(plugins, {prompt})
+      .calledWith(plugins, dependencies)
       .thenResolve({[PROJECT_LANGUAGE]: chosenLanguage});
     when(chosenLanguageScaffolder).calledWith(options).thenResolve(scaffolderResult);
 
-    expect(await scaffold(plugins, options, {prompt})).toEqual(scaffolderResult);
+    expect(await scaffold(plugins, options, dependencies)).toEqual(scaffolderResult);
   });
 
   it('should not result in an error when choosing a language without a defined scaffolder', async () => {
     const plugins = any.simpleObject();
     const options = any.simpleObject();
-    const dependencies = {prompt: undefined};
     when(promptForProjectLanguage).calledWith(plugins, dependencies).thenResolve({[PROJECT_LANGUAGE]: any.word()});
 
     await scaffold(plugins, options, dependencies);
