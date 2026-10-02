@@ -113,6 +113,6 @@
     "testdouble": "3.21.1",
     "unist-util-find": "3.0.0",
     "vitest": "4.1.11",
-    "vitest-when": "0.10.2"
+    "vitest-when": "1.0.0"
   }
 }
