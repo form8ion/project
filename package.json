@@ -55,7 +55,7 @@
     "access": "public",
     "provenance": true
   },
-  "packageManager": "npm@12.1.0+sha512.17286eeb6a4dc7bd180acff9f9d1262504c556648ac2fa39080d2abc19060d1a686f8d8c27a1b6450dad77178a3389d89c8643aa4600c4482ab687a39fd406b5",
+  "packageManager": "npm@12.2.0+sha512.66c2632a94e796649738b2d7894d710c2cc2e1696893823066687f6b0d8a52e5f2b54eeaeaa32ffdc513ecca1e49ff794a5c2ec3f9515d879f1b3182b291cf35",
   "config": {
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
